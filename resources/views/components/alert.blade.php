@@ -1,6 +1,6 @@
 @props(['status', 'messages', 'id' => 'alert-box', 'timeout' => 2000, 'closeable' => true])
 
-@if (isset($messages) || isset($slot))
+@if (isset($messages) || $slot->isNotEmpty())
   <div id="{{ $id }}" {{ $attributes->merge(['class' => 'alert ' . ($status ?? '')]) }} role="alert"
     x-data="{ show: true }" x-show="show" x-transition.duration.500ms x-init="setTimeout(() => show = false, {{ $timeout }})">
     <svg class="h-4 w-4 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
