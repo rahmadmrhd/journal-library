@@ -1,29 +1,49 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+  <x-slot name="header">
+    <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+      {{ __('Profile') }}
+    </h2>
+  </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+  {{-- Tab --}}
+  <div
+    class="sticky top-16 z-10 -mx-4 mb-4 border-b-2 border-gray-200 bg-gray-100 px-4 dark:border-gray-700 dark:bg-gray-900 sm:px-10 lg:px-12">
+    <ul class="-mb-px flex flex-wrap text-center text-sm font-medium" id="tab">
+      <li class="me-2">
+        <a href="#profile" class="inline-block rounded-t-lg p-4" id="profile-tab">Profile</a>
+      </li>
+      <li>
+        <a href="#account" class="inline-block rounded-t-lg p-4" id="account-tab">Account</a>
+      </li>
+    </ul>
+  </div>
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+  {{-- Alert --}}
+  @if (session('message'))
+    @php
+      $msg = session('message');
+    @endphp
+    <x-alert class="sm:mx-6" :status="$msg['status']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
+  @endif
+  @if (!isset($user->email) || !isset($user->username) || !isset($user->password))
+    <x-alert class="sm:mx-6" :status="'warning'" :id="'warning-box'" :closeable="false">
+      <span class="font-medium">Please update your account and password information first! </span>
+      <a x-data="{ show: true }" x-on:hashchange.window="show = window.location.hash != '#account' " x-show="show"
+        class="underline underline-offset-1 hover:text-blue-500" href="#account">Click Here</a>
+    </x-alert>
+  @endif
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
+  {{-- Tab Content --}}
+  <div id="tab-content" class="py-4 sm:px-6">
+    <div class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800" id="profile-content">
+      <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong
+          class="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another
+        tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content
+        visibility and styling.</p>
     </div>
+    <div class="hidden space-y-6" id="account-content">
+      @include('profile.partials.account')
+    </div>
+  </div>
+  @vite(['resources/js/profile.js'])
 </x-app-layout>

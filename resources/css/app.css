@@ -1,3 +1,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
+
+@layer components {
+  .dropdown-item {
+    @apply flex cursor-pointer items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white;
+  }
+  #dropdown-theme input[type="radio"]:checked + label {
+    @apply bg-gray-100 dark:bg-gray-600 dark:text-white;
+  }
+  .dropdown-item svg {
+    @apply h-4 w-4 text-gray-800 dark:text-white;
+  }
+
+  .sidebar-badge {
+    @apply ms-3 inline-flex items-center justify-center rounded-full;
+  }
+  .sidebar-item {
+    @apply flex items-center rounded-lg px-4 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700;
+  }
+  .sidebar-item-dropdown {
+    @apply sidebar-item flex w-full text-base transition duration-75;
+  }
+  .sidebar-item-dropdown > svg:nth-child(1),
+  .sidebar-item > svg:nth-child(1) {
+    @apply h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white;
+  }
+  .sidebar-item-dropdown + ul > li > a.active,
+  .sidebar-item.active {
+    @apply !bg-gray-100 dark:!bg-gray-900 dark:text-white dark:hover:bg-gray-700;
+  }
+  .sidebar-item-dropdown + ul > li > a {
+    @apply flex w-full items-center rounded-lg p-2 pl-11 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700;
+  }
+  .svg-dropdown {
+    @apply h-3 w-3 rotate-90 transition duration-100 ease-in-out;
+  }
+  .sidebar-item-dropdown[aria-expanded="true"] .svg-dropdown {
+    @apply !rotate-0;
+  }
+
+  /* alert style */
+  .alert {
+    @apply mb-4 flex items-center rounded-lg p-4 text-sm;
+  }
+  .alert.info {
+    @apply bg-blue-50  text-blue-800 dark:bg-blue-700 dark:text-gray-50;
+    button {
+      @apply hover:bg-blue-200  focus:ring-blue-400   dark:hover:bg-blue-500;
+    }
+  }
+  .alert.error {
+    @apply bg-red-50 text-red-800 dark:bg-red-700 dark:text-gray-50;
+    button {
+      @apply hover:bg-red-200  focus:ring-red-900 dark:hover:bg-red-500;
+    }
+  }
+  .alert.success {
+    @apply bg-green-50 text-green-800 dark:bg-green-700 dark:text-gray-50;
+    button {
+      @apply hover:bg-green-200  focus:ring-green-600 dark:hover:bg-green-500;
+    }
+  }
+
+  .alert.warning {
+    @apply bg-yellow-50  text-yellow-800 dark:bg-yellow-700 dark:text-gray-50;
+    button {
+      @apply hover:bg-yellow-200 focus:ring-yellow-400 dark:hover:bg-yellow-500;
+    }
+  }
+
+  .alert.secondary {
+    @apply bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-50;
+    button {
+      @apply hover:bg-gray-200 focus:ring-gray-400 dark:hover:bg-gray-500;
+    }
+  }
+
+  .card {
+    @apply bg-white p-4 shadow-md dark:bg-gray-800 sm:rounded-lg sm:p-8;
+  }
+
+  .text-input {
+    label {
+      @apply mb-2 block text-sm font-medium text-gray-900 dark:text-white;
+    }
+    input {
+      @apply block w-full rounded-md border border-gray-300 bg-gray-50 text-base text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:!bg-gray-700 dark:!text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500;
+    }
+  }
+  .text-input .icon {
+    @apply pointer-events-none absolute inset-y-0 start-0 flex items-center ps-2;
+    svg {
+      @apply h-4 w-4 text-gray-500 dark:text-gray-400;
+    }
+  }
+  .text-input .icon-eye {
+    @apply absolute inset-y-0 end-0 flex items-center px-2;
+    svg {
+      @apply h-4 w-4 text-gray-500 dark:text-gray-400;
+    }
+  }
+
+  .text-input.error label,
+  .text-input.error > div > div > svg {
+    @apply text-red-700 dark:text-red-500;
+  }
+  .text-input.error input {
+    @apply border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-500 dark:bg-gray-700 dark:text-white dark:placeholder-red-500 !important;
+  }
+  .text-input.error p {
+    @apply text-red-600 dark:text-red-500;
+  }
+  .text-input.success label,
+  .text-input.success > div > div > svg {
+    @apply text-green-700 dark:text-green-500;
+  }
+  .text-input.success input {
+    @apply border-green-500 bg-green-50 text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:border-green-500 dark:!bg-gray-700 dark:text-white dark:placeholder-green-500;
+  }
+  .text-input.success p {
+    @apply text-green-600 dark:text-green-500;
+  }
+}
