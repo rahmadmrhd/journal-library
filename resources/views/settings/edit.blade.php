@@ -28,22 +28,19 @@
   @if (!isset($user->email) || !isset($user->username) || !isset($user->password))
     <x-alert class="sm:mx-6" :status="'warning'" :id="'warning-box'" :closeable="false">
       <span class="font-medium">Please update your account and password information first! </span>
-      <a x-data="{ show: true }" x-on:hashchange.window="show = window.location.hash != '#account' " x-show="show"
+      <a x-data="{ show: window.location.hash != '#account' }" x-on:hashchange.window="show = window.location.hash != '#account' " x-show="show"
         class="underline underline-offset-1 hover:text-blue-500" href="#account">Click Here</a>
     </x-alert>
   @endif
 
   {{-- Tab Content --}}
   <div id="tab-content" class="py-4 sm:px-6">
-    <div class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800" id="profile-content">
-      <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong
-          class="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another
-        tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content
-        visibility and styling.</p>
+    <div class="hidden space-y-6" id="profile-content">
+      @include('settings.partials.profile')
     </div>
     <div class="hidden space-y-6" id="account-content">
-      @include('profile.partials.account')
+      @include('settings.partials.account')
     </div>
   </div>
-  @vite(['resources/js/profile.js'])
+  @vite(['resources/js/settings.js'])
 </x-app-layout>
