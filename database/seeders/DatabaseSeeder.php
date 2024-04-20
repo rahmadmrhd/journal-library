@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder {
       'slug' => 'admin',
     ]);
     $user = User::factory()->create([
-      'name' => 'Admin',
+      'first_name' => 'Admin',
       'email' => 'nqK5n@example.com',
       'username' => 'admin',
       'password' => Hash::make('admin'),

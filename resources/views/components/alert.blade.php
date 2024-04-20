@@ -2,7 +2,7 @@
 
 @if (isset($messages) || $slot->isNotEmpty())
   <div id="{{ $id }}" {{ $attributes->merge(['class' => 'alert ' . ($status ?? '')]) }} role="alert"
-    x-data="{ show: true }" x-show="show" x-transition.duration.500ms x-init="setTimeout(() => show = false, {{ $timeout }})">
+    x-data="{ show: true }" x-show="show" x-transition.duration.500ms>
     <svg class="h-4 w-4 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
       viewBox="0 0 20 20">
       <path
@@ -29,7 +29,7 @@
       @endisset
     </div>
     @if ($closeable)
-      <button type="button"
+      <button type="button" x-init="setTimeout(() => show = false, {{ $timeout }})"
         class="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg p-1.5 focus:ring-2"
         data-dismiss-target="#{{ $id }}" aria-label="Close">
         <span class="sr-only">Close</span>

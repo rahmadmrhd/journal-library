@@ -11,9 +11,10 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-  Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile');
-  Route::patch('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
-  Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
+  Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings');
+  Route::put('/profile', [App\Http\Controllers\SettingsController::class, 'profileUpdate'])->name('profile.update');
+  Route::put('/account', [App\Http\Controllers\SettingsController::class, 'accountUpdate'])->name('account.update');
+  Route::delete('/account', [App\Http\Controllers\SettingsController::class, 'accountDestroy'])->name('account.destroy');
 });
 
 Route::controller(\App\Http\Controllers\OrcidController::class)->group(function () {
