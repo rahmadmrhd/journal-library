@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FileUploadController;
 
 Route::get('/', function () {
   return view('welcome');
@@ -21,5 +22,8 @@ Route::controller(\App\Http\Controllers\OrcidController::class)->group(function 
   Route::get('orcid/connect', 'connect')->middleware('auth');
   Route::delete('orcid', 'destroy')->middleware('auth')->name('orcid.destroy');
 });
+
+Route::view('form', 'journal-submission.form');
+Route::post('/upload', [FileUploadController::class, 'upload'])->name('upload');
 
 require __DIR__ . '/auth.php';

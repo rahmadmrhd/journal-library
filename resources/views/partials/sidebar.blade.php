@@ -8,6 +8,10 @@
           'route' => '/admin/mahasiswa',
           'icon' => 'fas-users',
       ],
+      'Form' => [
+          'route' => '/form',
+          'icon' => 'fas-users',
+      ],
   ];
   // $sidebarItems = [
   //     'Home' => [
@@ -61,3 +65,4 @@
     </ul>
   </div>
 </aside>
+

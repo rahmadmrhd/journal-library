@@ -6,29 +6,38 @@ use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
-class DatabaseSeeder extends Seeder {
+class DatabaseSeeder extends Seeder
+{
   /**
    * Seed the application's database.
    */
-  public function run(): void {
-    // User::factory(10)->create();
-
-    Role::create([
+  public function run(): void
+  {
+    Role::createOrFirst([
       'name' => 'Author',
       'slug' => 'author',
     ]);
-    Role::create([
+    Role::createOrFirst([
       'name' => 'Reviewer',
       'slug' => 'reviewer',
     ]);
-    Role::create([
+    Role::createOrFirst([
       'name' => 'Editor',
       'slug' => 'editor',
     ]);
-    Role::create([
+    Role::createOrFirst([
       'name' => 'Administrator',
       'slug' => 'admin',
     ]);
+    $user = User::factory()->create([
+      'name' => 'Admin',
+      'email' => 'nqK5n@example.com',
+      'username' => 'admin',
+      'password' => Hash::make('admin'),
+    ]);
+
+    $user->roles()->attach([1, 2, 3, 4]);
   }
 }
