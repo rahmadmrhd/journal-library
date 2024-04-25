@@ -49,7 +49,6 @@ class OrcidController extends Controller {
     $result = json_decode($result);
     return $result;
   }
-
   public function auth(Request $request) {
     $result = $this->getToken($request, 'auth');
     if (isset($result->error)) {
@@ -57,10 +56,15 @@ class OrcidController extends Controller {
     }
     $user = User::where('orcid_id', $result->orcid)->first();
     if (!$user) {
-      $user = User::createOrFirst(['orcid_id' => $result->orcid], ['name' => $result->name]);
+      $splitName = explode(' ', $result->name, 2);
+      $user = User::createOrFirst(['orcid_id' => $result->orcid], ['first_name' => $splitName[0], 'last_name' => $splitName[1]]);
       $user->roles()->attach([1, 2]);
 
       event(new Registered($user));
+      return redirect('/profile')->withFragment('account')->with('message', [
+        'status' => 'success',
+        'msg' => 'Successfully registered with an orcid account'
+      ]);
     }
     Auth::login($user);
     return redirect()->intended(route('dashboard', absolute: false));

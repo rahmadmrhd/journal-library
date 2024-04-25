@@ -11,13 +11,28 @@ return new class extends Migration {
   public function up(): void {
     Schema::create('users', function (Blueprint $table) {
       $table->id();
-      $table->string('name');
       $table->string('username')->unique()->nullable();
       $table->string('email')->unique()->nullable();
       $table->timestamp('email_verified_at')->nullable();
       $table->string('password')->nullable();
       $table->foreignId('current_role_id')->default(1);
       $table->string('orcid_id')->nullable()->unique();
+
+      $table->string('title')->nullable();
+      $table->string('first_name')->nullable();
+      $table->string('last_name')->nullable();
+      $table->string('degree')->nullable();
+      $table->string('preferred_name')->nullable();
+
+      $table->string('institution')->nullable();
+      $table->string('department')->nullable();
+      $table->string('position')->nullable();
+      $table->string('address')->nullable();
+      $table->string('city')->nullable();
+      $table->string('province')->nullable();
+      $table->string('postal_code')->nullable();
+      $table->string('country')->nullable();
+
       $table->rememberToken();
       $table->timestamps();
     });
