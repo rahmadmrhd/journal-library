@@ -13,8 +13,7 @@ class DatabaseSeeder extends Seeder
   /**
    * Seed the application's database.
    */
-  public function run(): void
-  {
+  public function run(): void {
     Role::createOrFirst([
       'name' => 'Author',
       'slug' => 'author',
@@ -32,7 +31,8 @@ class DatabaseSeeder extends Seeder
       'slug' => 'admin',
     ]);
     $user = User::factory()->create([
-      'name' => 'Admin',
+      'first_name' => 'Admin',
+      'last_name' => '',
       'email' => 'nqK5n@example.com',
       'username' => 'admin',
       'password' => Hash::make('admin'),
