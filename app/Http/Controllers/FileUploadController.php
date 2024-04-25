@@ -8,11 +8,20 @@ class FileUploadController extends Controller
 {
     public function upload(Request $request)
     {
-        if ($request->hasFile('file')) {
+        $validatedData = $request->validate([
+            'file' => 'nullable|mimes:pdf|max:2048',
+            'kategori' => 'nullable|in:klirens_etik,persetujuan_responden,dokumen_tambahan',
+        ]);
 
-            session()->flash('success', 'File anda berhasil diupload');
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $kategori = $request->input('kategori');
+            $fileName = $kategori . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('uploads/' . $kategori, $fileName);
+
+            session()->flash('success', 'File Anda berhasil diupload.');
         } else {
-            session()->flash('error', 'Silahkan masukkan file anda');
+            session()->flash('error', 'Silakan masukkan file Anda.');
         }
 
         return redirect()->back();

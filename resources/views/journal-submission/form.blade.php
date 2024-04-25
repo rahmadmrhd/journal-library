@@ -26,36 +26,38 @@
           <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Judul artikel" name="judul" required
             autofocus autocomplate="judul" type="text" id="judul" :status="$errors->has('judul') ? 'error' : ''" :messages="$errors->get('judul')"
             :value="old('judul')" />
-          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Judul artikel" name="judul" required
-            autofocus autocomplate="judul" type="text" id="judul" :status="$errors->has('judul') ? 'error' : ''" :messages="$errors->get('judul')"
-            :value="old('judul')" />
-          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Judul artikel" name="judul" required
-            autofocus autocomplate="judul" type="text" id="judul" :status="$errors->has('judul') ? 'error' : ''" :messages="$errors->get('judul')"
-            :value="old('judul')" />
-          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Judul artikel" name="judul" required
-            autofocus autocomplate="judul" type="text" id="judul" :status="$errors->has('judul') ? 'error' : ''" :messages="$errors->get('judul')"
-            :value="old('judul')" />
-          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Judul artikel" name="judul" required
-            autofocus autocomplate="judul" type="text" id="judul" :status="$errors->has('judul') ? 'error' : ''" :messages="$errors->get('judul')"
-            :value="old('judul')" />
-          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Judul artikel" name="judul" required
-            autofocus autocomplate="judul" type="text" id="judul" :status="$errors->has('judul') ? 'error' : ''" :messages="$errors->get('judul')"
-            :value="old('judul')" />
-          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Judul artikel" name="judul" required
-            autofocus autocomplate="judul" type="text" id="judul" :status="$errors->has('judul') ? 'error' : ''" :messages="$errors->get('judul')"
-            :value="old('judul')" />
-
+          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Nama penulis" name="nama" required
+            autofocus autocomplate="nama" type="text" id="nama" :status="$errors->has('nama') ? 'error' : ''" :messages="$errors->get('nama')"
+            :value="old('nama')" />
+          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Afiliasi Penulis" name="afiliasi"
+            required autofocus autocomplate="afiliasi" type="text" id="afiliasi" :status="$errors->has('afiliasi') ? 'error' : ''" :messages="$errors->get('afiliasi')"
+            :value="old('afiliasi')" />
+          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Abstrak" name="abstrak" required
+            autofocus autocomplate="abstrak" type="text" id="abstrak" :status="$errors->has('abstrak') ? 'error' : ''" :messages="$errors->get('abstrak')"
+            :value="old('abstrak')" />
+          <x-text-input class="col-span-12 sm:col-span-6 lg:col-span-4" label="Kata kunci" name="kunci" required
+            autofocus autocomplate="kunci" type="text" id="kunci" :status="$errors->has('kunci') ? 'error' : ''" :messages="$errors->get('kunci')"
+            :value="old('kunci')" />
           <x-text-input class="col-span-12 sm:col-span-6" label="File Upload" name="file" required type="file"
             id="file_uploader" :status="$errors->has('file') ? 'error' : ''" :messages="$errors->get('file')" />
         </div>
-        <div class="card grid grid-cols-12 gap-x-6">
+        <div class="col-span-12 sm:col-span-6">
+          <x-text-input class="col-span-12 sm:col-span-6" label="File Upload" name="file" disable type="file"
+            id="file_uploader" :status="$errors->has('file') ? 'error' : ''" :messages="$errors->get('file')" />
+          <div class="col-span-12 sm:col-span-6">
+            <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
+            <select id="kategori" name="kategori"
+              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-gray focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+              <option value="klirens_etik">Klirens Etik</option>
+              <option value="persetujuan_responden">Persetujuan Responden</option>
+              <option value="dokumen_tambahan">Dokumen Tambahan Lain Terkait Artikel</option>
+            </select>
+          </div>
 
-        </div>
-
-        <button type="submit"
-          class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
-          Upload
-        </button>
+          <button type="submit"
+            class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+            Upload
+          </button>
       </form>
     </div>
   </div>
