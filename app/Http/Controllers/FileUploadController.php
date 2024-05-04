@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Journal;
+use Illuminate\Contracts\Support\ValidatedData;
 use Illuminate\Http\Request;
 
 class FileUploadController extends Controller
@@ -12,6 +14,7 @@ class FileUploadController extends Controller
             'file' => 'nullable|mimes:pdf|max:2048',
             'kategori' => 'nullable|in:klirens_etik,persetujuan_responden,dokumen_tambahan',
         ]);
+
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -24,6 +27,7 @@ class FileUploadController extends Controller
             session()->flash('error', 'Silakan masukkan file Anda.');
         }
 
+        Journal::create($validatedData);
         return redirect()->back();
     }
 }

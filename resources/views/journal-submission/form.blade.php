@@ -42,17 +42,15 @@
             id="file_uploader" :status="$errors->has('file') ? 'error' : ''" :messages="$errors->get('file')" />
         </div>
         <div class="col-span-12 sm:col-span-6">
-          <x-text-input class="col-span-12 sm:col-span-6" label="File Upload" name="file" disable type="file"
-            id="file_uploader" :status="$errors->has('file') ? 'error' : ''" :messages="$errors->get('file')" />
-          <div class="col-span-12 sm:col-span-6">
-            <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
-            <select id="kategori" name="kategori"
-              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-gray focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+          <x-text-input class="col-span-12 sm:col-span-6" label="File Upload" name="upload" type="file"
+            id="file_uploader" :status="$errors->has('upload') ? 'error' : ''" :messages="$errors->get('upload')" />
+          <x-text-input type="select" label="Kategori" name=kategori :status="$errors->has('kategori') ? 'error' : ''" :messages="$errors->get('kategori')">
+            <x-slot name="options">
               <option value="klirens_etik">Klirens Etik</option>
               <option value="persetujuan_responden">Persetujuan Responden</option>
-              <option value="dokumen_tambahan">Dokumen Tambahan Lain Terkait Artikel</option>
-            </select>
-          </div>
+              <option value="dokumen_tambahan">Dokumen tambahan terkait dengan artikel</option>
+            </x-slot>
+          </x-text-input>
 
           <button type="submit"
             class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">

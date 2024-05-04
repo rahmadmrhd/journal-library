@@ -18,11 +18,13 @@
 
 <div @if ($type == 'password') x-data="{ showPassword: false, typeInput:'password' }" @endif
   class="text-input {{ $status }} {{ $class }} mb-2">
-  <label for="{{ $id }}">{{ $label }}
-    @if ($required)
-      <span class="ms-1 text-red-700 dark:text-red-500">*</span>
-    @endif
-  </label>
+  @isset($label)
+    <label {{ isset($id) ? 'for=' . $id : '' }}>{{ $label }}
+      @if ($required)
+        <span class="ms-1 text-red-700 dark:text-red-500">*</span>
+      @endif
+    </label>
+  @endisset
   <div class="inline-flex w-full gap-3">
     <div class="relative flex-1">
       @if (isset($icon))
@@ -30,12 +32,21 @@
           {{ $icon }}
         </div>
       @endif
-      @if ($type != 'textarea' && $type != 'select')
+      @if ($type == 'select')
+        <select {{ $attributes }} {{ isset($id) ? 'id=' . $id : '' }} {{ $disabled ? 'disabled' : '' }}
+          name="{{ $name ?? '' }}" {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }}>
+          {{ $options }}
+        </select>
+      @elseif ($type == 'textarea')
+        <textarea {{ $attributes }} {{ isset($id) ? 'id=' . $id : '' }} {{ $disabled ? 'disabled' : '' }}
+          name="{{ $name ?? '' }}" {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }}
+          placeholder="{{ $placeholder ?? '' }}" rows="{{ $rows }}">{{ $value }}</textarea>
+      @else
         <input {{ $attributes }}
           @if ($type == 'password') x-bind:type="showPassword ? 'text' : 'password'" 
     @else
     type="{{ $type }}" @endif
-          id="{{ $id }}" {{ $disabled ? 'disabled' : '' }} name="{{ $name ?? '' }}"
+          {{ isset($id) ? 'id=' . $id : '' }} {{ $disabled ? 'disabled' : '' }} name="{{ $name ?? '' }}"
           value="{{ $value }}" {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }}
           placeholder="{{ $placeholder ?? '' }}"
           class="{{ isset($icon) ? 'pl-8' : '' }} {{ $type == 'password' ? 'pr-8' : '' }}">
@@ -50,15 +61,6 @@
             </svg>
           </div>
         @endif
-      @elseif ($type == 'textarea')
-        <textarea {{ $attributes }} id="{{ $id }}" {{ $disabled ? 'disabled' : '' }} name="{{ $name ?? '' }}"
-          {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} placeholder="{{ $placeholder ?? '' }}"
-          rows="{{ $rows }}">{{ $value }}</textarea>
-      @else
-        <select {{ $attributes }} id="{{ $id }}" {{ $disabled ? 'disabled' : '' }}
-          name="{{ $name ?? '' }}" {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }}>
-          {{ $options }}
-        </select>
       @endif
     </div>
     {{ $ext ?? '' }}
