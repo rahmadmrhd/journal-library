@@ -61,7 +61,7 @@ class OrcidController extends Controller {
       $user->roles()->attach([1, 2]);
 
       event(new Registered($user));
-      return redirect('/profile')->withFragment('account')->with('message', [
+      return redirect('/settings')->withFragment('account')->with('message', [
         'status' => 'success',
         'msg' => 'Successfully registered with an orcid account'
       ]);
@@ -76,14 +76,14 @@ class OrcidController extends Controller {
     }
     $findOrcid = User::where('orcid_id', $result->orcid)->first();
     if ($findOrcid) {
-      return redirect('/profile')->withFragment('account')->with('message', [
+      return redirect('/settings')->withFragment('account')->with('message', [
         'status' => 'error',
         'msg' => 'Orcid has been connected to other accounts'
       ]);
     }
     $request->user()->orcid_id = $result->orcid;
     $request->user()->save();
-    return redirect('/profile')->withFragment('account')->with('message', [
+    return redirect('/settings')->withFragment('account')->with('message', [
       'status' => 'success',
       'msg' => 'Successfully connected to your orcid account'
     ]);

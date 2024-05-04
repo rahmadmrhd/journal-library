@@ -36,10 +36,10 @@
   {{-- Tab Content --}}
   <div id="tab-content" class="py-4 sm:px-6">
     <div class="hidden space-y-6" id="profile-content">
-      @include('settings.partials.profile')
+      @include('pages.settings.partials.profile')
     </div>
     <div class="hidden space-y-6" id="account-content">
-      @include('settings.partials.account')
+      @include('pages.settings.partials.account')
     </div>
   </div>
   @vite(['resources/js/settings.js'])

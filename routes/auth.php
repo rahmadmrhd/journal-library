@@ -59,4 +59,8 @@ Route::middleware('auth')->group(function () {
     ->name('logout');
 
   Route::put('role', [AuthenticatedSessionController::class, 'changeRole'])->name('role.update');
+
+  Route::get('auth/error', function () {
+    return view('auth.role-error');
+  })->name('role.error');
 });

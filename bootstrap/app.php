@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
   )
   ->withMiddleware(function (Middleware $middleware) {
     $middleware->alias([
-      'verified' => App\Http\Middleware\VerifiedAuth::class
+      'verified' => App\Http\Middleware\VerifiedAuth::class,
+      'role' => App\Http\Middleware\RoleAuth::class,
     ]);
   })
   ->withExceptions(function (Exceptions $exceptions) {
