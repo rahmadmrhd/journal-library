@@ -16,8 +16,8 @@ class VerifiedAuth {
     if ($request->user()->hasVerifiedEmail()) {
       return $next($request);
     }
-    if (!isset($request->user()->email) || !isset($request->user->username)) {
-      return redirect(route('profile', absolute: false))->withFragment('#account');
+    if (!isset($request->user()->email) || !isset($request->user()->username)) {
+      return redirect(route('settings', absolute: false))->withFragment('#account');
     }
     return redirect(route('verification.notice', absolute: false));
   }

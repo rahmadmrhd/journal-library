@@ -3,11 +3,35 @@ import "flowbite";
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
+window.checkUrlPath = (pathPatern) => {
+  const currentPath = window.location.pathname;
+  if (pathPatern === currentPath) {
+    return true;
+  }
+
+  const patern = "^".concat(pathPatern)
+    .replaceAll('/**', '/.*')
+    .replaceAll('/*/', '/[^/]*/')
+    .replaceAll('/*', '/.*')
+    .replaceAll('/', '\\/?')
+    .concat('$');
+
+  const rgx = new RegExp(patern, 'g');
+  return currentPath.search(rgx) >= 0;
+}
 
 Alpine.start();
-
-const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
-const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+window.generateRandom = (length) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
 
 function onThemeSystemChanged(e) {
   if (localStorage.getItem("color-theme") !== "system") return;
@@ -17,14 +41,17 @@ window
   .matchMedia("(prefers-color-scheme: dark)")
   .addEventListener("change", onThemeSystemChanged);
 
+const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
 function setTheme(option) {
   if (option === "light") {
-    themeToggleLightIcon.classList.remove("hidden");
-    themeToggleDarkIcon.classList.add("hidden");
+    themeToggleLightIcon?.classList.remove("hidden");
+    themeToggleDarkIcon?.classList.add("hidden");
     document.documentElement.classList.remove("dark");
   } else {
-    themeToggleLightIcon.classList.add("hidden");
-    themeToggleDarkIcon.classList.remove("hidden");
+    themeToggleLightIcon?.classList.add("hidden");
+    themeToggleDarkIcon?.classList.remove("hidden");
     document.documentElement.classList.add("dark");
   }
 }
@@ -62,4 +89,5 @@ for (const input of listThemeItem) {
     toggleTheme(e.currentTarget.value);
   });
 }
+
 

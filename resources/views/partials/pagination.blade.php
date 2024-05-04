@@ -2,8 +2,8 @@
   <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
     <div class="flex min-w-0 flex-1 items-center gap-8">
       <form class="flex items-center gap-1" method="GET">
-        <label for="show" class="block text-sm font-medium text-gray-900 dark:text-white">Tampilkan</label>
-        <select id="show-box" name="show" value="{{ $paginator->perPage() }}"
+        <label for="show" class="block text-sm font-medium text-gray-900 dark:text-white">Show</label>
+        <select name="show" value="{{ $paginator->perPage() }}" onchange="showOnChanged(event)"
           class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
           <option value="10" {{ request('show') == 10 ? 'selected' : '' }}>10</option>
           <option value="20" {{ request('show') == 20 ? 'selected' : '' }}>20</option>
@@ -21,21 +21,17 @@
         </select>
       </form>
       <p class="text-sm leading-5 text-gray-700 dark:text-gray-400">
-        Menampilkan
-        {{-- {!! __('Showing') !!} --}}
+        {!! __('Showing') !!}
         @if ($paginator->firstItem())
           <span class="font-medium">{{ $paginator->firstItem() }}</span>
-          s/d
-          {{-- {!! __('to') !!} --}}
+          {!! __('to') !!}
           <span class="font-medium">{{ $paginator->lastItem() }}</span>
         @else
           {{ $paginator->count() }}
         @endif
-        dari
-        {{-- {!! __('of') !!} --}}
+        {!! __('of') !!}
         <span class="font-medium">{{ $paginator->total() }}</span>
-        hasil
-        {{-- {!! __('results') !!} --}}
+        {!! __('results') !!}
       </p>
     </div>
 

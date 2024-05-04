@@ -117,7 +117,14 @@
               <form action="{{ route('role.update', absolute: false) }}" method="POST">
                 @csrf
                 @method('PUT')
-                <label for="role" class="block text-sm font-medium text-gray-900 dark:text-white">
+                <x-text-input label="Role" name="roleId" value="{{ Auth::user()->current_role_id }}"
+                  onchange="this.form.submit()" type="select">
+                  @foreach (Auth::user()->roles as $role)
+                    <option {{ Auth::user()->current_role_id == $role->id ? 'selected' : '' }}
+                      value="{{ $role->id }}">{{ $role->name }}</option>
+                  @endforeach
+                </x-text-input>
+                {{-- <label for="role" class="block text-sm font-medium text-gray-900 dark:text-white">
                   Role
                 </label>
                 <select id="role" name="roleId" onchange="this.form.submit()"
@@ -126,7 +133,7 @@
                     <option {{ Auth::user()->current_role_id == $role->id ? 'selected' : '' }}
                       value="{{ $role->id }}">{{ $role->name }}</option>
                   @endforeach
-                </select>
+                </select> --}}
               </form>
             </div>
             <ul class="py-1" role="none">
