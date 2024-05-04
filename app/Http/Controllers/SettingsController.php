@@ -22,10 +22,10 @@ class SettingsController extends Controller {
    */
   public function index(Request $request): View {
     $user = $request->user();
-    $countries = $this->countryApiService->getCountries();
-    return view('settings.edit', [
+    // $countries = $this->countryApiService->getCountries();
+    return view('pages.settings.edit', [
       'user' => $user,
-      'countries' => $countries
+      // 'countries' => $countries
     ]);
   }
 

@@ -11,5 +11,6 @@
         {{ $slot }}
       </div>
     </div>
+    @stack('body')
   </body>
 @endsection

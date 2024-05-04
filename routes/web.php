@@ -24,7 +24,16 @@ Route::controller(\App\Http\Controllers\OrcidController::class)->group(function 
   Route::delete('orcid', 'destroy')->middleware('auth')->name('orcid.destroy');
 });
 
+
 Route::view('form', 'journal-submission.form');
 Route::post('/upload', [FileUploadController::class, 'upload'])->name('upload');
+
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+  Route::resource('users', \App\Http\Controllers\UsersController::class);
+});
+
+Route::middleware(['auth', 'verified', 'role:author'])->group(function () {
+  Route::resource('papers', \App\Http\Controllers\ManuscriptController::class);
+});
 
 require __DIR__ . '/auth.php';

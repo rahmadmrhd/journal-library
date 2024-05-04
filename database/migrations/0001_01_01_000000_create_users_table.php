@@ -10,7 +10,7 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('users', function (Blueprint $table) {
-      $table->id();
+      $table->uuid('id')->primary();
       $table->string('username')->unique()->nullable();
       $table->string('email')->unique()->nullable();
       $table->timestamp('email_verified_at')->nullable();
@@ -33,8 +33,10 @@ return new class extends Migration {
       $table->string('postal_code')->nullable();
       $table->string('country')->nullable();
 
+      $table->boolean('status')->default(true);
       $table->rememberToken();
       $table->timestamps();
+      $table->softDeletes();
     });
 
     Schema::create('password_reset_tokens', function (Blueprint $table) {

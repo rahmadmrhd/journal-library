@@ -9,7 +9,11 @@
 
     <!-- Page Content -->
     <main class="mt-16 p-4 lg:ml-60">
-      {{ $slot }}
+      @if (request()->request->has('role_error'))
+        @include('auth.role-error')
+      @else
+        {{ $slot }}
+      @endif
     </main>
     <div id="loading-box"
       class="fixed bottom-0 left-0 right-0 top-0 z-[100] hidden items-center justify-center overflow-y-auto bg-gray-900/50 p-4 dark:bg-gray-900/80">
@@ -32,5 +36,6 @@
         </div>
       </div>
     </div>
+    @stack('body')
   </body>
 @endsection

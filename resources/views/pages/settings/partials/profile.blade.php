@@ -10,14 +10,14 @@
       @csrf
       @method('PUT')
       <x-text-input class="col-span-12 sm:col-span-4 xl:col-span-2" :label="__('Title')" id="title" name="title"
-        type="text" :value="old('title', $user->title)" placeholder="(Dr., Mr., Mrs., etc.)" required autocomplete="title"
+        type="text" :value="old('title', $user->title)" placeholder="(Dr., Mr., Mrs., etc.)" autocomplete="title"
         :messages="$errors->get('title')"></x-text-input>
 
       <x-text-input class="col-span-12 sm:col-span-8 xl:col-span-4" :label="__('First Name')" id="first_name" name="first_name"
         type="text" :value="old('first_name', $user->first_name)" required autocomplete="first_name" :messages="$errors->get('first_name')"></x-text-input>
 
       <x-text-input class="col-span-12 sm:col-span-8 xl:col-span-4" :label="__('Last Name')" id="last_name" name="last_name"
-        type="text" :value="old('last_name', $user->last_name)" autocomplete="last_name" :messages="$errors->get('last_name')"></x-text-input>
+        type="text" :value="old('last_name', $user->last_name)" required autocomplete="last_name" :messages="$errors->get('last_name')"></x-text-input>
 
       <x-text-input class="col-span-12 sm:col-span-4 xl:col-span-2" :label="__('Degree')" id="degree" name="degree"
         type="text" :value="old('degree', $user->degree)" autocomplete="degree" :messages="$errors->get('degree')"
@@ -39,8 +39,8 @@
 
     <div class="grid max-w-screen-xl grid-cols-12 gap-x-6 gap-y-2 pt-6">
       <x-text-input class="col-span-12 sm:col-span-9 xl:col-span-7" :label="__('Institution')" id="institution"
-        name="institution" type="text" :value="old('institution', $user->institution)" placeholder="(Dr., Mr., Mrs., etc.)" required
-        autocomplete="institution" :messages="$errors->get('institution')"></x-text-input>
+        name="institution" type="text" :value="old('institution', $user->institution)" required autocomplete="institution"
+        :messages="$errors->get('institution')"></x-text-input>
 
       <x-text-input class="col-span-12 sm:col-span-6" :label="__('Department')" id="department" name="department"
         type="text" :value="old('department', $user->department)" required autocomplete="department" :messages="$errors->get('department')"></x-text-input>
@@ -63,15 +63,13 @@
 
       <x-text-input class="col-span-12 sm:col-span-9 xl:col-span-7" :label="__('Country')" id="country" name="country"
         type="select" :value="old('country', $user->country)" required autocomplete="country" :messages="$errors->get('country')">
-        <x-slot name="options">
-          <option value="" selected disabled>-- {{ __('Select Country') }} --</option>
-          @foreach ($countries ?? [] as $country)
-            <option value="{{ $country['code'] }}"
-              {{ old('country', $user->country) == $country['code'] ? 'selected' : '' }}>
-              {{ $country['name'] }}
-            </option>
-          @endforeach
-        </x-slot>
+        <option value="" selected disabled>-- {{ __('Select Country') }} --</option>
+        @foreach ($countries ?? [] as $country)
+          <option value="{{ $country['code'] }}"
+            {{ old('country', $user->country) == $country['code'] ? 'selected' : '' }}>
+            {{ $country['name'] }}
+          </option>
+        @endforeach
       </x-text-input>
 
     </div>
