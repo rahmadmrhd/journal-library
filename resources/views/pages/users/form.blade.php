@@ -1,7 +1,6 @@
 @push('head')
   <meta name="base-url" content="{{ url('/') }}">
 @endpush
-{{-- Add Mahasiswa Modal --}}
 
 <x-modal name="add-user-modal" :show="$errors->form->isNotEmpty()" focusable>
   <div class="lg:min-w-96 relative w-full self-start sm:max-h-full sm:self-center">
