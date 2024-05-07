@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider {
    * Bootstrap any application services.
    */
   public function boot(): void {
-    Paginator::defaultView('partials.pagination');
+    Paginator::defaultView('components.pagination');
     // Carbon::setLocale('id');
     Gate::policy(\App\Models\Manuscript::class, \App\Policies\ManuscriptPolicy::class);
   }

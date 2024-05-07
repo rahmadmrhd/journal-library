@@ -14,7 +14,7 @@
           <h3 class="text-sm text-gray-800 dark:text-gray-300">Login to continue</h3>
         </div>
 
-        <x-alert status="error" :timeout="5000" :messages="count($errors->get('status')) > 0 ? $errors->get('status') : session('status')" />
+        <x-alert type="error" :timeout="5000" :messages="count($errors->get('status')) > 0 ? $errors->get('status') : session('status')" />
         <form method="POST" action="{{ route('login', absolute: false) }}">
           @csrf
           <x-text-input :label="__('Email or Username')" id="emailOrUsername" name="emailOrUsername" type="text" :value="old('emailOrUsername')"

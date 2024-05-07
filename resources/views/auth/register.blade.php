@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold">Sign Up</h1>
         <x-toggle-theme />
       </div>
-      <x-alert status="error" :messages="session('status')" />
+      <x-alert type="error" :messages="session('status')" />
 
       <form method="POST" action="{{ route('register', absolute: false) }}">
         @csrf

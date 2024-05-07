@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Manuscript;
 
-use App\Models\Manuscript;
+use App\Http\Controllers\Controller;
+use App\Models\Manuscript\Manuscript;
 use Illuminate\Http\Request;
 
 class ManuscriptController extends Controller {
@@ -19,15 +20,42 @@ class ManuscriptController extends Controller {
   /**
    * Show the form for creating a new resource.
    */
-  public function create() {
-    //
+  public function create(Request $request) {
+    $currentStep = $request->step ?? 3;
+    // error, success, 'undifined/null'
+    $forms = [
+      [
+        'label' => 'File Upload',
+        'status' => 'success'
+      ],
+      [
+        'label' => 'Title, Abstract',
+        'status' => 'success'
+      ],
+      [
+        'label' => 'Keywords',
+        'status' => 'error'
+      ],
+      [
+        'label' => 'Authors & Institutions',
+      ],
+      [
+        'label' => 'Details & Comments',
+      ],
+      [
+        'label' => 'Review & Submit',
+      ],
+    ];
+    return view('pages.manuscripts.form', [
+      'forms' => collect($forms)
+    ]);
   }
 
   /**
    * Store a newly created resource in storage.
    */
   public function store(Request $request) {
-    //
+    // return redirect('/manuscripts/create')->with
   }
 
   /**

@@ -9,11 +9,12 @@ return new class extends Migration {
    * Run the migrations.
    */
   public function up(): void {
-    Schema::create('role_user', function (Blueprint $table) {
+    Schema::create('file_types', function (Blueprint $table) {
       $table->id();
-      $table->unique(['role_id', 'user_id']);
-      $table->foreignId('role_id')->references('id')->on('roles')->cascadeOnDelete();
-      $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
+      $table->string('name');
+      $table->boolean('required')->default(false);
+      $table->softDeletes();
+      $table->timestamps();
     });
   }
 
@@ -21,6 +22,6 @@ return new class extends Migration {
    * Reverse the migrations.
    */
   public function down(): void {
-    Schema::dropIfExists('role_user');
+    Schema::dropIfExists('file_types');
   }
 };

@@ -3,11 +3,11 @@
 @endphp
 <x-app-layout>
   {{-- Alert --}}
-  @if (session('message'))
+  @if (session('alert'))
     @php
-      $msg = session('message');
+      $msg = session('alert');
     @endphp
-    <x-alert class="sm:mx-4" :status="$msg['status']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
+    <x-alert class="sm:mx-4" :type="$msg['type']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
   @endif
   <div class="border-b border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 sm:rounded-lg">
     <div class="flex w-full flex-col items-start justify-between p-4">

@@ -6,7 +6,7 @@
     'value' => '',
     'autofocus' => false,
     'required' => false,
-    'autocomplete',
+    'autocomplete' => '',
     'status' => '',
     'messages' => '',
     'label',

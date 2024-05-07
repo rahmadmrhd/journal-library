@@ -3,11 +3,11 @@
 @endphp
 <x-app-layout>
   {{-- Alert --}}
-  @if (session('message'))
+  @if (session('alert'))
     @php
-      $msg = session('message');
+      $msg = session('alert');
     @endphp
-    <x-alert class="sm:mx-4" :status="$msg['status']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
+    <x-alert class="sm:mx-4" :type="$msg['type']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
   @endif
   <div class="border-b border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 sm:rounded-lg">
     <div class="flex w-full flex-col items-start justify-between p-4">
@@ -158,7 +158,8 @@
                   <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                     aria-labelledby="more-btn-{{ $user->id }}">
                     <li>
-                      <button type="button" x-data x-on:click="showUpdateUser({{ $user->id }}, event, $dispatch)"
+                      <button type="button" x-data
+                        x-on:click="showUpdateUser('{{ $user->id }}', event, $dispatch)"
                         class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                         Edit
                       </button>
@@ -189,7 +190,7 @@
                           @endif
                           <li>
                             <button type="button" x-data=""
-                              x-on:click.prevent="showConfirmDeleteModal({{ $user->id }}, event, $dispatch)"
+                              x-on:click.prevent="showConfirmDeleteModal('{{ $user->id }}', event, $dispatch)"
                               class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                               Generate new password
                             </button>
@@ -198,7 +199,7 @@
                       </div>
                     </li>
                     <li class="border-t border-gray-100 dark:border-gray-600">
-                      <button type="button" x-data x-on:click="deleteUser({{ $user->id }}, event, $dispatch)"
+                      <button type="button" x-data x-on:click="deleteUser('{{ $user->id }}', event, $dispatch)"
                         {{ $user->readonly ? 'disabled' : '' }}
                         class="flex w-full items-center gap-3 px-4 py-2 text-red-700 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-400">
                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"

@@ -18,7 +18,7 @@ class ManuscriptPolicy {
    * Determine whether the user can view the model.
    */
   public function view(User $user, Manuscript $manuscript): bool {
-    return $user->id === $manuscript->user()->id;
+    return $user->id === $manuscript->user->id;
   }
 
   /**
@@ -34,7 +34,7 @@ class ManuscriptPolicy {
   public function update(User $user, Manuscript $manuscript): bool {
     switch ($user->getCurrentRole()->slug) {
       case 'author':
-        return $user->id === $manuscript->user()->id;
+        return $user->id === $manuscript->user->id;
       case 'editor':
       case 'admin':
         return true;
@@ -49,7 +49,7 @@ class ManuscriptPolicy {
   public function delete(User $user, Manuscript $manuscript): bool {
     switch ($user->getCurrentRole()->slug) {
       case 'author':
-        return $user->id === $manuscript->user()->id;
+        return $user->id === $manuscript->user->id;
       case 'admin':
         return true;
       default:
@@ -63,7 +63,7 @@ class ManuscriptPolicy {
   public function restore(User $user, Manuscript $manuscript): bool {
     switch ($user->getCurrentRole()->slug) {
       case 'author':
-        return $user->id === $manuscript->user()->id;
+        return $user->id === $manuscript->user->id;
       case 'admin':
         return true;
       default:
@@ -77,7 +77,7 @@ class ManuscriptPolicy {
   public function forceDelete(User $user, Manuscript $manuscript): bool {
     switch ($user->getCurrentRole()->slug) {
       case 'author':
-        return $user->id === $manuscript->user()->id;
+        return $user->id === $manuscript->user->id;
       case 'admin':
         return true;
       default:

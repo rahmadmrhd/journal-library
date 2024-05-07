@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
+use App\Models\Manuscript\FileType;
+use App\Models\Manuscript\StepSubmission;
 use App\Models\User;
+use App\Models\Role;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -38,5 +40,33 @@ class DatabaseSeeder extends Seeder {
     ]);
 
     $user->roles()->attach([1, 2, 3, 4]);
+
+    FileType::createOrFirst([
+      'name' => 'Cover Letter',
+      'required' => true,
+    ]);
+    FileType::createOrFirst([
+      'name' => 'Manuscript',
+      'required' => true,
+    ]);
+
+    StepSubmission::createOrFirst([
+      'name' => 'File Upload',
+    ]);
+    StepSubmission::createOrFirst([
+      'name' => 'Title, Abstract',
+    ]);
+    StepSubmission::createOrFirst([
+      'name' => 'Keywords',
+    ]);
+    StepSubmission::createOrFirst([
+      'name' => 'Authors & Institutions',
+    ]);
+    StepSubmission::createOrFirst([
+      'name' => 'Details & Comments',
+    ]);
+    StepSubmission::createOrFirst([
+      'name' => 'Review & Submit',
+    ]);
   }
 }

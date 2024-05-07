@@ -20,6 +20,9 @@
                   href="{{ request()->fullUrlWithQuery(['sortBy' => $column['name'], 'sort' => request('sort') == 'asc' ? 'desc' : 'asc']) }}
             ">
                   {{ $column['label'] }}
+                  @if ($column['required'] ?? false)
+                    <span class="ms-1 text-red-700 dark:text-red-500">*</span>
+                  @endif
                   @if (request('sortBy') == $column['name'])
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                       class="@if (request('sort') == 'asc') rotate-180 @endif ml-1">
@@ -38,6 +41,9 @@
             @else
               <th scope="col" class="{{ $column['class'] ?? '' }} px-6 py-3">
                 <span>{{ $column['label'] }}</span>
+                @if ($column['required'] ?? false)
+                  <span class="ms-1 text-red-700 dark:text-red-500">*</span>
+                @endif
               </th>
             @endif
           @endforeach

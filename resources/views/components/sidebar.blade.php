@@ -1,22 +1,22 @@
+@props(['sizeHideSidebar' => 'lg'])
 @php
-  $currentRole = App\Models\Role::find(Auth::user()->current_role_id)->slug;
   $sidebarItems = [
       'Dashboard' => [
-          'route' => 'dashboard',
+          'route' => '/dashboard',
           'route_pattern' => '/dashboard/*',
           'icon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                       <path fill="currentColor" d="M13 9V3h8v6zM3 13V3h8v10zm10 8V11h8v10zM3 21v-6h8v6z" />
                     </svg>',
       ],
       'Papers' => [
-          'route' => 'papers',
+          'route' => '/papers',
           'route_pattern' => '/papers/*',
           'icon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                       <path fill="currentColor" d="M20 5v14H4V5zm0-2H4c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2m-2 12H6v2h12zm-8-8H6v6h4zm2 2h6V7h-6zm6 2h-6v2h6z" />
                     </svg>',
       ],
       'Users' => [
-          'route' => 'users',
+          'route' => '/users',
           'route_pattern' => '/users/*',
           'role' => 'admin',
           'icon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -24,10 +24,19 @@
                     </svg>',
       ],
   ];
+
+  $currentRole = Auth::user()->getCurrentRole()->slug;
+  $sizeList = [
+      'sm' => 'sm:translate-x-0',
+      'md' => 'md:translate-x-0',
+      'lg' => 'lg:translate-x-0',
+      'xl' => 'xl:translate-x-0',
+      '2xl' => '2xl:translate-x-0',
+  ][$sizeHideSidebar];
 @endphp
 
 <aside id="logo-sidebar"
-  class="fixed left-0 top-0 z-[39] h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 lg:translate-x-0"
+  class="{{ $sizeList }} fixed left-0 top-0 z-[39] h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800"
   aria-label="Sidebar">
   <div class="h-full overflow-y-auto bg-white pb-4 dark:bg-gray-800">
     <ul class="font-medium" id="sidebar-menu">

@@ -16,15 +16,19 @@ class RoleAuth {
    *
    * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
    */
-  public function handle(Request $request, Closure $next, string $role_name): Response {
-    $role = Role::where('slug', "=", $role_name)->first();
+  public function handle(Request $request, Closure $next, ...$role_name): Response {
     $user = Auth::user();
-    if ($user->roles->pluck('id')->contains($role->id) || $user->current_role_id == $role->id) {
-      if ($user->current_role_id != $role->id) {
+    $rulesUser = $user->roles->pluck('slug')->toArray();
+
+    //lakukan pengecekan apakah daftar roles yang diizinkan ditemukan pada daftar roles user
+    if (count(array_intersect($rulesUser, $role_name)) > 0) {
+      /**
+       * @disregard 
+       */
+      if (!in_array($user->getCurrentRole()->slug, $role_name)) {
         $request->request->add([
           'role_error' => [
             'url_back' => URL::previous(),
-            'right_role' => $role,
           ],
         ]);
       }

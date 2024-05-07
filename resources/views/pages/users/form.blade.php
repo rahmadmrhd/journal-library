@@ -156,11 +156,7 @@
           <button id="submit-modal-btn" class="button primary" type="submit">
             Save
           </button>
-          <button x-on:click.prevent="$dispatch('close')" type="button"
-            class="inline-flex items-center rounded-md border border-gray-200 border-transparent px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-900 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-100 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800">
-            {{ __('Cancel') }}
-          </button>
-          <button type="button" x-on:click="$dispatch('close')" class="button secondary">
+          <button type="button" x-on:click.prevent="$dispatch('close')" class="button secondary">
             Cancel
           </button>
         </div>

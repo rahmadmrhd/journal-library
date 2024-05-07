@@ -18,7 +18,7 @@ class UsersController extends Controller {
       return redirect('/admin/mahasiswa');
     }
 
-    $users = User::selectRaw('concat(`users`.`first_name`, " ", `users`.`last_name`) as name, CONCAT_WS(" ", `users`.`title`, `users`.`first_name`, IFNULL(`users`.`last_name`,""), IFNULL(`users`.`degree`,"")) AS `full_name`, `users`.*');
+    $users = User::with('roles')->selectRaw('concat(`users`.`first_name`, " ", `users`.`last_name`) as name, CONCAT_WS(" ", `users`.`title`, `users`.`first_name`, IFNULL(`users`.`last_name`,""), IFNULL(`users`.`degree`,"")) AS `full_name`, `users`.*');
     isset($request->sortBy) ?
       $users->orderBy($request->sortBy, $request->sort ?? 'asc') :
       $users->latest();

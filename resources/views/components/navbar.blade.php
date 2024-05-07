@@ -1,3 +1,13 @@
+@props(['sizeHideSidebar' => 'lg'])
+@php
+  $sizeList = [
+      'sm' => 'sm:hidden',
+      'md' => 'md:hidden',
+      'lg' => 'lg:hidden',
+      'xl' => 'xl:hidden',
+      '2xl' => '2xl:hidden',
+  ][$sizeHideSidebar];
+@endphp
 <nav
   class="fixed top-0 z-40 h-16 w-full border-b border-gray-200 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-800 lg:px-5 lg:pl-3">
   <div class="flex items-center justify-between">
@@ -5,7 +15,7 @@
       {{-- hambuger btn --}}
       <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
         type="button"
-        class="inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 lg:hidden">
+        class="{{ $sizeList }} inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
         <span class="sr-only">Open sidebar</span>
         <svg class="h-6 w-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg">

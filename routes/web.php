@@ -27,8 +27,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
   Route::resource('users', \App\Http\Controllers\UsersController::class);
 });
 
-Route::middleware(['auth', 'verified', 'role:author'])->group(function () {
-  Route::resource('papers', \App\Http\Controllers\ManuscriptController::class);
-});
+
+Route::resource('files', App\Http\Controllers\Manuscript\FileController::class)->middleware(['auth', 'verified']);
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/manuscripts.php';

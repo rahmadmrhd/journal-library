@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+@layer components {
+  .dropzone-file {
+    @apply flex h-full w-full rounded-lg bg-white p-4  transition-all duration-300 ease-in-out dark:bg-gray-800;
+  }
+  .dropzone-file.not-hover .icon {
+    @apply h-4 w-4;
+  }
+  .dropzone-file .icon {
+    @apply mb-4 h-4 w-4 text-gray-500 transition-all duration-300 ease-in-out  dark:text-gray-400;
+  }
+  /* .dropzone-file.hover,
+  .dropzone-file.show {
+    @apply cursor-pointer opacity-100;
+  } */
+
+  /* .dropzone-file.hover ~ #table-file,
+  .dropzone-file.show ~ #table-file {
+    @apply opacity-0;
+  } */
+  .dropzone-file.show.not-hover .icon,
+  .dropzone-file.show .icon {
+    @apply h-8 w-8;
+  }
+  .dropzone-file.hover .icon {
+    @apply !h-16 !w-16;
+  }
+  .dropzone-file .inner {
+    @apply flex h-full w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white pb-6 pt-5
+ transition-all duration-300 ease-in-out  dark:border-gray-600 dark:!bg-gray-800;
+  }
+  .dropzone-file.hover .inner {
+    @apply !bg-gray-100 dark:border-gray-500 dark:!bg-gray-600;
+  }
+
+  /* .dropzone-file .row.is-load:nth-child(1){
+    @apply
+  } */
+}

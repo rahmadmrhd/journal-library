@@ -1,7 +1,7 @@
-@props(['status', 'messages', 'id' => 'alert-box', 'timeout' => 2000, 'closeable' => true])
+@props(['type', 'messages', 'id' => 'alert-box', 'timeout' => 2000, 'closeable' => true])
 
 @if (isset($messages) || $slot->isNotEmpty())
-  <div id="{{ $id }}" {{ $attributes->merge(['class' => 'alert ' . ($status ?? '')]) }} role="alert"
+  <div id="{{ $id }}" {{ $attributes->merge(['class' => 'alert ' . ($type ?? '')]) }} role="alert"
     x-data="{ show: true }" x-show="show" x-transition.duration.500ms>
     <svg class="h-4 w-4 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
       viewBox="0 0 20 20">
