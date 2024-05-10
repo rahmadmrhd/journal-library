@@ -3,7 +3,7 @@
     @include('pages.manuscripts.form.upload-file')
   @endslot
   @slot('step2')
-    Step2
+    @include('pages.manuscripts.form.basic-information')
   @endslot
   @slot('step3')
     step3
@@ -16,3 +16,4 @@
   @slot('step6')
   @endslot
 </x-submission-layout>
+
