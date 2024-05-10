@@ -12,12 +12,12 @@ class Manuscript extends Model {
   protected $guarded = ['id'];
 
   public function authors() {
-    return $this->belongsToMany(User::class);
+    return $this->belongsToMany(User::class, 'manuscript_author')->using(ManuscriptAuthor::class);
   }
   public function files() {
     return $this->hasMany(File::class);
   }
   public function steps() {
-    return $this->belongsToMany(StepSubmission::class);
+    return $this->belongsToMany(StepSubmission::class, 'step_submission_manuscript')->using(StepSubmissionManuscript::class)->withPivot('status');
   }
 }

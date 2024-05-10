@@ -12,6 +12,7 @@ return new class extends Migration {
     Schema::create('manuscripts', function (Blueprint $table) {
       $table->uuid('id')->primary();
       $table->string('title')->nullable();
+      $table->tinyInteger('current_step')->default(1);
       $table->timestamps();
     });
   }

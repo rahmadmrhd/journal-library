@@ -13,6 +13,7 @@ return new class extends Migration {
       $table->id();
       $table->string('name');
       $table->boolean('required')->default(false);
+      $table->integer('max_files')->nullable();
       $table->softDeletes();
       $table->timestamps();
     });

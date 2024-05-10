@@ -13,6 +13,9 @@ return new class extends Migration {
       $table->uuid('id')->primary();
       $table->foreignId('step_submission_id')->references('id')->on('step_submissions')->cascadeOnDelete();
       $table->foreignUuid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
+
+      $table->unique(['step_submission_id', 'manuscript_id'], 'step_submission_manuscript_unique');
+      $table->enum('status', ['success', 'error'])->nullable();
       $table->timestamps();
     });
   }

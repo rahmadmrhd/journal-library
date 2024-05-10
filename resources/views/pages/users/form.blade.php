@@ -55,8 +55,8 @@
               :status="$errors->form->has('preferred_name') ? 'error' : ''" :messages="$errors->form->get('preferred_name')"></x-text-input>
 
             <x-text-input class="col-span-12" :label="__('Email')" id="email" name="email" type="email"
-              x-model="email" :value="old('email')" required autofocus autocomplete="email" :status="$errors->form->has('email') ? 'error' : ''"
-              :messages="$errors->form->get('email')" placeholder="example@example.com">
+              x-model="email" required autofocus autocomplete="email" :status="$errors->form->has('email') ? 'error' : ''" :messages="$errors->form->get('email')"
+              placeholder="example@example.com">
               <x-slot name="icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <path fill="currentColor"

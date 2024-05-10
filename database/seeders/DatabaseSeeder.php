@@ -54,10 +54,7 @@ class DatabaseSeeder extends Seeder {
       'name' => 'File Upload',
     ]);
     StepSubmission::createOrFirst([
-      'name' => 'Title, Abstract',
-    ]);
-    StepSubmission::createOrFirst([
-      'name' => 'Keywords',
+      'name' => 'Title, Abstract, & Keywords',
     ]);
     StepSubmission::createOrFirst([
       'name' => 'Authors & Institutions',

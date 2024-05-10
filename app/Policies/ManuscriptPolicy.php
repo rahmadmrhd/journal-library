@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Manuscript;
+use App\Models\Manuscript\Manuscript;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -35,9 +35,6 @@ class ManuscriptPolicy {
     switch ($user->getCurrentRole()->slug) {
       case 'author':
         return $user->id === $manuscript->user->id;
-      case 'editor':
-      case 'admin':
-        return true;
       default:
         return false;
     }

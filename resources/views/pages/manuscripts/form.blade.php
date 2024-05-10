@@ -1,4 +1,4 @@
-<x-submission-layout :forms="$forms">
+<x-submission-layout :manuscript="$manuscript ?? null" :steps="$steps">
   @slot('step1')
     @include('pages.manuscripts.form.upload-file')
   @endslot

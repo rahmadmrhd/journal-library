@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\Manuscript;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Manuscript\CreateManuscriptRequest;
+use App\Models\Manuscript\FileType;
 use App\Models\Manuscript\Manuscript;
+use App\Models\Manuscript\StepSubmission;
+use App\Services\Manuscripts\SubmitNewManuscriptService;
 use Illuminate\Http\Request;
 
 class ManuscriptController extends Controller {
+  private SubmitNewManuscriptService $service;
+  public function __construct(SubmitNewManuscriptService $service) {
+    $this->service = $service;
+  }
   /**
    * Display a listing of the resource.
    */
@@ -20,42 +28,52 @@ class ManuscriptController extends Controller {
   /**
    * Show the form for creating a new resource.
    */
-  public function create(Request $request) {
-    $currentStep = $request->step ?? 3;
-    // error, success, 'undifined/null'
-    $forms = [
-      [
-        'label' => 'File Upload',
-        'status' => 'success'
-      ],
-      [
-        'label' => 'Title, Abstract',
-        'status' => 'success'
-      ],
-      [
-        'label' => 'Keywords',
-        'status' => 'error'
-      ],
-      [
-        'label' => 'Authors & Institutions',
-      ],
-      [
-        'label' => 'Details & Comments',
-      ],
-      [
-        'label' => 'Review & Submit',
-      ],
-    ];
+  public function create(Manuscript $manuscript = null) {
+    $steps = StepSubmission::orderBy('id', 'asc')->get();
+    if ($manuscript) {
+      $progress = $manuscript->steps;
+      $steps = $steps->map(function ($step) use ($progress) {
+        $step->status = $progress->find($step->id)->pivot->status ?? null;
+        return $step;
+      });
+    }
+
+    if (isset($manuscript->current_step) && $manuscript?->current_step == 1) {
+      $files = $manuscript->files;
+      $file_types = FileType::orderBy('required', 'desc')->get();
+    }
+
     return view('pages.manuscripts.form', [
-      'forms' => collect($forms)
+      'steps' => $steps,
+      'manuscript' => $manuscript,
+      'files' => $files ?? null,
+      'file_types' =>  $file_types ?? null,
+    ]);
+  }
+
+  public function changeStep(Request $request, Manuscript $manuscript = null) {
+    if ($manuscript) {
+      $manuscript->current_step = $request->step;
+      $manuscript->save();
+      return redirect()->route('manuscripts.create', $manuscript);
+    }
+    return redirect()->route('manuscripts.create')->with('alert', [
+      'type' => 'error',
+      'message' => 'Please upload a file first!',
     ]);
   }
 
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request) {
-    // return redirect('/manuscripts/create')->with
+  public function storeFile(CreateManuscriptRequest $request, Manuscript $manuscript = null) {
+    $request->validated(['filesId', 'filesId.*']);
+    if ($manuscript) {
+      $manuscript = $this->service->updateFile($manuscript, $request->filesId);
+    } else {
+      $manuscript = $this->service->create($request->filesId);
+    }
+    return redirect()->route('manuscripts.create', $manuscript);
   }
 
   /**

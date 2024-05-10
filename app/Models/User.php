@@ -6,6 +6,7 @@ namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Models\Manuscript\Manuscript;
+use App\Models\Manuscript\ManuscriptAuthor;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -49,7 +50,7 @@ class User extends Authenticatable {
     ];
   }
   public function roles() {
-    return $this->belongsToMany(Role::class);
+    return $this->belongsToMany(Role::class, 'role_user');
   }
   public function getFullName(): string {
     return $this->title . ' ' . $this->first_name . ' ' . $this->last_name . ' ' . $this->degree;
@@ -59,6 +60,6 @@ class User extends Authenticatable {
   }
 
   public function manuscripts() {
-    return $this->belongsToMany(Manuscript::class);
+    return $this->belongsToMany(Manuscript::class, 'manuscript_author')->using(ManuscriptAuthor::class);
   }
 }

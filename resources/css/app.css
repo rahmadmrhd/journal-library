@@ -130,7 +130,7 @@
     @apply text-green-600 dark:text-green-500;
   }
   .button {
-    @apply inline-flex items-center rounded-md border border-transparent  px-4 py-2 text-xs font-semibold uppercase tracking-widest  transition duration-150 ease-in-out  focus:outline-none focus:ring-2  focus:ring-offset-2 dark:focus:ring-offset-gray-800;
+    @apply inline-flex items-center rounded-md border border-transparent  px-4 py-2 text-xs font-semibold uppercase tracking-widest   focus:outline-none focus:ring-2  focus:ring-offset-2 dark:focus:ring-offset-gray-800;
     &.primary {
       @apply bg-blue-600 text-white  focus:bg-blue-500  focus:ring-blue-500 disabled:bg-blue-400 dark:text-gray-50  dark:hover:bg-blue-500   dark:disabled:bg-blue-400;
     }

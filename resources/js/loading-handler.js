@@ -6,17 +6,22 @@ export default function getLoader() {
   function show(title, description) {
     loading.classList.remove('hidden');
     loading.classList.add('flex');
-    loadingTitle.innerHTML = title;
-    loadingDescription.innerHTML = description;
+    title ? loadingTitle.classList.remove('hidden') : loadingTitle.classList.add('hidden');
+    description ? loadingDescription.classList.remove('hidden') : loadingDescription.classList.add('hidden');
+    loadingTitle.innerHTML = title ?? '';
+    loadingDescription.innerHTML = description ?? '';
   }
   function hide() {
     loading.classList.remove('flex');
     loading.classList.add('hidden');
-    loadingTitle.innerHTML = '';
-    loadingDescription.innerHTML = '';
+    loadingTitle.classList.add('hidden')
+    loadingDescription.classList.add('hidden')
   }
   return {
     show,
     hide
   }
 }
+
+window.showLoading = () => getLoader().show();
+window.hideLoading = () => getLoader().hide()

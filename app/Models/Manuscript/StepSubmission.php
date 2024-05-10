@@ -10,6 +10,6 @@ class StepSubmission extends Model {
 
   protected $guarded = ['id'];
   public function manuscripts() {
-    return $this->belongsToMany(Manuscript::class);
+    return $this->belongsToMany(Manuscript::class, 'step_submission_manuscript')->using(StepSubmissionManuscript::class);
   }
 }
