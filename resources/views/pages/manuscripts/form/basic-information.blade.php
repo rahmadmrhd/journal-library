@@ -1,6 +1,8 @@
-<div class="card grid grid-cols-12 gap-x-6">
-  <x-text-input class="col-span-12 xl:col-span-12" type="text" label="Title" id="title" name="title" required
-    autofocus :status="$errors->has('title') ? 'error' : ''" :messages="$errors->get('title')" />
+<form id="manuscript-form" method="POST" class="card grid grid-cols-12 gap-x-6">
+  @csrf
+  @method('PUT')
+  <x-text-input class="col-span-12 xl:col-span-12" type="textarea" rows="2" label="Title" id="title" name="title"
+    required autofocus :status="$errors->has('title') ? 'error' : ''" :messages="$errors->get('title')" />
 
   <x-text-input class="col-span-12 xl:col-span-4" type="select" label="Please choose a category for your paper"
     id="category" name="category" required autofocus :status="$errors->has('category') ? 'error' : ''" :messages="$errors->get('category')">
@@ -26,6 +28,5 @@
       you to register with them and make your summary available on the Kudos platform. Your use of Kudos’ services is
       governed by the Kudos terms and conditions – you can read these <a href="#">here</a>.</p>
   </div>
-</div>
-
+</form>
 </div>
