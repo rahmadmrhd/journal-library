@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import { globSync } from 'glob';
+import { defineConfig } from "vite";
+import { globSync } from "glob";
+import laravel from "laravel-vite-plugin";
 
 export default defineConfig({
   plugins: [
@@ -18,5 +18,5 @@ export default defineConfig({
     watch: {
       include: ["resources/**"],
     },
-  }
+  },
 });

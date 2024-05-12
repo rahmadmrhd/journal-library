@@ -9,11 +9,11 @@
     @break
 
     @case(3)
-      Step3
+      @include('pages.manuscripts.form.authors&institutions')
     @break
 
     @case(4)
-      Step4
+      @include('pages.manuscripts.form.detail&form')
     @break
 
     @case(5)
@@ -23,5 +23,4 @@
     @default
       <h3>Out Of Range</h3>
   @endswitch
-
 </x-submission-layout>
