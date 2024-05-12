@@ -1,23 +1,26 @@
-@props(['forms'])
+@props(['steps', 'manuscript', 'alert'])
 @php
-  // $forms[(request('step') ?? 1) - 1]['status'] = 'current';
-
-  $currentFormIndex = request('step') ?? 1;
-  $currentForm = $forms[$currentFormIndex - 1];
+  $currentStepIndex = $manuscript->current_step ?? 1;
+  $currentStep = $steps[$currentStepIndex - 1];
 @endphp
 
 <x-app-layout sizeHideSidebar="2xl" title="Submit Manuscript">
+  <input id="manuscript-id" type="hidden" name="id" value="{{ $manuscript->id ?? '' }}" form="manuscript-form">
   <div class="fixed bottom-4 top-20 hidden border-r border-gray-300 !pr-4 dark:border-gray-800 md:block">
     <div class="card flex max-h-full w-72 flex-col !p-4">
       <h3 class="mb-2 border-b border-gray-200 pb-2 text-xl font-bold dark:border-gray-700">Submission</h3>
       <ol class="h-full space-y-2 overflow-y-auto">
-        @foreach ($forms as $form)
-          <form method="GET">
+        @foreach ($steps as $step)
+          <form x-data x-on:submit.prevent="changeStep(event, $dispatch)" method="POST"
+            {{ $currentStepIndex == $loop->iteration ? 'disabled' : '' }}
+            action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
+            @csrf
+            @method('PATCH')
             <input type="hidden" name="step" value="{{ $loop->iteration }}">
             <button type="submit"
-              @if ($currentFormIndex == $loop->iteration) class="w-full rounded-lg border border-blue-300 bg-blue-100 px-4 py-2 text-blue-700 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400" 
+              @if ($currentStepIndex == $loop->iteration) class="w-full rounded-lg border border-blue-300 bg-blue-100 px-4 py-2 text-blue-700 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400" 
               @else
-              @switch($form['status']??null)
+              @switch($step->status??null)
             @case('success')
               class="w-full rounded-lg border border-green-300 bg-green-50 px-4 py-2 text-green-700 dark:border-green-800 dark:bg-gray-800 dark:text-green-400"
             @break
@@ -29,19 +32,19 @@
             @endswitch @endif
               role="alert">
               <div class="flex w-full items-center justify-between gap-x-6">
-                <span class="sr-only">{{ $form['label'] }}</span>
+                <span class="sr-only">{{ $step->name }}</span>
                 <div class="flex w-full flex-1 justify-start gap-x-1 text-sm font-normal">
                   <h3 class="truncate">Step {{ $loop->iteration }}: </h3>
-                  <h3 class="text-wrap flex-1 text-left">{{ $form['label'] }}</h3>
+                  <h3 class="text-wrap flex-1 text-left">{{ $step->name }}</h3>
                 </div>
-                @if ($currentFormIndex == $loop->iteration)
+                @if ($currentStepIndex == $loop->iteration)
                   <svg class="h-4 w-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M1 5h12m0 0L9 1m4 4L9 9" />
                   </svg>
                 @else
-                  @switch($form['status']??null)
+                  @switch($step->status??null)
                     @case('success')
                       <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 16 12">
@@ -72,7 +75,7 @@
     class="sticky top-16 z-20 mb-2 block w-full border-b border-gray-300 bg-gray-100 pb-2 pt-4 dark:border-gray-800 dark:bg-gray-900 md:hidden">
     <button id="dropdownStepSubmissionButton" data-dropdown-toggle="dropdownStepSubmission"
       data-dropdown-placement="bottom" data-dropdown-trigger="click" type="button"
-      @switch($currentForm['status']??null)
+      @switch($currentStep->status??null)
             @case('success')
               class="w-full rounded-lg border border-green-300 bg-green-50 px-4 py-2 text-green-700 dark:border-green-800 dark:bg-gray-800 dark:text-green-400"
             @break
@@ -84,12 +87,12 @@
             @endswitch
       role="alert">
       <div class="flex w-full items-center justify-between gap-x-6">
-        <span class="sr-only">{{ $currentForm['label'] }}</span>
+        <span class="sr-only">{{ $currentStep->name }}</span>
         <div class="flex w-full flex-1 justify-start gap-x-1 text-sm font-normal">
-          <h3 class="truncate">Step {{ $currentFormIndex }}: </h3>
-          <h3 class="text-wrap flex-1 text-left">{{ $currentForm['label'] }}</h3>
+          <h3 class="truncate">Step {{ $currentStepIndex }}: </h3>
+          <h3 class="text-wrap flex-1 text-left">{{ $currentStep->name }}</h3>
         </div>
-        @switch($currentForm['status']??null)
+        @switch($currentStep->status??null)
           @case('success')
             <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -117,14 +120,18 @@
     </button>
     {{-- Dropdown menu --}}
     <div id="dropdownStepSubmission" class="hidden w-full rounded-lg">
-      <ol class="card max-h-48 space-y-2 overflow-y-auto p-4" aria-labelledby="dropdownStepSubmissionButton">
-        @foreach ($forms as $form)
-          <form method="GET">
+      <ol class="card space-y-2 overflow-y-auto p-4" aria-labelledby="dropdownStepSubmissionButton">
+        @foreach ($steps as $step)
+          <form x-data x-on:submit.prevent="changeStep(event, $dispatch)" method="POST"
+            {{ $currentStepIndex == $loop->iteration ? 'disabled' : '' }}
+            action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
+            @csrf
+            @method('PATCH')
             <input type="hidden" name="step" value="{{ $loop->iteration }}">
             <button type="submit"
-              @if ($currentFormIndex == $loop->iteration) class="w-full rounded-lg border border-blue-300 bg-blue-100 px-4 py-2 text-blue-700 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
+              @if ($currentStepIndex == $loop->iteration) class="w-full rounded-lg border border-blue-300 bg-blue-100 px-4 py-2 text-blue-700 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
             @else
-              @switch($form['status']??null)
+              @switch($step->status??null)
             @case('success')
               class="w-full rounded-lg border border-green-300 bg-green-50 px-4 py-2 text-green-700 dark:border-green-800 dark:bg-gray-800 dark:text-green-400"
             @break
@@ -136,19 +143,19 @@
             @endswitch @endif
               role="alert">
               <div class="flex w-full items-center justify-between gap-x-6">
-                <span class="sr-only">{{ $form['label'] }}</span>
+                <span class="sr-only">{{ $step->name }}</span>
                 <div class="flex w-full flex-1 justify-start gap-x-1 text-sm font-normal">
                   <h3 class="truncate">Step {{ $loop->iteration }}: </h3>
-                  <h3 class="text-wrap flex-1 text-left">{{ $form['label'] }}</h3>
+                  <h3 class="text-wrap flex-1 text-left">{{ $step->name }}</h3>
                 </div>
-                @if ($currentFormIndex == $loop->iteration)
+                @if ($currentStepIndex == $loop->iteration)
                   <svg class="h-4 w-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M1 5h12m0 0L9 1m4 4L9 9" />
                   </svg>
                 @else
-                  @switch($form['status']??null)
+                  @switch($step->status??null)
                     @case('success')
                       <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 16 12">
@@ -177,15 +184,21 @@
 
   </div>
   <main class="md:ml-80">
+    @if ($alert)
+      <x-alert :messages="$alert['messages']" :type="$alert['type']" :closeable="false" />
+    @endif
+    @if (session('alert'))
+      <x-alert :messages="session('alert')['messages']" :type="session('alert')['type']" :closeable="false" />
+    @endif
+    <div id=alert-group></div>
     <div>
-      {{ ${'step' . $currentFormIndex} ?? '' }}
+      {{ $slot }}
     </div>
 
     <div
-      class="mt-4 flex flex-col items-center justify-between gap-2 border-t border-gray-300 py-2 dark:border-gray-700 md:flex-row">
+      class="mt-4 flex flex-col items-start justify-between gap-2 border-t border-gray-300 py-2 dark:border-gray-700 md:flex-row md:items-center">
       <div class="flex flex-col items-center gap-2 md:flex-row">
-        @if ($currentFormIndex > 1)
-          <input type="hidden" name="previous-step" value="{{ $currentFormIndex - 1 }}" form="manuscript-form">
+        @if ($currentStepIndex > 1)
           <button type="button" class="button secondary !gap-x-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24">
               <path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6" />
@@ -195,8 +208,7 @@
         @endif
       </div>
       <div class="flex flex-col items-center gap-2 md:flex-row">
-        @if ($currentFormIndex < count($forms))
-          <input type="hidden" name="next-step" value="{{ $currentFormIndex + 1 }}" form="manuscript-form">
+        @if ($currentStepIndex < count($steps))
           <button id="submit-modal-btn" class="button primary !gap-x-1" type="submit" form="manuscript-form">
             Save & Continue
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rotate-180" viewBox="0 0 24 24">
@@ -211,12 +223,40 @@
       </div>
     </div>
   </main>
+  <x-modal name="confirmation-change-step" focusable>
+    <div class="max-w-2xl p-4 text-center md:p-5" x-data="{ form: null, targetStep: null }"
+      x-on:confirm-change-step.window="form=$event.detail.form; targetStep=$event.detail.targetStep;"
+      x-init="$watch('show', val => {
+          if (!val) {
+              form = null;
+              targetStep = null;
+          }
+      })">
+      <svg class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+      <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+        {{ __('Save changes first before leaving this page?') }}
+      </h3>
+      <div class="flex justify-center gap-3">
+        <input type="hidden" name="step" form="manuscript-form" x-bind:value="targetStep">
+        <button id="submit-modal-btn" type="submit" form="manuscript-form" class="button primary"
+          x-on:click="$dispatch('close')">
+          {{ __('Yes, Save changes') }}
+        </button>
+        <template x-if="form">
+          <button id="delete-modal-btn" type="button" x-on:click="onSubmitChangeStep(form)" class="button error">
+            {{ __('No, Discard changes') }}
+          </button>
+        </template>
+        <button id="cancel-modal-btn" type="button" x-on:click="$dispatch('close')" class="button secondary">
+          {{ __('Cancel') }}
+        </button>
+      </div>
+    </div>
+  </x-modal>
 
-  <script>
-    window.scrollTo(0, 0);
-    window.onbeforeunload = (e) => {
-      e.preventDefault();
-      return 'Are you sure you want to leave?';
-    }
-  </script>
+  @vite(['resources/js/components/submission.js'])
 </x-app-layout>

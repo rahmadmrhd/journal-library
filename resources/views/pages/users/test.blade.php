@@ -1,4 +1,4 @@
-<x-modal name="modal-confirm-reset-password">
+<x-modal name="modal-confirm-reset-password" focusable>
   <div id="confirm-reset-password" class="max-w-2xl p-4 text-center md:p-5" x-data x-init="$watch('show', value => {
       if (!value) {
           onCloseConfirm()

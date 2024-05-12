@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Manuscript\Category;
 use App\Models\Manuscript\FileType;
+use App\Models\Manuscript\Keyword;
 use App\Models\Manuscript\StepSubmission;
 use App\Models\User;
 use App\Models\Role;
@@ -54,10 +56,7 @@ class DatabaseSeeder extends Seeder {
       'name' => 'File Upload',
     ]);
     StepSubmission::createOrFirst([
-      'name' => 'Title, Abstract',
-    ]);
-    StepSubmission::createOrFirst([
-      'name' => 'Keywords',
+      'name' => 'Title, Abstract, & Keywords',
     ]);
     StepSubmission::createOrFirst([
       'name' => 'Authors & Institutions',
@@ -68,5 +67,29 @@ class DatabaseSeeder extends Seeder {
     StepSubmission::createOrFirst([
       'name' => 'Review & Submit',
     ]);
+
+    Category::createOrFirst([
+      'name' => "Research Paper",
+    ]);
+    Category::createOrFirst([
+      'name' => "Viewpoint",
+    ]);
+    Category::createOrFirst([
+      'name' => "Technical Paper",
+    ]);
+    Category::createOrFirst([
+      'name' => "Conceptual Paper",
+    ]);
+    Category::createOrFirst([
+      'name' => "Case Study",
+    ]);
+    Category::createOrFirst([
+      'name' => "Literature Review",
+    ]);
+    Category::createOrFirst([
+      'name' => "General View",
+    ]);
+
+    Keyword::factory(100)->create();
   }
 }

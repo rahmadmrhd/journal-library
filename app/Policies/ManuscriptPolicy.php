@@ -2,11 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\Manuscript;
+use App\Models\Manuscript\Manuscript;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class ManuscriptPolicy {
+  use HandlesAuthorization;
   /**
    * Determine whether the user can view any models.
    */
@@ -32,11 +34,9 @@ class ManuscriptPolicy {
    * Determine whether the user can update the model.
    */
   public function update(User $user, Manuscript $manuscript): bool {
+    dd($user->getCurrentRole()->slug);
     switch ($user->getCurrentRole()->slug) {
       case 'author':
-        return $user->id === $manuscript->user->id;
-      case 'editor':
-      case 'admin':
         return true;
       default:
         return false;

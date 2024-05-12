@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->alias([
       'verified' => App\Http\Middleware\VerifiedAuth::class,
       'role' => App\Http\Middleware\RoleAuth::class,
+      'remove_params' => App\Http\Middleware\RemoveParams::class,
     ]);
   })
   ->withExceptions(function (Exceptions $exceptions) {

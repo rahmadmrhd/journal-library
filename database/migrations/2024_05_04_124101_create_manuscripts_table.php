@@ -12,6 +12,9 @@ return new class extends Migration {
     Schema::create('manuscripts', function (Blueprint $table) {
       $table->uuid('id')->primary();
       $table->string('title')->nullable();
+      $table->foreignId('category_id')->nullable()->references('id')->on('categories')->onDelete('SET NULL');
+      $table->text('abstract')->nullable();
+      $table->tinyInteger('current_step')->default(1);
       $table->timestamps();
     });
   }

@@ -9,12 +9,9 @@ return new class extends Migration {
    * Run the migrations.
    */
   public function up(): void {
-    Schema::create('file_types', function (Blueprint $table) {
+    Schema::create('categories', function (Blueprint $table) {
       $table->id();
       $table->string('name');
-      $table->boolean('required')->default(false);
-      $table->integer('max_files')->nullable();
-      $table->softDeletes();
       $table->timestamps();
     });
   }
@@ -23,6 +20,6 @@ return new class extends Migration {
    * Reverse the migrations.
    */
   public function down(): void {
-    Schema::dropIfExists('file_types');
+    Schema::dropIfExists('categories');
   }
 };

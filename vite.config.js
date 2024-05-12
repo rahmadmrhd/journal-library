@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [
     laravel({
       input: [
-        ...globSync("resources/css/**/*.css"),
-        ...globSync("resources/js/**/*.js", {
+        ...globSync('resources/css/**/*.css'),
+        ...globSync('resources/js/**/*.js', {
           ignore: "resources/js/bootstrap.js",
         }),
       ],

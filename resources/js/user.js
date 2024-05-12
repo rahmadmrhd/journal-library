@@ -3,44 +3,6 @@ import getLoader from "./loading-handler";
 import $ from "jquery";
 window.$ = $;
 
-window.updateStatus = (id, e, parent) => {
-  e.preventDefault();
-  const loading = parent.querySelector('#status-loading');
-  const toggle = parent.querySelector('#status-toggle');
-  const statusText = parent.querySelector('#status-text');
-  const status = e.currentTarget.checked;
-
-  loading.classList.remove('hidden');
-  toggle.classList.add('hidden');
-  statusText.classList.add('hidden');
-
-  function finished(val) {
-    loading.classList.add('hidden');
-    toggle.classList.remove('hidden');
-    statusText.classList.remove('hidden');
-    statusText.innerHTML = val ? 'Active' : 'Inactive';
-    e.target.checked = val;
-  }
-  $.ajax({
-    url: `/users/${id}/status`,
-    type: "POST",
-    cache: false,
-    data: {
-      _token: $('meta[name="csrf-token"]').attr("content"),
-      _method: "PUT",
-      status: status ? 1 : 0
-    },
-    success: function (response) {
-      finished(status);
-    },
-    error: function (error) {
-      if (error.status == 401 || error.status == 419) {
-        window.location.reload();
-      }
-      finished(!status);
-    }
-  });
-}
 window.deleteUser = (id, e, $dispatch) => {
   $dispatch('open-modal', 'confirm-user-deletion');
   const form = document.querySelector('#confirm-user-deletion-form');
@@ -49,7 +11,7 @@ window.deleteUser = (id, e, $dispatch) => {
   form.action = `/users/${id}`;
 }
 window.showUpdateUser = (id, e, $dispatch) => {
-  const { show: showLoader, hide: hideLoader } = getLoader();
+  showLoading();
   const _baseUrl = document.head.querySelector(
     'meta[name="base-url"]',
   ).content;
@@ -79,13 +41,13 @@ window.showUpdateUser = (id, e, $dispatch) => {
       })
 
       $dispatch('open-modal', 'add-user-modal');
-      hideLoader();
+      hideLoading();
     },
     error: function (error) {
       if (error.status == 401) {
         window.location.reload();
       }
-      hideLoader();
+      hideLoading();
     }
   });
 }

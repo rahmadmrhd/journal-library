@@ -2,13 +2,16 @@
   <meta name="_token" content="{{ csrf_token() }}">
 @endpush
 @vite('resources/css/file.css')
-<form id="manuscript-form" class="" method="POST" action="">
+<form id="manuscript-form" class="" method="POST"
+  action="{{ route('manuscripts.storeFile', $manuscript->id ?? '') }}" x-data
+  x-on:load.window="getFilesManuscript($dispatch, @js(session('files') ?? ($manuscript->files ?? null)), @js($file_types ?? null), @js(session()->has('files')))">
   @csrf
+  @method('PUT')
   <div id="dropbox" x-data="{ show: true, hover: false }" x-on:drop="hover = false;dropboxOndrop($event, $dispatch);"
     class="min-h-72 group relative flex w-full items-center justify-center rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
 
     {{-- list file --}}
-    <div id="table-file" class="top-0 h-full w-full self-start opacity-100 transition-all" x-show="!(show||hover)"
+    <div id="table-file" class="top-0 h-full w-full self-start opacity-100 transition-all"
       x-on:dragover.prevent="hover = true" x-transition:enter="ease-out duration-200"
       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
       x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
@@ -53,13 +56,14 @@
               </p>
               <a id="file-name"
                 class="flex-grow cursor-pointer text-gray-800 underline-offset-1 hover:!text-blue-500 hover:underline dark:text-gray-200 dark:hover:!text-blue-400"></a>
-              <input type="hidden" name="id" id="id">
+              <input type="hidden" name="filesId[]" id="id" disabled>
             </div>
             <div id="progress" class="mt-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <div id="progress-bar" class="h-1 w-[1%] rounded-full bg-blue-600"></div>
             </div>
           </th>
           <th class="min-w-64 w-[10%] px-2 py-2">
+            <input type="hidden" name="file_type_before">
             <x-text-input class="!mb-0 !p-1 !text-xs !font-light" type="select" name="file_type" autofocus>
               <option value="" disabled selected>-- Select File Type --</option>
             </x-text-input>
@@ -103,7 +107,8 @@
         </p>
         <p class="hidden text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
       </div>
-      <input id="dropzone-file" type="file" multiple class="hidden" x-on:change="fileChange($event, $dispatch)" />
+      <input id="dropzone-file" type="file" multiple class="hidden"
+        x-on:change="fileChange($event, $dispatch)" />
     </div>
   </div>
 </form>
