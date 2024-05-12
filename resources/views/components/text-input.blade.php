@@ -19,6 +19,7 @@
         ],
     ],
     'direction' => 'row', //row or col,
+    'description',
 ])
 
 {{-- <input  {!!! $attributes-!!merge(['class' => 'border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm']) !!}> --}}
@@ -26,14 +27,18 @@
 
 <div {!! $attributes->filter(fn($value, $key) => in_array($key, ['x-show', 'x-data'])) !!}
   @if ($type == 'password') x-data="{ showPassword: false, typeInput:'password', show_error: true }" @endif
-  class="text-input {{ $class }} {{ $status }} mb-2">
+  class="text-input {{ $class }} {{ $status }}">
   @isset($label)
-    <label {{ isset($id) ? 'for=' . $id : '' }} class="label">{{ $label }}
+    <label {{ isset($id) ? 'for=' . $id : '' }}
+      class="label @if (!isset($description)) mb-2 @endif">{{ $label }}
       @if ($required)
         <span class="ms-1 text-red-700 dark:text-red-500">*</span>
       @endif
     </label>
   @endisset
+  @if (isset($description))
+    <p class="mb-2 text-sm font-normal italic">{{ $description }}</p>
+  @endif
   @if ($type == 'checkbox' || $type == 'radio')
     <ul
       class="sm:flex-{{ $direction }} {{ $direction == 'row' ? 'sm:divide-y-0 sm:divide-x' : 'sm:divide-y' }} flex w-full flex-col items-center divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white">

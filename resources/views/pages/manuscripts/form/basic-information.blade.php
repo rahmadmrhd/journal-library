@@ -2,7 +2,8 @@
   <meta name="_token" content="{{ csrf_token() }}">
 @endpush
 <div class="card">
-  <form id="manuscript-form" method="POST" action="{{ route('manuscripts.storeBasicInformation', $manuscript->id) }}">
+  <form id="manuscript-form" method="POST" action="{{ route('manuscripts.storeBasicInformation', $manuscript->id) }}"
+    class="flex flex-col gap-y-3">
     @csrf
     @method('PUT')
     <x-text-input class="col-span-12" type="textarea" rows="2" label="Title" id="title" name="title" required
@@ -19,7 +20,9 @@
     </x-text-input>
 
     <x-text-input class="col-span-12" type="textarea" rows="5" label="Abstract" id="abstract" name="abstract"
-      required autofocus :status="$errors->has('abstract') ? 'error' : ''" :messages="$errors->get('abstract')" :value="old('abstract', $manuscript->abstract ?? '')" />
+      required autofocus :status="$errors->has('abstract') ? 'error' : ''" :messages="$errors->get('abstract')" :value="old('abstract', $manuscript->abstract ?? '')"
+      description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque voluptate officiis veritatis reprehenderit quo quibusdam debitis amet consectetur nostrum repellendus excepturi voluptates quisquam vel sapiente enim, omnis recusandae aperiam quis ratione atque aliquid illum similique rem. Neque labore libero iste!" />
+
     <div class="relative w-full" x-data="{
         keywords: @js(old('keywords', $manuscript->keywords ?? [])),
         optionsKeyword: [],
@@ -48,7 +51,7 @@
           <input
             class="flex-[1_1_auto] !border-none bg-gray-50 !py-0 text-sm text-gray-900 !outline-none !ring-0 dark:!bg-gray-700 dark:!text-white"
             type="text" x-ref="keywordInput" id="keywordsDropdownTrigger" x-on:focus="inputFocused=true"
-            x-on:focusout="inputFocused=false" x-model.debounce.500ms="search" x-bind:required="keywords.length == 0"
+            x-on:focusout="inputFocused=false" x-model.debounce.500ms="search"
             x-on:keydown="
             inputFocused=true;
             if(event.keyCode==13 && $el.value && keywords.indexOf($el.value)==-1 && $el.value.length >= 3){
@@ -62,24 +65,24 @@
               event.preventDefault();
             }">
         </ul>
+        {{-- dropdown --}}
+        <div focusable id="dropdownUsers" x-show="dropdownFocused||inputFocused" x-on:mouseover="dropdownFocused=true"
+          x-on:mouseleave="dropdownFocused=false"
+          class="top absolute z-10 mt-1 h-auto w-full rounded-lg bg-white shadow dark:bg-gray-700">
+          <ul
+            class="max-h-48 divide-y divide-gray-100 overflow-y-auto text-gray-700 dark:divide-gray-600 dark:text-gray-200"
+            aria-labelledby="keywordsDropdownTrigger">
+            <template x-for="keyword in optionsKeyword.filter(key => keywords.indexOf(key) < 0)">
+              <li>
+                <button type="button" class="button w-full !normal-case"
+                  x-on:click.prevent.stop="keywords.push(keyword); $refs.keywordInput.value=''; $refs.keywordInput.focus()">
+                  <span x-text="keyword"></span>
+                </button>
+              </li>
+            </template>
+          </ul>
+        </div>
       </x-text-input>
-      {{-- dropdown --}}
-      <div focusable id="dropdownUsers" x-show="dropdownFocused||inputFocused" x-on:mouseover="dropdownFocused=true"
-        x-on:mouseleave="dropdownFocused=false"
-        class="absolute z-10 h-auto w-full rounded-lg bg-white shadow dark:bg-gray-700">
-        <ul
-          class="max-h-48 divide-y divide-gray-100 overflow-y-auto text-gray-700 dark:divide-gray-600 dark:text-gray-200"
-          aria-labelledby="keywordsDropdownTrigger">
-          <template x-for="keyword in optionsKeyword.filter(key => keywords.indexOf(key) < 0)">
-            <li>
-              <button type="button" class="button w-full !normal-case"
-                x-on:click.prevent.stop="keywords.push(keyword); $refs.keywordInput.value=''; $refs.keywordInput.focus()">
-                <span x-text="keyword"></span>
-              </button>
-            </li>
-          </template>
-        </ul>
-      </div>
     </div>
   </form>
 

@@ -39,7 +39,7 @@ class Manuscript extends Model {
       'category_id' => ['required', 'integer', 'exists:categories,id'],
       'abstract' => ['required', 'string', 'min:100', 'max:1000'],
       'keywords' => ['required', 'array', 'min:3'],
-      'keywords.*' => ['required', 'string', 'min:3', 'max:25'],
+      'keywords.*' => ['required', 'min:3', 'max:25'],
     ]);
 
     if ($only) {

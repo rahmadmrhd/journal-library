@@ -87,7 +87,7 @@
 
   .text-input {
     .label {
-      @apply mb-2 block text-sm font-medium text-gray-900 dark:text-white;
+      @apply block text-lg font-extrabold text-gray-900 dark:text-white;
     }
     textarea,
     select,
@@ -108,7 +108,6 @@
     }
   }
 
-  .text-input.error label,
   .text-input.error > div > div > svg,
   .text-input.error .msg {
     @apply text-red-700 dark:text-red-400;
@@ -119,7 +118,6 @@
   .text-input.error .input-text {
     @apply border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-500 dark:bg-gray-700 dark:text-white dark:placeholder-red-500 !important;
   }
-  .text-input.success label,
   .text-input.success > div > div > svg,
   .text-input.success .msg {
     @apply text-green-700 dark:text-green-400;
