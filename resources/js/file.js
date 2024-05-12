@@ -36,7 +36,8 @@ function attachFile(parent, file, file_types) {
     updateData(parent, `/files/${parent.querySelector('input[name="filesId[]"]').value}`)
   }
 }
-window.getFilesManuscript = ($dispatch, files, file_types) => {
+window.getFilesManuscript = ($dispatch, files, file_types, isDraft) => {
+  if (!files || !file_types) return;
   files.forEach(file => {
     const row = rowExample.cloneNode(true);
     row.classList.remove('hidden');
@@ -47,7 +48,8 @@ window.getFilesManuscript = ($dispatch, files, file_types) => {
     setProgress(row, false);
     tableFile.appendChild(row);
   });
-  window.dataForm = window.form?.serialize();
+  if (!isDraft)
+    window.dataForm = window.form?.serialize();
   $dispatch('dropbox')
 }
 
@@ -116,10 +118,18 @@ function uploadFile(file, $dispatch) {
           return;
         }
         attachFile(row, response.file, response.file_types);
-        showAlert('upload-success', 'success', 'File uploaded successfully', true, 5000);
+        showAlert('success', {
+          messages: 'File uploaded successfully',
+          closeable: true,
+          timeout: 5000,
+        });
       } catch (error) {
         tableFile.removeChild(row);
-        showAlert('upload-fail', 'error', 'File upload failed', true, 5000);
+        showAlert('error', {
+          messages: 'File upload failed',
+          closeable: true,
+          timeout: 5000,
+        });
       }
       finally {
         $dispatch('dropbox')
@@ -138,7 +148,7 @@ function uploadFile(file, $dispatch) {
 
 }
 
-function updateData(parent, url, data) {
+function updateData(parent, url) {
   setProgress(parent, true);
   $.ajax({
     url: url,
@@ -154,12 +164,23 @@ function updateData(parent, url, data) {
       parent.querySelector('select[name="file_type"]').value = response.file.file_type_id;
       parent.querySelector('input[name="file_type_before"]').value = response.file.file_type_id;
       setProgress(parent, false);
-      showAlert('update-success', 'success', 'File updated successfully', true, 5000);
+      showAlert('success', {
+        messages: 'File updated successfully',
+        closeable: true,
+        timeout: 5000,
+      });
+
+      if (document.getElementById('manuscript-id').value)
+        window.dataForm = window.form?.serialize();
     },
     error: function (error) {
       setProgress(parent, false);
       parent.querySelector('select[name="file_type"]').value = parent.querySelector('select[name="file_type_before"]').value;
-      showAlert('update-fail', 'error', 'File update failed', true, 5000);
+      showAlert('error', {
+        messages: 'File update failed',
+        closeable: true,
+        timeout: 5000,
+      });
 
       $dispatch('dropbox')
     }
@@ -178,13 +199,21 @@ function deleteFile(parent, $dispatch) {
     success: function (response) {
       if (response.success) {
         tableFile.removeChild(parent);
-        showAlert('delete-success', 'success', 'File deleted successfully', true, 5000);
+        showAlert('success', {
+          messages: 'File deleted successfully',
+          closeable: true,
+          timeout: 5000,
+        });
       }
       $dispatch('dropbox')
     },
     error: function (error) {
       setProgress(parent, false);
-      showAlert('delete-fail', 'error', 'File delete failed', true, 5000);
+      showAlert('error', {
+        messages: 'File delete failed',
+        closeable: true,
+        timeout: 5000,
+      });
       $dispatch('dropbox')
     }
   })

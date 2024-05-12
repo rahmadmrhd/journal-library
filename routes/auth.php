@@ -64,3 +64,9 @@ Route::middleware('auth')->group(function () {
     return view('auth.role-error');
   })->name('role.error');
 });
+
+Route::controller(\App\Http\Controllers\OrcidController::class)->group(function () {
+  Route::get('orcid/auth', 'auth')->middleware('guest');
+  Route::get('orcid/connect', 'connect')->middleware('auth');
+  Route::delete('orcid', 'destroy')->middleware('auth')->name('orcid.destroy');
+});

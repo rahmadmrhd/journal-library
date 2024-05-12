@@ -23,5 +23,5 @@ export default function getLoader() {
   }
 }
 
-window.showLoading = () => getLoader().show();
+window.showLoading = (title, description) => getLoader().show(title, description);
 window.hideLoading = () => getLoader().hide()

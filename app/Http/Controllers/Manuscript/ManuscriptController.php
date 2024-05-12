@@ -8,9 +8,12 @@ use App\Models\Manuscript\FileType;
 use App\Models\Manuscript\Manuscript;
 use App\Models\Manuscript\StepSubmission;
 use App\Services\Manuscripts\SubmitNewManuscriptService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ManuscriptController extends Controller {
+  use AuthorizesRequests;
   private SubmitNewManuscriptService $service;
   public function __construct(SubmitNewManuscriptService $service) {
     $this->service = $service;
@@ -28,27 +31,10 @@ class ManuscriptController extends Controller {
   /**
    * Show the form for creating a new resource.
    */
-  public function create(Manuscript $manuscript = null) {
-    $steps = StepSubmission::orderBy('id', 'asc')->get();
-    if ($manuscript) {
-      $progress = $manuscript->steps;
-      $steps = $steps->map(function ($step) use ($progress) {
-        $step->status = $progress->find($step->id)->pivot->status ?? null;
-        return $step;
-      });
-    }
+  public function create(Request $request, Manuscript $manuscript = null) {
+    $data = $this->service->showSubmission($manuscript);
 
-    if (isset($manuscript->current_step) && $manuscript?->current_step == 1) {
-      $files = $manuscript->files;
-      $file_types = FileType::orderBy('required', 'desc')->get();
-    }
-
-    return view('pages.manuscripts.form', [
-      'steps' => $steps,
-      'manuscript' => $manuscript,
-      'files' => $files ?? null,
-      'file_types' =>  $file_types ?? null,
-    ]);
+    return view('pages.manuscripts.form', $data);
   }
 
   public function changeStep(Request $request, Manuscript $manuscript = null) {
@@ -66,13 +52,20 @@ class ManuscriptController extends Controller {
   /**
    * Store a newly created resource in storage.
    */
-  public function storeFile(CreateManuscriptRequest $request, Manuscript $manuscript = null) {
-    $request->validated(['filesId', 'filesId.*']);
+  public function storeFile(Request $request, Manuscript $manuscript = null) {
+
     if ($manuscript) {
-      $manuscript = $this->service->updateFile($manuscript, $request->filesId);
+      $manuscript = $this->service->updateFile($request, $manuscript);
     } else {
-      $manuscript = $this->service->create($request->filesId);
+      $manuscript = $this->service->create($request);
     }
+
+    return redirect()->route('manuscripts.create', $manuscript);
+  }
+
+  public function storeBasicInformation(Request $request, Manuscript $manuscript) {
+    $manuscript = $this->service->updateBasicInformation($request, $manuscript);
+
     return redirect()->route('manuscripts.create', $manuscript);
   }
 

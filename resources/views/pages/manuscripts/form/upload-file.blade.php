@@ -2,12 +2,9 @@
   <meta name="_token" content="{{ csrf_token() }}">
 @endpush
 @vite('resources/css/file.css')
-<script>
-  window.files = @js($files);
-  window.file_types = @js($file_types);
-</script>
-<form id="manuscript-form" class="" method="POST" action="{{ route('manuscripts.store', $manuscript->id ?? '') }}"
-  x-data x-on:load.window="getFilesManuscript($dispatch, @js($files), @js($file_types))">
+<form id="manuscript-form" class="" method="POST"
+  action="{{ route('manuscripts.storeFile', $manuscript->id ?? '') }}" x-data
+  x-on:load.window="getFilesManuscript($dispatch, @js(session('files') ?? ($manuscript->files ?? null)), @js($file_types ?? null), @js(session()->has('files')))">
   @csrf
   @method('PUT')
   <div id="dropbox" x-data="{ show: true, hover: false }" x-on:drop="hover = false;dropboxOndrop($event, $dispatch);"

@@ -1,4 +1,4 @@
-@props(['steps', 'manuscript'])
+@props(['steps', 'manuscript', 'alert'])
 @php
   $currentStepIndex = $manuscript->current_step ?? 1;
   $currentStep = $steps[$currentStepIndex - 1];
@@ -12,6 +12,7 @@
       <ol class="h-full space-y-2 overflow-y-auto">
         @foreach ($steps as $step)
           <form x-data x-on:submit.prevent="changeStep(event, $dispatch)" method="POST"
+            {{ $currentStepIndex == $loop->iteration ? 'disabled' : '' }}
             action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
             @csrf
             @method('PATCH')
@@ -119,9 +120,10 @@
     </button>
     {{-- Dropdown menu --}}
     <div id="dropdownStepSubmission" class="hidden w-full rounded-lg">
-      <ol class="card max-h-48 space-y-2 overflow-y-auto p-4" aria-labelledby="dropdownStepSubmissionButton">
+      <ol class="card space-y-2 overflow-y-auto p-4" aria-labelledby="dropdownStepSubmissionButton">
         @foreach ($steps as $step)
           <form x-data x-on:submit.prevent="changeStep(event, $dispatch)" method="POST"
+            {{ $currentStepIndex == $loop->iteration ? 'disabled' : '' }}
             action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
             @csrf
             @method('PATCH')
@@ -182,16 +184,19 @@
 
   </div>
   <main class="md:ml-80">
+    @if ($alert)
+      <x-alert :messages="$alert['messages']" :type="$alert['type']" :closeable="false" />
+    @endif
     @if (session('alert'))
-      <x-alert :messages="session('alert')['message']" :type="session('alert')['type']" timeout="5000" />
+      <x-alert :messages="session('alert')['messages']" :type="session('alert')['type']" :closeable="false" />
     @endif
     <div id=alert-group></div>
     <div>
-      {{ ${'step' . $currentStepIndex} ?? '' }}
+      {{ $slot }}
     </div>
 
     <div
-      class="mt-4 flex flex-col items-center justify-between gap-2 border-t border-gray-300 py-2 dark:border-gray-700 md:flex-row">
+      class="mt-4 flex flex-col items-start justify-between gap-2 border-t border-gray-300 py-2 dark:border-gray-700 md:flex-row md:items-center">
       <div class="flex flex-col items-center gap-2 md:flex-row">
         @if ($currentStepIndex > 1)
           <button type="button" class="button secondary !gap-x-1">
@@ -218,26 +223,36 @@
       </div>
     </div>
   </main>
-  <x-modal name="confirmation-change-step">
-    <div class="max-w-2xl p-4 text-center md:p-5" x-data="{ form: null }"
-      x-on:confirm-change-step.window="$dispatch('close-modal'); form=$event.detail.form">
+  <x-modal name="confirmation-change-step" focusable>
+    <div class="max-w-2xl p-4 text-center md:p-5" x-data="{ form: null, targetStep: null }"
+      x-on:confirm-change-step.window="form=$event.detail.form; targetStep=$event.detail.targetStep;"
+      x-init="$watch('show', val => {
+          if (!val) {
+              form = null;
+              targetStep = null;
+          }
+      })">
       <svg class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
       </svg>
       <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-        {{ __('Are you sure to leave this page and ignore the changes that have been made?') }}
+        {{ __('Save changes first before leaving this page?') }}
       </h3>
       <div class="flex justify-center gap-3">
-        <button id="delete-modal-btn" type="button" x-on:click="form.submit()" class="button error">
-          Yes, I am sure
+        <input type="hidden" name="step" form="manuscript-form" x-bind:value="targetStep">
+        <button id="submit-modal-btn" type="submit" form="manuscript-form" class="button primary"
+          x-on:click="$dispatch('close')">
+          {{ __('Yes, Save changes') }}
         </button>
-        <button id="submit-modal-btn" type="submit" form="manuscript-form" class="button primary">
-          No, Save changes
-        </button>
+        <template x-if="form">
+          <button id="delete-modal-btn" type="button" x-on:click="onSubmitChangeStep(form)" class="button error">
+            {{ __('No, Discard changes') }}
+          </button>
+        </template>
         <button id="cancel-modal-btn" type="button" x-on:click="$dispatch('close')" class="button secondary">
-          Cancel
+          {{ __('Cancel') }}
         </button>
       </div>
     </div>

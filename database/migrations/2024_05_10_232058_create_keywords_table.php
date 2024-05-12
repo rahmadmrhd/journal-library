@@ -9,12 +9,9 @@ return new class extends Migration {
    * Run the migrations.
    */
   public function up(): void {
-    Schema::create('manuscripts', function (Blueprint $table) {
+    Schema::create('keywords', function (Blueprint $table) {
       $table->uuid('id')->primary();
-      $table->string('title')->nullable();
-      $table->foreignId('category_id')->nullable()->references('id')->on('categories')->onDelete('SET NULL');
-      $table->text('abstract')->nullable();
-      $table->tinyInteger('current_step')->default(1);
+      $table->string('name')->unique();
       $table->timestamps();
     });
   }
@@ -23,6 +20,6 @@ return new class extends Migration {
    * Reverse the migrations.
    */
   public function down(): void {
-    Schema::dropIfExists('manuscripts');
+    Schema::dropIfExists('keywords');
   }
 };

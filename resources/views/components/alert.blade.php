@@ -1,28 +1,31 @@
-@props(['type', 'messages', 'id' => 'alert-box', 'timeout' => 2000, 'closeable' => true])
+@props(['type', 'title', 'messages', 'id' => 'alert-box', 'timeout' => 2000, 'closeable' => true])
 
 @if (isset($messages) || $slot->isNotEmpty())
   <div id="{{ $id }}" {{ $attributes->merge(['class' => 'alert ' . ($type ?? '')]) }} role="alert"
     x-data="{ show: true }" x-show="show" x-transition.duration.500ms>
-    <svg class="h-4 w-4 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+    <svg class="mt-[2px] h-4 w-4 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
       viewBox="0 0 20 20">
       <path
         d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
     </svg>
     <span class="sr-only">{{ $type ?? '' }}</span>
-    <div class="ms-3 text-sm font-medium">
+    <div class="ms-3">
+      @isset($title)
+        <span class="hidden font-medium">{{ $title }}</span>
+      @endisset
       @isset($messages)
         @if (is_array($messages))
           @if (count($messages) > 1)
-            <ul class="mt-1.5 list-inside list-disc">
+            <ul class="@isset($title) mt-1.5 @endisset list-inside list-disc">
               @foreach ($messages as $message)
-                <li>{{ $message }}</li>
+                <li class="text-sm font-normal">{{ $message }}</li>
               @endforeach
             </ul>
           @else
-            {{ $messages[0] }}
+            <span class="font-medium">{{ $messages[0] }}</span>
           @endif
         @else
-          {{ $messages }}
+          <span class="font-medium">{{ $messages }}</span>
         @endif
       @else
         {{ $slot }}

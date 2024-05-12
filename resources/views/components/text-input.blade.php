@@ -18,7 +18,7 @@
             'value' => 'admin',
         ],
     ],
-    'direction' => 'row',
+    'direction' => 'row', //row or col,
 ])
 
 {{-- <input  {!!! $attributes-!!merge(['class' => 'border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm']) !!}> --}}
@@ -40,11 +40,15 @@
       @foreach ($options as $option)
         <li class="w-full">
           <div class="flex items-center px-3">
-            <input {!! $attributes !!} id="{{ $type }}-{{ $name }}-{{ $option['value'] }}"
+            <input {!! $attributes !!} {{ $option['required'] ?? false == 'required' ? 'required' : '' }}
+              {!! $option['name'] ?? null ? 'name="' . $option['name'] . '"' : '' !!} id="{{ $type }}-{{ $name }}-{{ $option['value'] }}"
               type="{{ $type }}"
               {{ is_array($value) ? (collect($value)->contains($option['value']) ? 'checked' : '') : ($value == $option['value'] ? 'checked' : '') }}
               name="{{ $name }}" value="{{ $option['value'] }}"
-              class="input h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
+              class="input {{ $type == 'checkbox' ? 'rounded' : 'rounded-full' }} h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
+            @if ($option['required'] ?? false)
+              <span class="ms-1 text-red-700 dark:text-red-500">*</span>
+            @endif
             <label for="{{ $type }}-{{ $name }}-{{ $option['value'] }}"
               class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $option['label'] }}</label>
           </div>
@@ -69,6 +73,8 @@
             {{ $autocomplete ? 'autocomplete=' . $autocomplete : '' }} name="{{ $name ?? '' }}"
             {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} placeholder="{{ $placeholder ?? '' }}"
             rows="{{ $rows }}">{{ $value }}</textarea>
+        @elseif($type == 'custom')
+          {{ $slot }}
         @else
           <input {!! $attributes !!}
             @if ($type == 'password') x-bind:type="showPassword ? 'text' : 'password'" 

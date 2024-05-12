@@ -1,19 +1,27 @@
-<x-submission-layout :manuscript="$manuscript ?? null" :steps="$steps">
-  @slot('step1')
-    @include('pages.manuscripts.form.upload-file')
-  @endslot
-  @slot('step2')
-    @include('pages.manuscripts.form.basic-information')
-  @endslot
-  @slot('step3')
-    step3
-  @endslot
-  @slot('step4')
-    step4
-  @endslot
-  @slot('step5')
-  @endslot
-  @slot('step6')
-  @endslot
-</x-submission-layout>
+<x-submission-layout :manuscript="$manuscript ?? null" :steps="$steps" :alert="$alert ?? null">
+  @switch($manuscript->current_step ?? 1)
+    @case(1)
+      @include('pages.manuscripts.form.upload-file')
+    @break
 
+    @case(2)
+      @include('pages.manuscripts.form.basic-information')
+    @break
+
+    @case(3)
+      Step3
+    @break
+
+    @case(4)
+      Step4
+    @break
+
+    @case(5)
+      Step5
+    @break
+
+    @default
+      <h3>Out Of Range</h3>
+  @endswitch
+
+</x-submission-layout>
