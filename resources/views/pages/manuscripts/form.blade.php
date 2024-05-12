@@ -9,9 +9,10 @@
     step3
   @endslot
   @slot('step4')
-    step4
+    @include('pages.manuscripts.form.authors&institutions')
   @endslot
   @slot('step5')
+    @include('pages.manuscripts.form.detail&form')
   @endslot
   @slot('step6')
   @endslot
