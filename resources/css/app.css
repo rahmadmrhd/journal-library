@@ -87,7 +87,7 @@
 
   .text-input {
     .label {
-      @apply block text-lg font-extrabold text-gray-900 dark:text-white;
+      @apply block text-base font-extrabold text-gray-900 dark:text-white lg:text-lg;
     }
     textarea,
     select,

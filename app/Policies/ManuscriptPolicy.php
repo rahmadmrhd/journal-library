@@ -20,7 +20,7 @@ class ManuscriptPolicy {
    * Determine whether the user can view the model.
    */
   public function view(User $user, Manuscript $manuscript): bool {
-    return $user->id === $manuscript->user->id;
+    return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id;
   }
 
   /**
@@ -34,13 +34,7 @@ class ManuscriptPolicy {
    * Determine whether the user can update the model.
    */
   public function update(User $user, Manuscript $manuscript): bool {
-    dd($user->getCurrentRole()->slug);
-    switch ($user->getCurrentRole()->slug) {
-      case 'author':
-        return true;
-      default:
-        return false;
-    }
+    return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id;
   }
 
   /**
@@ -49,7 +43,7 @@ class ManuscriptPolicy {
   public function delete(User $user, Manuscript $manuscript): bool {
     switch ($user->getCurrentRole()->slug) {
       case 'author':
-        return $user->id === $manuscript->user->id;
+        return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id;
       case 'admin':
         return true;
       default:
@@ -61,27 +55,13 @@ class ManuscriptPolicy {
    * Determine whether the user can restore the model.
    */
   public function restore(User $user, Manuscript $manuscript): bool {
-    switch ($user->getCurrentRole()->slug) {
-      case 'author':
-        return $user->id === $manuscript->user->id;
-      case 'admin':
-        return true;
-      default:
-        return false;
-    }
+    return $user->getCurrentRole()->slug === 'admin';
   }
 
   /**
    * Determine whether the user can permanently delete the model.
    */
   public function forceDelete(User $user, Manuscript $manuscript): bool {
-    switch ($user->getCurrentRole()->slug) {
-      case 'author':
-        return $user->id === $manuscript->user->id;
-      case 'admin':
-        return true;
-      default:
-        return false;
-    }
+    return $user->getCurrentRole()->slug === 'admin';
   }
 }

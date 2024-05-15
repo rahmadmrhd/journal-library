@@ -31,7 +31,7 @@ return new class extends Migration {
       $table->string('city')->nullable();
       $table->string('province')->nullable();
       $table->string('postal_code')->nullable();
-      $table->string('country')->nullable();
+      $table->foreignId('country_id')->nullable()->references('id')->on('countries')->onDelete('set null');
 
       $table->boolean('status')->default(true);
       $table->rememberToken();

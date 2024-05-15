@@ -11,21 +11,19 @@
     <span class="sr-only">{{ $type ?? '' }}</span>
     <div class="ms-3">
       @isset($title)
-        <span class="hidden font-medium">{{ $title }}</span>
+        <span class="block font-medium">{{ $title }}</span>
       @endisset
       @isset($messages)
         @if (is_array($messages))
-          @if (count($messages) > 1)
-            <ul class="@isset($title) mt-1.5 @endisset list-inside list-disc">
-              @foreach ($messages as $message)
-                <li class="text-sm font-normal">{{ $message }}</li>
-              @endforeach
-            </ul>
-          @else
-            <span class="font-medium">{{ $messages[0] }}</span>
-          @endif
+          <ul class="@isset($title) mt-1.5 @endisset list-inside list-disc">
+            @foreach ($messages as $message)
+              <li class="text-sm font-normal">{{ $message }}</li>
+            @endforeach
+          </ul>
         @else
-          <span class="font-medium">{{ $messages }}</span>
+          <span class="@isset($title) text-sm font-normal @else font-medium @endisset">
+            {{ $messages }}
+          </span>
         @endif
       @else
         {{ $slot }}

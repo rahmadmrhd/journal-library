@@ -109,7 +109,6 @@
             $user->readonly = $user->roles()->pluck('slug')->contains('admin');
           @endphp
           <tr class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-
             <th scope="row">
               <div class="flex items-center truncate px-6 py-2 text-gray-900 dark:text-white">
                 <div class="w-10">

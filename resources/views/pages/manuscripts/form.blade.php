@@ -9,15 +9,15 @@
     @break
 
     @case(3)
-      @include('pages.manuscripts.form.authors&institutions')
+      @include('pages.manuscripts.form.authors-institutions')
     @break
 
     @case(4)
-      @include('pages.manuscripts.form.detail&form')
+      @include('pages.manuscripts.form.details')
     @break
 
     @case(5)
-      Step5
+      @include('pages.manuscripts.form.review-submit')
     @break
 
     @default

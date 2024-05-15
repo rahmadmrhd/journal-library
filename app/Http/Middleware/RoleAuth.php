@@ -31,6 +31,9 @@ class RoleAuth {
             'url_back' => URL::previous(),
           ],
         ]);
+        if ($request->method() != 'GET') {
+          return abort(403);
+        }
       }
       return $next($request);
     }

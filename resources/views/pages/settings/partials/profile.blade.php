@@ -1,12 +1,13 @@
 <form action="{{ route('profile.update', absolute: false) }}" method="POST" class="space-y-6">
-  <div class="divide-y-2 divide-gray-200 card dark:divide-gray-700">
+  {{-- @dd($user, $countries) --}}
+  <div class="card divide-y-2 divide-gray-200 dark:divide-gray-700">
     <header class="">
       <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
         {{ __('Personal Information') }}
       </h2>
 
     </header>
-    <div class="grid max-w-screen-xl grid-cols-12 pt-6 gap-x-6 gap-y-2">
+    <div class="grid max-w-screen-xl grid-cols-12 gap-x-6 gap-y-2 pt-6">
       @csrf
       @method('PUT')
       <x-text-input class="col-span-12 sm:col-span-4 xl:col-span-2" :label="__('Title')" id="title" name="title"
@@ -30,14 +31,14 @@
 
   </div>
 
-  <div class="divide-y-2 divide-gray-200 card dark:divide-gray-700">
+  <div class="card divide-y-2 divide-gray-200 dark:divide-gray-700">
     <header class="">
       <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
         {{ __('Institution Related Information') }}
       </h2>
     </header>
 
-    <div class="grid max-w-screen-xl grid-cols-12 pt-6 gap-x-6 gap-y-2">
+    <div class="grid max-w-screen-xl grid-cols-12 gap-x-6 gap-y-2 pt-6">
       <x-text-input class="col-span-12 sm:col-span-9 xl:col-span-7" :label="__('Institution')" id="institution"
         name="institution" type="text" :value="old('institution', $user->institution)" required autocomplete="institution"
         :messages="$errors->get('institution')"></x-text-input>
@@ -61,12 +62,12 @@
         name="postal_code" type="text" :value="old('postal_code', $user->postal_code)" required autocomplete="postal_code"
         :messages="$errors->get('postal_code')"></x-text-input>
 
-      <x-text-input class="col-span-12 sm:col-span-9 xl:col-span-7" :label="__('Country')" id="country" name="country"
-        type="select" :value="old('country', $user->country)" required autocomplete="country" :messages="$errors->get('country')">
+      <x-text-input class="col-span-12 sm:col-span-9 xl:col-span-7" :label="__('Country')" id="country_id" name="country_id"
+        type="select" :value="old('country_id', $user->country_id)" required autocomplete="country_id" :messages="$errors->get('country_id')">
         <option value="" selected disabled>-- {{ __('Select Country') }} --</option>
         @foreach ($countries ?? [] as $country)
-          <option value="{{ $country['code'] }}"
-            {{ old('country', $user->country) == $country['code'] ? 'selected' : '' }}>
+          <option value="{{ $country['id'] }}"
+            {{ old('country', $user->country_id) == $country['id'] ? 'selected' : '' }}>
             {{ $country['name'] }}
           </option>
         @endforeach

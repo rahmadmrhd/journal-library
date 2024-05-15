@@ -10,13 +10,14 @@ function alert(type, options = { title, messages, closeable, timeout }) {
     </svg>
     <span class="sr-only">${type}</span>
     <div class="ms-3">
-      ${options.title ? `<span class="hidden font-medium">${options.title}</span>` : ''}
+      ${options.title ? `<span class="block font-medium">${options.title}</span>` : ''}
 
       ${Array.isArray(options.messages) ?
       `<ul class="${options.title ? 'mt-1.5' : ''} list-inside list-disc">
           ${messages.forEach(message => `<li class="text-sm font-normal">${message}</li>`)}
           </ul>`:
-      `<span class="font-medium">${options.messages}</span>`}
+      `<span class=${options.title ? ' text-sm font-normal ' : ' font-medium '
+      } ">${options.messages}</span>`}
     </div>
     ${options.closeable ?
       `<button type="button" x-init="setTimeout(() => show = false, ${options.timeout ?? 3000})"

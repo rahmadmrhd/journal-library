@@ -20,6 +20,7 @@
     ],
     'direction' => 'row', //row or col,
     'description',
+    'disabled' => false,
 ])
 
 {{-- <input  {!!! $attributes-!!merge(['class' => 'border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm']) !!}> --}}
@@ -37,25 +38,27 @@
     </label>
   @endisset
   @if (isset($description))
-    <p class="mb-2 text-sm font-normal italic">{{ $description }}</p>
+    <p class="mb-2 text-sm font-normal italic dark:font-thin">{{ $description }}</p>
   @endif
   @if ($type == 'checkbox' || $type == 'radio')
     <ul
-      class="sm:flex-{{ $direction }} {{ $direction == 'row' ? 'sm:divide-y-0 sm:divide-x' : 'sm:divide-y' }} flex w-full flex-col items-center divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+      class="sm:flex-{{ $direction }} {{ $direction == 'row' ? 'sm:divide-y-0 sm:divide-x' : 'sm:divide-y' }} flex w-full flex-col items-center divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-900 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
       @foreach ($options as $option)
         <li class="w-full">
           <div class="flex items-center px-3">
-            <input {!! $attributes !!} {{ $option['required'] ?? false == 'required' ? 'required' : '' }}
-              {!! $option['name'] ?? null ? 'name="' . $option['name'] . '"' : '' !!} id="{{ $type }}-{{ $name }}-{{ $option['value'] }}"
-              type="{{ $type }}"
+            <input {!! $option['attributes'] ?? $attributes !!} {!! $disabled ? 'disabled' : '' !!} {{ $option['checked'] ?? false ? 'checked' : '' }}
+              {{ $option['required'] ?? $required ? 'required' : '' }} {!! $option['name'] ?? null ? 'name="' . $option['name'] . '"' : '' !!}
+              id="{{ $type }}-{{ $name }}-{{ $loop->iteration }}" type="{{ $type }}"
               {{ is_array($value) ? (collect($value)->contains($option['value']) ? 'checked' : '') : ($value == $option['value'] ? 'checked' : '') }}
               name="{{ $name }}" value="{{ $option['value'] }}"
-              class="input {{ $type == 'checkbox' ? 'rounded' : 'rounded-full' }} h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
-            @if ($option['required'] ?? false)
-              <span class="ms-1 text-red-700 dark:text-red-500">*</span>
-            @endif
-            <label for="{{ $type }}-{{ $name }}-{{ $option['value'] }}"
-              class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $option['label'] }}</label>
+              class="input {{ $type == 'checkbox' ? 'rounded' : 'rounded-full' }} {!! $disabled ? '' : 'cursor-pointer' !!} h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
+
+            <label for="{{ $type }}-{{ $name }}-{{ $loop->iteration }}"
+              class="{!! $disabled ? '' : 'cursor-pointer' !!} ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+              @if ($option['required'] ?? false)
+                <span class="ms-1 text-base font-bold text-red-700 dark:text-red-500">*</span>
+              @endif{{ $option['label'] }}
+            </label>
           </div>
         </li>
       @endforeach
@@ -69,19 +72,19 @@
           </div>
         @endif
         @if ($type == 'select')
-          <select class="input" {!! $attributes !!} {{ isset($id) ? 'id=' . $id : '' }}
+          <select class="input" {!! $attributes !!} {!! $disabled ? 'disabled' : '' !!} {{ isset($id) ? 'id=' . $id : '' }}
             name="{{ $name ?? '' }}" {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }}>
             {{ $slot }}
           </select>
         @elseif ($type == 'textarea')
-          <textarea class="input" {!! $attributes !!} {{ isset($id) ? 'id=' . $id : '' }}
+          <textarea class="input" {!! $attributes !!} {!! $disabled ? 'disabled' : '' !!} {{ isset($id) ? 'id=' . $id : '' }}
             {{ $autocomplete ? 'autocomplete=' . $autocomplete : '' }} name="{{ $name ?? '' }}"
             {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} placeholder="{{ $placeholder ?? '' }}"
             rows="{{ $rows }}">{{ $value }}</textarea>
         @elseif($type == 'custom')
           {{ $slot }}
         @else
-          <input {!! $attributes !!}
+          <input {!! $attributes !!} {!! $disabled ? 'disabled' : '' !!}
             @if ($type == 'password') x-bind:type="showPassword ? 'text' : 'password'" 
     @else
     type="{{ $type }}" @endif
@@ -106,7 +109,7 @@
     </div>
   @endif
   @if (isset($status))
-    <ul class="mt-2 space-y-0 text-sm text-red-600 dark:text-red-400" role="alert">
+    <ul class="space-y-0 text-sm text-red-600 dark:text-red-400" role="alert">
       @foreach ((array) $messages as $message)
         <li class="msg">{{ $message }}</li>
       @endforeach

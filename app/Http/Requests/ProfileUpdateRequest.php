@@ -29,7 +29,7 @@ class ProfileUpdateRequest extends FormRequest {
       'city' => ['required', 'string', 'max:255'],
       'province' => ['required', 'string', 'max:255'],
       'postal_code' => ['required', 'string', 'max:10'],
-      'country' => ['required', 'string', 'max:255'],
+      'country_id' => ['required', 'integer', 'exists:countries,id'],
     ];
   }
 }

@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Manuscript;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Manuscript\CreateManuscriptRequest;
-use App\Models\Manuscript\FileType;
 use App\Models\Manuscript\Manuscript;
-use App\Models\Manuscript\StepSubmission;
 use App\Services\Manuscripts\SubmitNewManuscriptService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 
 class ManuscriptController extends Controller {
   use AuthorizesRequests;
@@ -32,6 +29,11 @@ class ManuscriptController extends Controller {
    * Show the form for creating a new resource.
    */
   public function create(Request $request, Manuscript $manuscript = null) {
+    if ($manuscript) {
+      Gate::authorize('update', $manuscript);
+    } else {
+      Gate::authorize('create', Manuscript::class);
+    }
     $data = $this->service->showSubmission($manuscript);
 
     return view('pages.manuscripts.form', $data);
@@ -53,10 +55,11 @@ class ManuscriptController extends Controller {
    * Store a newly created resource in storage.
    */
   public function storeFile(Request $request, Manuscript $manuscript = null) {
-
     if ($manuscript) {
+      Gate::authorize('update', $manuscript);
       $manuscript = $this->service->updateFile($request, $manuscript);
     } else {
+      Gate::authorize('create', Manuscript::class);
       $manuscript = $this->service->create($request);
     }
 
@@ -64,9 +67,39 @@ class ManuscriptController extends Controller {
   }
 
   public function storeBasicInformation(Request $request, Manuscript $manuscript) {
+    Gate::authorize('update', $manuscript);
     $manuscript = $this->service->updateBasicInformation($request, $manuscript);
 
     return redirect()->route('manuscripts.create', $manuscript);
+  }
+
+  public function storeAuthors(Request $request, Manuscript $manuscript) {
+    Gate::authorize('update', $manuscript);
+    $manuscript = $this->service->updateAuthors($request, $manuscript);
+
+    return redirect()->route('manuscripts.create', $manuscript);
+  }
+
+  public function storeDetails(Request $request, Manuscript $manuscript) {
+    Gate::authorize('update', $manuscript);
+    $manuscript = $this->service->updateDetails($request, $manuscript);
+
+    return redirect()->route('manuscripts.create', $manuscript);
+  }
+
+
+  public function submit(Manuscript $manuscript) {
+    Gate::authorize('update', $manuscript);
+    $manuscript = $this->service->submit($manuscript);
+
+    if (!$manuscript->submitted_at) {
+      return redirect()->route('manuscripts.create', $manuscript);
+    }
+
+    return redirect()->route('manuscripts.index')->with('alert', [
+      'type' => 'success',
+      'message' => 'Manuscript submitted successfully!',
+    ]);
   }
 
   /**

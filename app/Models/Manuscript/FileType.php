@@ -10,6 +10,10 @@ class FileType extends Model {
   use HasFactory, SoftDeletes;
   protected $guarded = ['id'];
 
+  protected $casts = [
+    'extensions' => 'array',
+  ];
+
   public function files() {
     return $this->hasMany(File::class);
   }

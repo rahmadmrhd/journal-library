@@ -17,8 +17,9 @@ Route::middleware('auth')->group(function () {
   Route::delete('/account', [App\Http\Controllers\SettingsController::class, 'accountDestroy'])->name('account.destroy');
 });
 
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-  Route::resource('users', \App\Http\Controllers\UsersController::class);
+Route::middleware(['auth', 'verified'])->group(function () {
+  Route::resource('users', \App\Http\Controllers\UsersController::class)->middleware('role:admin');
+  Route::get('users/search/{find}', [\App\Http\Controllers\UsersController::class, 'find']);
 });
 
 require __DIR__ . '/auth.php';

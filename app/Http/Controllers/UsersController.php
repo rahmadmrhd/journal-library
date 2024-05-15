@@ -45,6 +45,17 @@ class UsersController extends Controller {
     ]);
   }
 
+  public function find(Request $request, $find) {
+    $users = User::selectRaw('concat(`users`.`first_name`, " ", `users`.`last_name`) as name, CONCAT_WS(" ", `users`.`title`, `users`.`first_name`, IFNULL(`users`.`last_name`,""), IFNULL(`users`.`degree`,"")) AS `full_name`, `users`.*');
+    // find users
+    $users->having('full_name', 'like', '%' . $find . '%')
+      ->orHaving('username', 'like', '%' . $find . '%')
+      ->orHaving('email', 'like', '%' . $find . '%')
+      ->orHaving('preferred_name', 'like', '%' . $find . '%');
+
+    return response()->json($users->limit(5)->get());
+  }
+
   /**
    * Show the form for creating a new resource.
    */

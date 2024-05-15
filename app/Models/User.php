@@ -62,4 +62,8 @@ class User extends Authenticatable {
   public function manuscripts() {
     return $this->belongsToMany(Manuscript::class, 'manuscript_author')->using(ManuscriptAuthor::class);
   }
+
+  public function country() {
+    return $this->belongsTo(Country::class);
+  }
 }

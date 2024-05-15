@@ -1,4 +1,4 @@
-@props(['columns', 'tableId', 'minHeight'])
+@props(['columns', 'tableId'])
 
 <div {{ $attributes->merge(['class' => 'relative block overflow-x-auto w-full']) }}>
   @isset($pagination)
@@ -6,17 +6,17 @@
       {{ $pagination }}
     </div>
   @endisset
-  <div class="{{ isset($minHeight) ? 'min-h-[' . $minHeight . ']' : '' }} w-full">
-    <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+  <div class="w-full">
+    <table class="w-full text-left text-sm text-gray-900 rtl:text-right dark:text-gray-100"
       @isset($tableId)
     id="{{ $tableId }}"
   @endisset>
-      <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+      <thead class="bg-gray-50 text-xs uppercase text-gray-900 dark:bg-gray-700 dark:text-gray-100">
         <tr>
           @foreach ($columns as $column)
             @if ($column['isSortable'])
               <th scope="col" class="{{ $column['class'] ?? '' }} truncate px-6 py-3">
-                <a class="@if (request('sortBy') == $column['name']) text-blue-400 @endif flex items-center"
+                <a class="@if (request('sortBy') == $column['name']) text-blue-400 @endif flex items-center font-bold"
                   href="{{ request()->fullUrlWithQuery(['sortBy' => $column['name'], 'sort' => request('sort') == 'asc' ? 'desc' : 'asc']) }}
             ">
                   {{ $column['label'] }}

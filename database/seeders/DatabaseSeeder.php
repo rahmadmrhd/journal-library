@@ -2,17 +2,24 @@
 
 namespace Database\Seeders;
 
+use App\Models\Country;
 use App\Models\Manuscript\Category;
 use App\Models\Manuscript\FileType;
 use App\Models\Manuscript\Keyword;
 use App\Models\Manuscript\StepSubmission;
 use App\Models\User;
 use App\Models\Role;
+use App\Services\CountryApiService;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder {
+  private CountryApiService $countryApiService;
+  public function __construct(CountryApiService $countryApiService) {
+    $this->countryApiService = $countryApiService;
+  }
+
   /**
    * Seed the application's database.
    */
@@ -45,10 +52,17 @@ class DatabaseSeeder extends Seeder {
 
     FileType::createOrFirst([
       'name' => 'Cover Letter',
+      'slug' => 'cover_letter',
       'required' => true,
     ]);
     FileType::createOrFirst([
       'name' => 'Manuscript',
+      'slug' => 'manuscript',
+      'required' => true,
+    ]);
+    FileType::createOrFirst([
+      'name' => 'Case Study Consent Form',
+      'slug' => 'case_study_consent_form',
       'required' => true,
     ]);
 
@@ -91,5 +105,7 @@ class DatabaseSeeder extends Seeder {
     ]);
 
     Keyword::factory(100)->create();
+
+    Country::insert($this->countryApiService->getCountries()->values()->toArray());
   }
 }

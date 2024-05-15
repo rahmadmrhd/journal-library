@@ -11,8 +11,9 @@
       <h3 class="mb-2 border-b border-gray-200 pb-2 text-xl font-bold dark:border-gray-700">Submission</h3>
       <ol class="h-full space-y-2 overflow-y-auto">
         @foreach ($steps as $step)
-          <form x-data x-on:submit.prevent="changeStep(event, $dispatch)" method="POST"
-            {{ $currentStepIndex == $loop->iteration ? 'disabled' : '' }}
+          <form x-data method="POST" {!! $currentStepIndex == $loop->iteration
+              ? 'x-on:submit.prevent'
+              : 'x-on:submit.prevent="changeStep(event, $dispatch)"' !!}
             action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
             @csrf
             @method('PATCH')
@@ -122,8 +123,9 @@
     <div id="dropdownStepSubmission" class="hidden w-full rounded-lg">
       <ol class="card space-y-2 overflow-y-auto p-4" aria-labelledby="dropdownStepSubmissionButton">
         @foreach ($steps as $step)
-          <form x-data x-on:submit.prevent="changeStep(event, $dispatch)" method="POST"
-            {{ $currentStepIndex == $loop->iteration ? 'disabled' : '' }}
+          <form x-data method="POST" {!! $currentStepIndex == $loop->iteration
+              ? 'x-on:submit.prevent'
+              : 'x-on:submit.prevent="changeStep(event, $dispatch)"' !!}
             action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
             @csrf
             @method('PATCH')
@@ -184,22 +186,26 @@
 
   </div>
   <main class="md:ml-80">
-    @if ($alert)
-      <x-alert :messages="$alert['messages']" :type="$alert['type']" :closeable="false" />
-    @endif
-    @if (session('alert'))
-      <x-alert :messages="session('alert')['messages']" :type="session('alert')['type']" :closeable="false" />
-    @endif
     <div id=alert-group></div>
+    @if ($alert)
+      <x-alert :messages="$alert['messages']" :type="$alert['type']" :title="$alert['title']" :closeable="false" />
+    @elseif (session('alert'))
+      <x-alert :messages="session('alert')['messages']" :type="session('alert')['type']" :title="session('alert')['title']" :closeable="false" />
+    @endif
     <div>
       {{ $slot }}
     </div>
-
+    <form id="previous-step" method="POST" x-on:submit.prevent="changeStep(event, $dispatch)"
+      action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
+      @csrf
+      @method('PATCH')
+      <input type="hidden" name="step" value="{{ $currentStepIndex - 1 }}">
+    </form>
     <div
       class="mt-4 flex flex-col items-start justify-between gap-2 border-t border-gray-300 py-2 dark:border-gray-700 md:flex-row md:items-center">
       <div class="flex flex-col items-center gap-2 md:flex-row">
         @if ($currentStepIndex > 1)
-          <button type="button" class="button secondary !gap-x-1">
+          <button form="previous-step" type="submit" class="button secondary !gap-x-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24">
               <path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6" />
             </svg>
@@ -216,7 +222,13 @@
             </svg>
           </button>
         @else
-          <button id="submit-modal-btn" class="button primary !gap-x-1" type="submit" form="manuscript-form">
+          <form id="manuscript-submit-form" class="hidden"
+            action="{{ route('manuscripts.submit', $manuscript->id ?? '') }}" method="POST">
+            @csrf
+            @method('PUT')
+          </form>
+          <button id="submit-modal-btn" class="button primary !gap-x-1" type="submit"
+            form="manuscript-submit-form">
             Submit
           </button>
         @endif

@@ -15,6 +15,13 @@ return new class extends Migration {
       $table->foreignId('category_id')->nullable()->references('id')->on('categories')->onDelete('SET NULL');
       $table->text('abstract')->nullable();
       $table->tinyInteger('current_step')->default(1);
+
+      $table->boolean('potential_conflict')->nullable();
+      $table->boolean('paper_contain')->nullable();
+      $table->boolean('open_access')->nullable();
+      $table->boolean('using_paperpal')->nullable();
+
+      $table->timestamp('submited_at')->nullable();
       $table->timestamps();
     });
   }

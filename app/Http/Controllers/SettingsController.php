@@ -4,28 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AccountUpdateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Services\CountryApiService;
+use App\Models\Country;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 class SettingsController extends Controller {
-  private CountryApiService $countryApiService;
-  public function __construct(CountryApiService $countryApiService) {
-    $this->countryApiService = $countryApiService;
-  }
   /**
    * Display the user's settings.
    */
   public function index(Request $request): View {
-    $user = $request->user();
-    // $countries = $this->countryApiService->getCountries();
+    $user = User::find($request->user()->id);
+    $countries = Country::orderBy('name')->get();
     return view('pages.settings.edit', [
       'user' => $user,
-      // 'countries' => $countries
+      'countries' => $countries
     ]);
   }
 
