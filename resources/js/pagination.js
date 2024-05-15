@@ -1,13 +1,9 @@
-let showBox = document.getElementById('show-box');
+function showOnChanged(e) {
+  let choice = e.target.value;
+  if (!choice) return;
 
-if (!!showBox) {
-  showBox.addEventListener('change', e => {
-    let choice = e.target.value;
-    if (!choice) return;
-
-    let url = new URL(window.location.href);
-    url.searchParams.set('show', choice);
-    // console.log(url);
-    window.location.href = url; // reloads the page
-  });
+  let url = new URL(window.location.href);
+  url.searchParams.set('show', choice);
+  window.location.href = url; // reloads the page
 }
+window.showOnChanged = showOnChanged

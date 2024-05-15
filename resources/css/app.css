@@ -43,53 +43,56 @@
 
   /* alert style */
   .alert {
-    @apply mb-4 flex items-center rounded-lg p-4 text-sm;
+    @apply mb-4 flex rounded-lg p-4 text-sm shadow-md;
+    button {
+      @apply focus:ring-2;
+    }
   }
   .alert.info {
-    @apply bg-blue-50  text-blue-800 dark:bg-blue-700 dark:text-gray-50;
+    @apply bg-blue-50  text-blue-800 dark:bg-gray-800 dark:text-blue-400;
     button {
-      @apply hover:bg-blue-200  focus:ring-blue-400   dark:hover:bg-blue-500;
+      @apply hover:bg-blue-200 focus:ring-blue-400 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700;
     }
   }
   .alert.error {
-    @apply bg-red-50 text-red-800 dark:bg-red-700 dark:text-gray-50;
+    @apply bg-red-50 text-red-800 dark:bg-gray-800 dark:text-red-400;
     button {
-      @apply hover:bg-red-200  focus:ring-red-900 dark:hover:bg-red-500;
+      @apply hover:bg-red-200 focus:ring-red-400 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700;
     }
   }
   .alert.success {
-    @apply bg-green-50 text-green-800 dark:bg-green-700 dark:text-gray-50;
+    @apply bg-green-50 text-green-800 dark:bg-gray-800 dark:text-green-400;
     button {
-      @apply hover:bg-green-200  focus:ring-green-600 dark:hover:bg-green-500;
+      @apply hover:bg-green-200  focus:ring-green-400 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700;
     }
   }
 
   .alert.warning {
     @apply bg-yellow-50  text-yellow-800 dark:bg-yellow-700 dark:text-gray-50;
     button {
-      @apply hover:bg-yellow-200 focus:ring-yellow-400 dark:hover:bg-yellow-500;
+      @apply hover:bg-yellow-200 focus:ring-yellow-400 dark:bg-gray-800 dark:text-yellow-300 dark:hover:bg-gray-700;
     }
   }
 
   .alert.secondary {
-    @apply bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-50;
+    @apply bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-yellow-300;
     button {
-      @apply hover:bg-gray-200 focus:ring-gray-400 dark:hover:bg-gray-500;
+      @apply hover:bg-gray-200 focus:ring-gray-400 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white;
     }
   }
 
   .card {
-    @apply bg-white p-4 shadow-md dark:bg-gray-800 sm:rounded-lg sm:p-8;
+    @apply rounded-lg bg-white p-4 shadow-md dark:bg-gray-800 sm:p-8;
   }
 
   .text-input {
-    label {
-      @apply mb-2 block text-sm font-medium text-gray-900 dark:text-white;
+    .label {
+      @apply block text-base font-extrabold text-gray-900 dark:text-white lg:text-lg;
     }
     textarea,
     select,
-    input {
-      @apply block w-full rounded-md border border-gray-300 bg-gray-50 text-base text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:!bg-gray-700 dark:!text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500;
+    .input-text {
+      @apply block w-full rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:!bg-gray-700 dark:!text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500;
     }
   }
   .text-input .icon {
@@ -105,49 +108,48 @@
     }
   }
 
-  .text-input.error label,
-  .text-input.error > div > div > svg {
-    @apply text-red-700 dark:text-red-500;
+  .text-input.error > div > div > svg,
+  .text-input.error .msg {
+    @apply text-red-700 dark:text-red-400;
   }
   .text-input.error textarea,
   .text-input.error select,
-  .text-input.error input {
+  .text-input.error input,
+  .text-input.error .input-text {
     @apply border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-500 dark:bg-gray-700 dark:text-white dark:placeholder-red-500 !important;
   }
-  .text-input.error p {
-    @apply text-red-600 dark:text-red-500;
-  }
-  .text-input.success label,
-  .text-input.success > div > div > svg {
-    @apply text-green-700 dark:text-green-500;
+  .text-input.success > div > div > svg,
+  .text-input.success .msg {
+    @apply text-green-700 dark:text-green-400;
   }
   .text-input.success textarea,
   .text-input.success select,
-  .text-input.success input {
+  .text-input.success input,
+  .text-input.error .input-text {
     @apply border-green-500 bg-green-50 text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:border-green-500 dark:!bg-gray-700 dark:text-white dark:placeholder-green-500;
   }
-  .text-input.success p {
-    @apply text-green-600 dark:text-green-500;
-  }
   .button {
-    @apply inline-flex items-center rounded-md border border-transparent  px-4 py-2 text-xs font-semibold uppercase tracking-widest  transition duration-150 ease-in-out  focus:outline-none focus:ring-2  focus:ring-offset-2 dark:focus:ring-offset-gray-800;
+    @apply inline-flex items-center rounded-md border border-transparent  px-4 py-2 text-xs font-semibold uppercase tracking-widest   focus:outline-none focus:ring-2  focus:ring-offset-2 dark:focus:ring-offset-gray-800;
     &.primary {
-      @apply bg-blue-600 text-white  focus:bg-blue-500  focus:ring-blue-500 disabled:bg-blue-400  dark:text-gray-50   dark:hover:bg-blue-500;
+      @apply bg-blue-600 text-white  focus:bg-blue-500  focus:ring-blue-500 disabled:bg-blue-400 dark:text-gray-50  dark:hover:bg-blue-500   dark:disabled:bg-blue-400;
     }
     &.error {
-      @apply bg-red-600 text-white focus:bg-red-500  focus:ring-red-500 disabled:bg-red-400  dark:text-gray-50 dark:hover:bg-red-500;
+      @apply bg-red-600 text-white focus:bg-red-500  focus:ring-red-500 disabled:bg-red-400 dark:text-gray-50  dark:hover:bg-red-500 dark:disabled:bg-red-400;
     }
     &.success {
-      @apply bg-green-600 text-white focus:bg-green-500  focus:ring-green-500 disabled:bg-green-400  dark:text-gray-50 dark:hover:bg-green-500;
+      @apply bg-green-600 text-white focus:bg-green-500  focus:ring-green-500 disabled:bg-green-400 dark:text-gray-50  dark:hover:bg-green-500 dark:disabled:bg-green-400;
     }
 
     &.warning {
-      @apply bg-yellow-600 text-white  focus:bg-yellow-500  focus:ring-yellow-500 disabled:bg-yellow-400 dark:text-gray-50 dark:hover:bg-yellow-500;
+      @apply bg-yellow-600 text-white  focus:bg-yellow-500  focus:ring-yellow-500 disabled:bg-yellow-400 dark:text-gray-50 dark:hover:bg-yellow-500 dark:disabled:bg-yellow-400;
     }
 
     &.secondary {
-      @apply bg-gray-50 text-gray-800 hover:bg-gray-200 focus:ring-gray-400 dark:bg-gray-700 dark:text-gray-50 dark:hover:bg-gray-500;
+      @apply border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-gray-100 disabled:hover:bg-white disabled:hover:text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 disabled:dark:hover:bg-gray-800 disabled:dark:hover:text-gray-400;
     }
+  }
+  .select2-dropdown {
+    @apply absolute z-50 float-left box-border block w-auto border-2 border-solid border-gray-600 bg-white;
   }
 }
 @layer base {

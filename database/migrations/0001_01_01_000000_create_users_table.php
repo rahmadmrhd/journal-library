@@ -10,7 +10,7 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('users', function (Blueprint $table) {
-      $table->id();
+      $table->uuid('id')->primary();
       $table->string('username')->unique()->nullable();
       $table->string('email')->unique()->nullable();
       $table->timestamp('email_verified_at')->nullable();
@@ -31,10 +31,12 @@ return new class extends Migration {
       $table->string('city')->nullable();
       $table->string('province')->nullable();
       $table->string('postal_code')->nullable();
-      $table->string('country')->nullable();
+      $table->foreignId('country_id')->nullable()->references('id')->on('countries')->onDelete('set null');
 
+      $table->boolean('status')->default(true);
       $table->rememberToken();
       $table->timestamps();
+      $table->softDeletes();
     });
 
     Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -45,7 +47,7 @@ return new class extends Migration {
 
     Schema::create('sessions', function (Blueprint $table) {
       $table->string('id')->primary();
-      $table->foreignId('user_id')->nullable()->index();
+      $table->foreignUuid('user_id')->nullable()->index();
       $table->string('ip_address', 45)->nullable();
       $table->text('user_agent')->nullable();
       $table->longText('payload');

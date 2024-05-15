@@ -17,10 +17,10 @@ Route::middleware('auth')->group(function () {
   Route::delete('/account', [App\Http\Controllers\SettingsController::class, 'accountDestroy'])->name('account.destroy');
 });
 
-Route::controller(\App\Http\Controllers\OrcidController::class)->group(function () {
-  Route::get('orcid/auth', 'auth')->middleware('guest');
-  Route::get('orcid/connect', 'connect')->middleware('auth');
-  Route::delete('orcid', 'destroy')->middleware('auth')->name('orcid.destroy');
+Route::middleware(['auth', 'verified'])->group(function () {
+  Route::resource('users', \App\Http\Controllers\UsersController::class)->middleware('role:admin');
+  Route::get('users/search/{find}', [\App\Http\Controllers\UsersController::class, 'find']);
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/manuscripts.php';

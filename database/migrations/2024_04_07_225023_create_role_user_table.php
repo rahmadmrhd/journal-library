@@ -10,11 +10,9 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('role_user', function (Blueprint $table) {
-      $table->id();
-
-      $table->unique(['role_id', 'user_id']);
-      $table->foreignId('role_id')->references('id')->on('roles');
-      $table->foreignId('user_id')->references('id')->on('users');
+      $table->primary(['role_id', 'user_id']);
+      $table->foreignId('role_id')->references('id')->on('roles')->cascadeOnDelete();
+      $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
     });
   }
 

@@ -1,15 +1,31 @@
+@props(['sizeHideSidebar' => 'lg', 'title', 'class' => ''])
+
+@php
+  $sizeList = [
+      'sm' => 'sm:ml-60',
+      'md' => 'md:ml-60',
+      'lg' => 'lg:ml-60',
+      'xl' => 'xl:ml-60',
+      '2xl' => '2xl:ml-60',
+  ][$sizeHideSidebar];
+@endphp
+
 @extends('layouts.master')
 
 @section('body')
 
   <body class="bg-gray-100 font-sans antialiased dark:bg-gray-900 dark:text-white">
     <!-- Page Heading -->
-    @include('partials.navbar')
-    @include('partials.sidebar')
+    <x-navbar :sizeHideSidebar="$sizeHideSidebar" />
+    <x-sidebar :sizeHideSidebar="$sizeHideSidebar" />
 
     <!-- Page Content -->
-    <main class="mt-16 p-4 lg:ml-60">
-      {{ $slot }}
+    <main class="{{ $sizeList }} {{ $class }} mt-16 p-4">
+      @if (request()->request->has('role_error'))
+        @include('auth.role-error')
+      @else
+        {{ $slot }}
+      @endif
     </main>
     <div id="loading-box"
       class="fixed bottom-0 left-0 right-0 top-0 z-[100] hidden items-center justify-center overflow-y-auto bg-gray-900/50 p-4 dark:bg-gray-900/80">
@@ -32,5 +48,6 @@
         </div>
       </div>
     </div>
+    @stack('body')
   </body>
 @endsection

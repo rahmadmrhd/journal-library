@@ -9,7 +9,7 @@
     </div>
 
     <!-- Session Status -->
-    <x-alert status="error" :messages="session('status')" />
+    <x-alert type="error" :messages="session('status')" />
 
     <form method="POST" action="{{ route('password.email', absolute: false) }}">
       @csrf

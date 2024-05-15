@@ -5,14 +5,23 @@
         <h1 class="text-3xl font-bold">Sign Up</h1>
         <x-toggle-theme />
       </div>
-      <x-alert status="error" :messages="session('status')" />
+      <x-alert type="error" :messages="session('status')" />
 
       <form method="POST" action="{{ route('register', absolute: false) }}">
         @csrf
         {{-- <input type="hidden" name="accessToken" value="{{ $accessToken ?? '' }}">
         <input type="hidden" name="orcid" value="{{ $orcid ?? '' }}"> --}}
-        <x-text-input :label="__('Name')" id="name" name="name" type="text" :value="old('name')" required autofocus
-          autocomplete="name" :messages="$errors->get('name')" :status="$errors->has('name') ? 'error' : ''" placeholder="John Doe">
+        <x-text-input :label="__('First Name')" id="first_name" name="first_name" type="text" :value="old('first_name')" required
+          autofocus autocomplete="first_name" :messages="$errors->get('first_name')" :status="$errors->has('first_name') ? 'error' : ''" placeholder="John Doe">
+          <x-slot name="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="currentColor"
+                d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4" />
+            </svg>
+          </x-slot>
+        </x-text-input>
+        <x-text-input :label="__('Last Name')" id="last_name" name="last_name" type="text" :value="old('last_name')" required
+          autofocus autocomplete="last_name" :messages="$errors->get('last_name')" :status="$errors->has('last_name') ? 'error' : ''" placeholder="John Doe">
           <x-slot name="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path fill="currentColor"

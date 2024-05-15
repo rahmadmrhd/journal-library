@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ajcastro/eager-load-pivot-relations": "^0.3.0",
         "barryvdh/laravel-dompdf": "^2.1",
         "blade-ui-kit/blade-icons": "^1.6",
         "codeat3/blade-google-material-design-icons": "^1.19",

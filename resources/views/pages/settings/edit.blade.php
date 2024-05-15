@@ -19,14 +19,14 @@
   </div>
 
   {{-- Alert --}}
-  @if (session('message'))
+  @if (session('alert'))
     @php
-      $msg = session('message');
+      $msg = session('alert');
     @endphp
-    <x-alert class="sm:mx-6" :status="$msg['status']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
+    <x-alert class="sm:mx-6" :type="$msg['type']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
   @endif
   @if (!isset($user->email) || !isset($user->username) || !isset($user->password))
-    <x-alert class="sm:mx-6" :status="'warning'" :id="'warning-box'" :closeable="false">
+    <x-alert class="sm:mx-6" :type="'warning'" :id="'warning-box'" :closeable="false">
       <span class="font-medium">Please update your account and password information first! </span>
       <a x-data="{ show: window.location.hash != '#account' }" x-on:hashchange.window="show = window.location.hash != '#account' " x-show="show"
         class="underline underline-offset-1 hover:text-blue-500" href="#account">Click Here</a>
@@ -36,10 +36,10 @@
   {{-- Tab Content --}}
   <div id="tab-content" class="py-4 sm:px-6">
     <div class="hidden space-y-6" id="profile-content">
-      @include('settings.partials.profile')
+      @include('pages.settings.partials.profile')
     </div>
     <div class="hidden space-y-6" id="account-content">
-      @include('settings.partials.account')
+      @include('pages.settings.partials.account')
     </div>
   </div>
   @vite(['resources/js/settings.js'])
