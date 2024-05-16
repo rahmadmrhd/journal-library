@@ -33,6 +33,10 @@ class ManuscriptController extends Controller {
       Gate::authorize('update', $manuscript);
     } else {
       Gate::authorize('create', Manuscript::class);
+      $isAlready = $this->service->isAlreadySubmitted();
+      if ($isAlready) {
+        return redirect()->route('manuscripts.index')->with('already-submission', $isAlready);
+      }
     }
     $data = $this->service->showSubmission($manuscript);
 

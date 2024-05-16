@@ -142,6 +142,10 @@ class SubmitNewManuscriptService {
     });
   }
 
+  public function isAlreadySubmitted() {
+    return Auth::user()->manuscripts()->whereNull('submited_at')->wherePivot('is_corresponding_author', true)->latest()->first();
+  }
+
   public function create(Request $request) {
     $validator = $this->validate($request->all(), ['filesId', 'filesId.*']);
     $validator->validate();
