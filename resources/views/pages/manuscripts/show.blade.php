@@ -169,6 +169,94 @@
   </div>
 
   <div class="card mt-6">
+    <div class="mb-3 border-b border-gray-300 pb-2 dark:border-gray-700">
+      <h3 class="text-left text-xl font-extrabold lg:text-3xl">
+        Progress
+      </h3>
+    </div>
+    <x-tabs-panel class="mt-3" :withFragment="true" :tabs="[
+        [
+            'label' => 'Asisten',
+            'name' => 'asisten',
+        ],
+        [
+            'label' => 'Editor',
+            'name' => 'editor',
+        ],
+        [
+            'label' => 'Reviewer',
+            'name' => 'reviewer',
+        ],
+    ]">
+      <x-slot name="asisten">
+        <div class="user-info mb-4">
+          <h4 class="text-lg font-bold">User Information</h4>
+          <p>Name: Asisten User</p>
+          <p>Email: asisten@example.com</p>
+        </div>
+        <x-text-input class="col-span-12" type="select" label="Recommendation" name="documentation" :disabled="true">
+          <option selected disabled>Recommendation</option>
+          <option value="category1">Category 1</option>
+          <option value="category2">Category 2</option>
+        </x-text-input>
+        <x-text-editor id="asisten-editor" label="Asisten Notes" variable="asistenEditor" initValue=""
+          :disabled="true" />
+      </x-slot>
+
+      <x-slot name="editor">
+        <div class="user-info mb-4">
+          <h4 class="text-lg font-bold">User Information</h4>
+          <p>Name: Editor User</p>
+          <p>Email: editor@example.com</p>
+        </div>
+        <x-text-input class="col-span-12" type="select" label="Recommendation" name="recommendation" :disabled="true">
+          <option selected disabled>Recommendation</option>
+          <option value="category1">Category 1</option>
+          <option value="category2">Category 2</option>
+        </x-text-input>
+        <x-text-editor id="editor" label="Editor Notes" variable="editor" initValue="" :disabled="true" />
+        <div class="mt-4 h-auto w-full rounded-lg bg-gray-50 px-4 pb-2 shadow-md dark:bg-gray-700">
+          <x-table :columns="[
+              ['label' => 'REVIEWER', 'name' => 'REVIEWER', 'isSortable' => false],
+              ['label' => 'INSTITUTION', 'name' => 'INSTITUTION', 'isSortable' => false],
+          ]">
+            <tbody>
+              <tr>
+                <td>Reviewer 1</td>
+                <td>Institution 1</td>
+              </tr>
+              <tr>
+                <td>Reviewer 2</td>
+                <td>Institution 2</td>
+              </tr>
+              <tr>
+                <td>Reviewer 3</td>
+                <td>Institution 3</td>
+              </tr>
+            </tbody>
+          </x-table>
+        </div>
+      </x-slot>
+
+      <x-slot name="reviewer">
+        <div class="user-info mb-4">
+          <h4 class="text-lg font-bold">User Information</h4>
+          <p>Name: Reviewer User</p>
+          <p>Email: reviewer@example.com</p>
+        </div>
+        <x-text-input class="col-span-12" type="select" label="Recommendation" name="documentation"
+          :disabled="true">
+          <option selected disabled>Recommendation</option>
+          <option value="category1">Category 1</option>
+          <option value="category2">Category 2</option>
+        </x-text-input>
+        <x-text-editor id="reviewer-editor" label="Reviewer Notes" variable="reviewerEditor" initValue=""
+          :disabled="true" />
+      </x-slot>
+    </x-tabs-panel>
+  </div>
+
+  <div class="card mt-6">
     <div class="mb-2 border-b border-gray-300 pb-2 dark:border-gray-700">
       <h3 class="text-left text-xl font-extrabold lg:text-3xl">
         Your Decision
@@ -201,3 +289,4 @@
     </x-tabs-panel>
   </div>
 </x-app-layout>
+
