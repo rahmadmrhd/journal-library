@@ -9,9 +9,13 @@ Route::middleware(['auth', 'verified', 'role:author'])->controller(\App\Http\Con
   Route::get('manuscripts', 'index',)->name('manuscripts.index');
   Route::get('manuscripts/create/{manuscript?}', 'create',)->name('manuscripts.create')->middleware('remove_params');
   Route::put('manuscripts/create/{manuscript?}', 'storeFile',)->name('manuscripts.storeFile');
-  Route::put('manuscripts/create/{manuscript?}/basic-information', 'storeBasicInformation',)->name('manuscripts.storeBasicInformation');
-  Route::put('manuscripts/create/{manuscript?}/authors', 'storeAuthors')->name('manuscripts.storeAuthors');
-  Route::put('manuscripts/create/{manuscript?}/details', 'storeDetails')->name('manuscripts.storeDetails');
-  Route::put('manuscripts/create/{manuscript?}/submit', 'submit')->name('manuscripts.submit');
+  Route::put('manuscripts/create/{manuscript}/basic-information', 'storeBasicInformation',)->name('manuscripts.storeBasicInformation');
+  Route::put('manuscripts/create/{manuscript}/authors', 'storeAuthors')->name('manuscripts.storeAuthors');
+  Route::put('manuscripts/create/{manuscript}/details', 'storeDetails')->name('manuscripts.storeDetails');
+  Route::put('manuscripts/create/{manuscript}/submit', 'submit')->name('manuscripts.submit');
   Route::patch('manuscripts/create/change_step/{manuscript?}', 'changeStep',)->name('manuscripts.change_step');
+  Route::delete('manuscripts/{manuscript}/cancel', 'cancel')->name('manuscripts.cancel');
+  Route::delete('manuscripts/{manuscript}', 'destroy')->name('manuscripts.destroy');
+
+  Route::get('manuscripts/{manuscript}', 'show',)->name('manuscripts.show');
 });

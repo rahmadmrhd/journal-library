@@ -48,7 +48,7 @@ class SubmitNewManuscriptService {
     //get progress
     $progress = $manuscript->steps;
     $isSuccess = true;
-    $steps = $steps->map(function ($step) use ($progress, &$isSuccess) {
+    $steps = $steps->map(function ($step) use ($progress, &$isSuccess,) {
       $status = $progress->find($step->id)->pivot->status ?? null;
       // if ($status == 'error')
       //   $isSuccess = false;
@@ -104,6 +104,8 @@ class SubmitNewManuscriptService {
         });
         $manuscript->filesId = $manuscript->files->pluck('id')->toArray();
         $manuscript->isSoleAuthor = $manuscript->authors->count() <= 0;
+
+        $data['categories'] = Category::all();
         break;
     }
 
@@ -115,13 +117,23 @@ class SubmitNewManuscriptService {
       $validator = $this->validate($manuscript->toArray(), $rules);
       if ($validator->fails()) {
         $data['errors'] = $validator->errors();
+        $messages = collect([]);
+        if ($manuscript->current_step == 5) {
+          $steps->each(function ($step) use (&$messages) {
+            if ($step->id == 5)
+              return;
+            if ($step->status == null) {
+              $messages->push('Please complete step ' . $step->id . ' first. ');
+            }
+          });
+        }
+        $messages->push(...collect($validator->errors()->getMessages())->map(function ($messages) {
+          return collect($messages)->values();
+        })->values()->collapse());
         $data['alert'] = [
           'type' => 'error',
-          'title' => 'Please fix the following issues then click Save & Continue:',
-          'messages' => collect($validator->errors()->getMessages())->map(function ($messages) {
-            $messages = collect($messages)->join('\n');
-            return $messages;
-          })->values()->toArray(),
+          'title' => 'Please fix the following issues then click ' . ($manuscript->current_step == 5 ? '"Submit"' : '"Save & Continue"') . ':',
+          'messages' => $messages->toArray(),
         ];
       }
     }
@@ -142,8 +154,8 @@ class SubmitNewManuscriptService {
     });
   }
 
-  public function isAlreadySubmitted() {
-    return Auth::user()->manuscripts()->whereNull('submited_at')->wherePivot('is_corresponding_author', true)->latest()->first();
+  public function isAlreadySubmitted(Request $request) {
+    return $request->user()->manuscripts()->whereNull('submitted_at')->wherePivot('is_corresponding_author', true)->latest()->first();
   }
 
   public function create(Request $request) {
@@ -159,6 +171,11 @@ class SubmitNewManuscriptService {
     $manuscript->steps()->attach([1 => ['status' => 'success']]);
 
     $manuscript->current_step = 2;
+
+    $manuscript->logs()->create([
+      'user_id' => Auth::user()->id,
+      'activity' => 'Manuscript was created',
+    ]);
 
     $manuscript->save();
 
@@ -215,10 +232,12 @@ class SubmitNewManuscriptService {
       'paper_contain' => $request->has('paper_contain') ? ($request->paper_contain ?? false) : null,
       'open_access' => $request->has('open_access') ? ($request->open_access ?? false) : null,
       'using_paperpal' => $request->has('using_paperpal') ? ($request->using_paperpal ?? false) : null,
+      'cover_letter' => json_decode($request->cover_letter, true),
     ]);
+
     $validator = $this->validate($request->all(), ['parent_id', 'funders',  'funders.*.id',  'funders.*.name',  'funders.*.grants',  'funders.*.grants.*',   'potential_conflict',  'paper_contain',  'open_access',  'using_paperpal']);
 
-    $manuscript->fill($request->only(['parent_id', 'potential_conflict', 'paper_contain', 'open_access', 'using_paperpal']));
+    $manuscript->fill($request->only(['cover_letter', 'parent_id', 'potential_conflict', 'paper_contain', 'open_access', 'using_paperpal']));
 
     $funders = $manuscript->funders()->get();
     if ($request->has('funders')) {
@@ -243,14 +262,47 @@ class SubmitNewManuscriptService {
     $manuscript->save();
     return $manuscript;
   }
+
   public function submit(Manuscript $manuscript) {
     $data = $manuscript->toArray();
+    $data['filesId'] = $manuscript->files->pluck('id')->toArray();
+    $data['keywords'] = $manuscript->keywords->pluck('name')->toArray();
+
     $validator = $this->validate($data);
 
     $this->updateCurrentStep($manuscript, $validator, 5);
     if (!$validator->fails()) {
-      $manuscript->submited_at = now();
+      $manuscript->submitted_at = now();
+
+      $manuscript->logs()->create([
+        'user_id' => Auth::user()->id,
+        'activity' => 'Manuscript was submitted',
+      ]);
+
+      //generate code
+      $latestManuscript = Manuscript::orderBy('submitted_at', 'desc')->first();
+      $datenow = \Carbon\Carbon::now()->format('mY');
+      $manuscript->number = $datenow !=
+        \Carbon\Carbon::parse($latestManuscript->created_at)->format('mY') ? 1 : $latestManuscript->number + 1;
+      $manuscript->code = config('app.name_alias') . "-" .
+        $datenow . "-" . sprintf('%04d', $manuscript->number);
     }
+
+    $manuscript->save();
+
     return $manuscript;
+  }
+
+  public function cancel(Manuscript $manuscript) {
+    $manuscript->canceled_at = now();
+
+    $manuscript->steps()->detach();
+
+    $manuscript->logs()->create([
+      'user_id' => Auth::user()->id,
+      'activity' => 'Manuscript was cancelled',
+    ]);
+
+    $manuscript->save();
   }
 }

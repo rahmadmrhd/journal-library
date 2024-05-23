@@ -49,12 +49,15 @@ class User extends Authenticatable {
       'password' => 'hashed',
     ];
   }
+
   public function roles() {
     return $this->belongsToMany(Role::class, 'role_user');
   }
+
   public function getFullName(): string {
     return $this->title . ' ' . $this->first_name . ' ' . $this->last_name . ' ' . $this->degree;
   }
+
   public function getCurrentRole(): Role {
     return Role::find($this->current_role_id);
   }
@@ -65,5 +68,9 @@ class User extends Authenticatable {
 
   public function country() {
     return $this->belongsTo(Country::class);
+  }
+
+  public function logs() {
+    return $this->hasMany(Log::class,);
   }
 }

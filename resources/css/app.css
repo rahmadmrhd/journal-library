@@ -48,7 +48,7 @@
       @apply focus:ring-2;
     }
   }
-  .alert.info {
+  .alert.primary {
     @apply bg-blue-50  text-blue-800 dark:bg-gray-800 dark:text-blue-400;
     button {
       @apply hover:bg-blue-200 focus:ring-blue-400 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700;
@@ -89,6 +89,9 @@
     .label {
       @apply block text-base font-extrabold text-gray-900 dark:text-white lg:text-lg;
     }
+    .description {
+      @apply mb-2 text-sm font-normal italic text-gray-900 dark:font-thin dark:text-gray-200;
+    }
     textarea,
     select,
     .input-text {
@@ -115,8 +118,9 @@
   .text-input.error textarea,
   .text-input.error select,
   .text-input.error input,
+  .text-input.error .checkbox-input,
   .text-input.error .input-text {
-    @apply border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-500 dark:bg-gray-700 dark:text-white dark:placeholder-red-500 !important;
+    @apply divide-red-500 !divide-opacity-25 border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:divide-red-500 dark:!divide-opacity-25 dark:border-red-500 dark:bg-gray-700 dark:text-white dark:placeholder-red-500 !important;
   }
   .text-input.success > div > div > svg,
   .text-input.success .msg {
@@ -125,8 +129,9 @@
   .text-input.success textarea,
   .text-input.success select,
   .text-input.success input,
-  .text-input.error .input-text {
-    @apply border-green-500 bg-green-50 text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:border-green-500 dark:!bg-gray-700 dark:text-white dark:placeholder-green-500;
+  .text-input.success .checkbox-input,
+  .text-input.success .input-text {
+    @apply divide-green-500 border-green-500 bg-green-50 text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:divide-green-500 dark:border-green-500 dark:!bg-gray-700 dark:text-white dark:placeholder-green-500;
   }
   .button {
     @apply inline-flex items-center rounded-md border border-transparent  px-4 py-2 text-xs font-semibold uppercase tracking-widest   focus:outline-none focus:ring-2  focus:ring-offset-2 dark:focus:ring-offset-gray-800;
@@ -150,6 +155,46 @@
   }
   .select2-dropdown {
     @apply absolute z-50 float-left box-border block w-auto border-2 border-solid border-gray-600 bg-white;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-sm font-medium;
+    .badge-point {
+      @apply me-2 h-2 w-2 rounded-full;
+    }
+    svg {
+      @apply me-2 h-6 w-6;
+    }
+    &.primary {
+      @apply bg-blue-100  text-blue-800 dark:bg-blue-900 dark:text-blue-300;
+      .badge-point {
+        @apply bg-blue-500;
+      }
+    }
+    &.success {
+      @apply bg-green-100  text-green-800 dark:bg-green-900 dark:text-green-300;
+      .badge-point {
+        @apply bg-green-500;
+      }
+    }
+    &.error {
+      @apply bg-red-100  text-red-800 dark:bg-red-900 dark:text-red-300;
+      .badge-point {
+        @apply bg-red-500;
+      }
+    }
+    &.warning {
+      @apply bg-yellow-100  text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300;
+      .badge-point {
+        @apply bg-yellow-500;
+      }
+    }
+    &.secondary {
+      @apply bg-gray-100  text-gray-800 dark:bg-gray-900 dark:text-gray-300;
+      .badge-point {
+        @apply bg-gray-500;
+      }
+    }
   }
 }
 @layer base {

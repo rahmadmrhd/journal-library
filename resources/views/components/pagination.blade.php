@@ -114,5 +114,5 @@
       </ul>
     @endif
   </div>
-  @vite(['resources/js/pagination.js'])
+  @vite(['resources/js/components/pagination.js'])
 </nav>

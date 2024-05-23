@@ -10,7 +10,7 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('file_types', function (Blueprint $table) {
-      $table->id();
+      $table->tinyIncrements('id')->primary();
       $table->string('name');
       $table->string('slug')->unique();
       $table->string('extensions')->nullable();

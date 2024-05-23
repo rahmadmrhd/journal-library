@@ -9,11 +9,15 @@ return new class extends Migration {
    * Run the migrations.
    */
   public function up(): void {
-    Schema::create('role_user', function (Blueprint $table) {
-      $table->primary(['role_id', 'user_id']);
-      $table->unsignedTinyInteger('role_id');
-      $table->foreign('role_id')->references('id')->on('roles')->cascadeOnDelete();
+    Schema::create('logs', function (Blueprint $table) {
+      $table->uuid('id')->primary();
+      $table->string('activity');
+      $table->text('description')->nullable();
+
+      $table->uuid('loggable_id');
+      $table->string('loggable_type');
       $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
+      $table->timestamps();
     });
   }
 
@@ -21,6 +25,6 @@ return new class extends Migration {
    * Reverse the migrations.
    */
   public function down(): void {
-    Schema::dropIfExists('role_user');
+    Schema::dropIfExists('logs');
   }
 };

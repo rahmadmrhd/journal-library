@@ -49,5 +49,29 @@
       </div>
     </div>
     @stack('body')
+
+    <x-modal name="file-preview" focusable x-on:load.window="window.$dispatch= $dispatch">
+      <div
+        class="card relative h-screen w-full !p-0 sm:w-[80vw] lg:h-[80vh] lg:w-[1024px] xl:h-[70vh] xl:w-[1280px] 2xl:w-[1536px]">
+        <div class="relative flex items-center justify-between p-2 !px-4">
+          <h3 class="text-lg font-bold">File Preview</h3>
+          <button class="button secondary !p-2" type="button" x-on:click="$dispatch('close')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24">
+              <path fill="currentColor"
+                d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z" />
+            </svg>
+          </button>
+        </div>
+        <div id="container-file" class="relative h-[95%] w-full">
+          {{-- <iframe
+      src="https://view.officeapps.live.com/op/embed.aspx?src=https://13vtlvqnkb.sharedwithexpose.com/files/manuscripts/9c1306ca-e277-4810-acfd-18ced2d8ffae/9c130608-323b-43e6-b80c-3914c268179e.xlsx"
+      class="min-h-screen w-full" frameborder="0"></iframe> --}}
+          {{-- <object name="test.pdf" type="application/pdf" data="/files/temps/uazZmSEBvUW6d1plESP19yywhgmDRy6HgAVjzzlp.pdf"
+            class="relative h-full w-full">
+          </object> --}}
+        </div>
+      </div>
+    </x-modal>
+    @vite(['resources/js/components/loading-handler.js', 'resources/js/components/file-preview.js'])
   </body>
 @endsection

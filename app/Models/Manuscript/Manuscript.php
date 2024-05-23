@@ -3,6 +3,7 @@
 namespace App\Models\Manuscript;
 
 use App\Models\Funder;
+use App\Models\Log;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 class Manuscript extends Model {
   use HasFactory, HasUuids;
   protected $guarded = ['id'];
+  protected $casts = [
+    'cover_letter' => 'array',
+  ];
 
   public function authors() {
-    return $this->belongsToMany(User::class, 'manuscript_author')->using(ManuscriptAuthor::class);
+    return $this->belongsToMany(User::class, 'manuscript_author')->using(ManuscriptAuthor::class)->withPivot('is_corresponding_author');
   }
   public function files() {
     return $this->hasMany(File::class);
@@ -29,6 +33,9 @@ class Manuscript extends Model {
   }
   public function funders() {
     return $this->hasMany(Funder::class,);
+  }
+  public function logs() {
+    return $this->morphMany(Log::class, 'loggable')->latest();
   }
 
   public function parent() {
@@ -48,7 +55,7 @@ class Manuscript extends Model {
 
       'title' => ['required', 'string', 'min:3', 'max:255'],
       'category_id' => ['required', 'integer', 'exists:categories,id'],
-      'abstract' => ['required', 'string', 'min:100', 'max:1000'],
+      'abstract' => ['required', 'string', 'min:3', 'max:2000'],
       'keywords' => ['required', 'array', 'min:3'],
       'keywords.*' => ['required', 'min:3', 'max:25'],
 
@@ -67,6 +74,8 @@ class Manuscript extends Model {
       'paper_contain' => ['required', 'boolean'],
       'open_access' => ['required', 'boolean'],
       'using_paperpal' => ['required', 'boolean'],
+      'cover_letter' => ['nullable', 'array', 'min:3'],
+      'cover_letter.blocks' => ['required', 'array', 'min:1'],
     ]);
 
     if ($only) {

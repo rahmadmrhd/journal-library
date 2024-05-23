@@ -34,21 +34,19 @@ class ManuscriptPolicy {
    * Determine whether the user can update the model.
    */
   public function update(User $user, Manuscript $manuscript): bool {
-    return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id;
+    return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id && $manuscript->submitted_at === null;
+  }
+
+  public function cancel(User $user, Manuscript $manuscript): bool {
+    return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id && $manuscript->submitted_at != null;
   }
 
   /**
    * Determine whether the user can delete the model.
    */
   public function delete(User $user, Manuscript $manuscript): bool {
-    switch ($user->getCurrentRole()->slug) {
-      case 'author':
-        return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id;
-      case 'admin':
-        return true;
-      default:
-        return false;
-    }
+    return $manuscript->authors()->wherePivot('is_corresponding_author', true)->first()?->id === $user->id
+      && $manuscript->submitted_at === null;
   }
 
   /**

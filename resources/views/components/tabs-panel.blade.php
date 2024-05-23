@@ -1,23 +1,27 @@
 @props([
     'tabs' => [],
+    'withFragment' => false,
 ])
-<script>
-  window.tabs = @json($tabs)
-</script>
 <div
-  class="sticky top-16 z-10 -mx-4 mb-4 border-b-2 border-gray-200 bg-gray-100 px-4 dark:border-gray-700 dark:bg-gray-900 sm:px-10 lg:px-12">
-  <ul class="-mb-px flex flex-wrap text-center text-sm font-medium" id="tab">
+  {{ $attributes->merge(['class' => 'sticky top-16 z-10 mb-4 border-b-2 border-gray-200 bg-inherit dark:border-gray-700']) }}>
+  <ul class="-mb-px flex flex-wrap text-center text-sm font-medium" x-data x-ref="tab"
+    x-on:load.window="registerTabsPanel(@js($tabs), $refs.tab, @js($withFragment))">
     @foreach ($tabs as $tab)
       <li class="me-2">
         <a href="#{{ $tab['name'] }}" class="inline-block rounded-t-lg p-4"
-          id="{{ $tab['name'] }}-tab">{{ $tab['title'] }}</a>
+          id="{{ $tab['name'] }}-tab">{{ $tab['label'] }}</a>
       </li>
     @endforeach
   </ul>
 </div>
 {{-- Tab Content --}}
-<div id="tab-content" class="py-4 sm:px-6">
-  {{ $slot }}
+<div id="tab-content">
+  @foreach ($tabs as $tab)
+    <div {{ ${$tab['name']}->attributes->merge(['class' => 'hidden']) }} id="{{ $tab['name'] . '-content' }}"
+      role="tabpanel">
+      {{ ${$tab['name']} }}
+    </div>
+  @endforeach
 </div>
 
 @vite(['resources/js/components/tabs-panel.js'])

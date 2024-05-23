@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manuscript;
 
 use App\Http\Controllers\Controller;
+use App\Models\Manuscript\FileType;
 use App\Models\Manuscript\Manuscript;
 use App\Services\Manuscripts\SubmitNewManuscriptService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -30,10 +31,13 @@ class ManuscriptController extends Controller {
    */
   public function create(Request $request, Manuscript $manuscript = null) {
     if ($manuscript) {
+      if ($manuscript->submitted_at) {
+        return redirect()->route('manuscripts.show', $manuscript);
+      }
       Gate::authorize('update', $manuscript);
     } else {
       Gate::authorize('create', Manuscript::class);
-      $isAlready = $this->service->isAlreadySubmitted();
+      $isAlready = $this->service->isAlreadySubmitted($request);
       if ($isAlready) {
         return redirect()->route('manuscripts.index')->with('already-submission', $isAlready);
       }
@@ -91,7 +95,6 @@ class ManuscriptController extends Controller {
     return redirect()->route('manuscripts.create', $manuscript);
   }
 
-
   public function submit(Manuscript $manuscript) {
     Gate::authorize('update', $manuscript);
     $manuscript = $this->service->submit($manuscript);
@@ -102,7 +105,18 @@ class ManuscriptController extends Controller {
 
     return redirect()->route('manuscripts.index')->with('alert', [
       'type' => 'success',
-      'message' => 'Manuscript submitted successfully!',
+      'messages' => 'Manuscript submitted successfully!',
+    ]);
+  }
+
+  public function cancel(Manuscript $manuscript) {
+    Gate::authorize('cancel', $manuscript);
+
+    $this->service->cancel($manuscript);
+
+    return redirect()->route('manuscripts.index')->with('alert', [
+      'type' => 'success',
+      'message' => 'Manuscript canceled successfully!',
     ]);
   }
 
@@ -110,7 +124,15 @@ class ManuscriptController extends Controller {
    * Display the specified resource.
    */
   public function show(Manuscript $manuscript) {
-    //
+    if (!$manuscript->submitted_at) {
+      return redirect()->route('manuscripts.create', $manuscript);
+    }
+    Gate::authorize('view', $manuscript);
+
+    return view('pages.manuscripts.show', [
+      'manuscript' => $manuscript,
+      'file_types' => FileType::orderBy('required', 'desc')->get(),
+    ]);
   }
 
   /**
@@ -131,6 +153,13 @@ class ManuscriptController extends Controller {
    * Remove the specified resource from storage.
    */
   public function destroy(Manuscript $manuscript) {
-    //
+    Gate::authorize('delete', $manuscript);
+
+    $manuscript->delete();
+
+    return redirect()->route('manuscripts.index')->with('alert', [
+      'type' => 'success',
+      'message' => 'Manuscript deleted successfully!',
+    ]);
   }
 }
