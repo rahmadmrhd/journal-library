@@ -1,23 +1,20 @@
+@props([
+    'isReadOnly' => false,
+    'files',
+    'isDraft' => false,
+])
+
 @push('head')
   <meta name="_token" content="{{ csrf_token() }}">
 @endpush
-@php
-  $manuscript = $manuscript ?? (object) [];
-  $manuscript->isShow = isset($manuscript->isShow) ? $manuscript->isShow : false;
-  $manuscript->isReview = $manuscript->isReview ?? $manuscript->isShow;
-@endphp
 @vite('resources/css/file.css')
 <script>
   window.isReview = @js($manuscript->isReview);
 </script>
-<form id="manuscript-form" class="" method="POST"
-  action="{{ route('manuscripts.storeFile', $manuscript->id ?? '') }}">
-  @csrf
-  @method('PUT')
-
+<div {!! $attributes !!}>
   <div id="dropbox" x-data="{ show: true, hover: false }" x-on:drop="hover = false;dropboxOndrop($event, $dispatch);"
-    class="@if (!$manuscript->isShow) min-h-72 @endif group relative flex w-full items-center justify-center"
-    x-on:load.window="window.$dispatch= $dispatch;getFilesManuscript($dispatch, @js(session('files') ?? ($manuscript->files ?? null)), @js($file_types ?? null), @js(session()->has('files')))">
+    class="@if (!$isReadOnly) min-h-72 @endif group relative flex w-full items-center justify-center"
+    x-on:load.window="window.$dispatch= $dispatch;setFiles($dispatch, @js($files), @js($isDraft))">
 
     {{-- list file --}}
     <div id="table-file" class="top-0 h-full w-full self-start opacity-100 transition-all"
@@ -40,13 +37,6 @@
               'isSortable' => false,
           ],
           [
-              'label' => 'File Type',
-              'name' => 'file_type',
-              'isSortable' => false,
-              'required' => true,
-          ],
-      
-          [
               'label' => '',
               'name' => 'action',
               'isSortable' => false,
@@ -67,14 +57,6 @@
               <div id="progress-bar" class="h-1 w-[1%] rounded-full bg-blue-600"></div>
             </div>
           </th>
-          <th class="min-w-64 w-[10%] px-2 py-2">
-            <input type="hidden" name="file_type_before">
-            <x-text-input class="!mb-0 !p-1 !text-xs !font-light" type="select" name="file_type" autofocus
-              :disabled="$manuscript->isReview">
-              <option value="" disabled selected>-- Select File Type --</option>
-            </x-text-input>
-          </th>
-
           <td class="w-[1%] border-l border-gray-200 px-2 py-2 text-center dark:border-gray-700">
             <div class="flex w-fit items-center gap-x-2 px-2 text-center">
               <a id="button-download" class="button secondary !p-2">
@@ -132,8 +114,8 @@
                       clip-rule="evenodd"></path>
                   </svg>
                 </button>
-                <svg id="loader" role="status" class="inline h-6 w-6 animate-spin text-white"
-                  viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg id="loader" role="status" class="inline h-6 w-6 animate-spin text-white" viewBox="0 0 100 101"
+                  fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                     fill="#E5E7EB" />
@@ -145,10 +127,6 @@
             </div>
           </div>
           <input type="hidden" name="file_type_before">
-          <x-text-input class="!mb-0 !mt-2 !p-1 !text-xs !font-light" label="File Type" type="select" required
-            name="file_type" autofocus :disabled="$manuscript->isReview">
-            <option value="" disabled selected>-- Select File Type --</option>
-          </x-text-input>
         </li>
       </ul>
     </div>
@@ -178,6 +156,6 @@
       </div>
     @endif
   </div>
-</form>
+</div>
 
-@vite('resources/js/form-submission/upload-file.js')
+@vite('resources/js/components/files.js')

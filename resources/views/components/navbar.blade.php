@@ -29,8 +29,9 @@
       <div class="ms-2 hidden md:me-24 md:flex">
         <x-application-logo class="me-3 h-10" />
         {{-- <img src="{{ url('storage/logo_untag.png') }}" class="me-3 h-10 self-center" alt="Untag Logo" /> --}}
-        <div class="flex flex-col self-center">
-          <span class="text-md whitespace-nowrap font-semibold uppercase dark:text-white">Submission System</span>
+        <div class="flex flex-col items-center self-center">
+          <span
+            class="whitespace-nowrap text-lg font-extrabold uppercase dark:text-white">{{ config('app.name') }}</span>
           {{-- <span class="whitespace-nowrap text-sm font-normal uppercase dark:text-white">Universitas 17 Agustus
             1945</span> --}}
         </div>

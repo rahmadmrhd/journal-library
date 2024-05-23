@@ -10,8 +10,9 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('step_submissions', function (Blueprint $table) {
-      $table->id();
+      $table->tinyIncrements('id')->primary();
       $table->string('name');
+      $table->text('description')->nullable();
       $table->timestamps();
     });
   }

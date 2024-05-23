@@ -21,9 +21,6 @@ window.changeDropboxView = () => {
 }
 window.rowFiles = {};
 
-window.onload = () => {
-  rowListExample.querySelector('select[name="file_type"]').required = false;
-}
 
 function setProgress(parent, isLoad, progress) {
   if (isLoad) {
@@ -59,23 +56,10 @@ function attachFile(parent, file, file_types, isList) {
   parent.querySelector('a').href = '/' + file.path;
   parent.querySelector('a').download = file.name;
 
-  const selectFileType = parent.querySelector('select[name="file_type"]');
-  file_types.forEach((type) => {
-    const option = document.createElement('option');
-    option.value = type.id;
-    option.innerHTML = (type.required ? '** ' : '') + type.name;
-    selectFileType.appendChild(option);
-  });
-  if (file.file_type_id) selectFileType.value = file.file_type_id;
   if (!isList) {
     rowFiles[inputId.value] = {
       ...rowFiles[inputId.value],
       rowTable: parent,
-    }
-    selectFileType.onchange = (e) => {
-      const selectFileTypeList = rowFiles[inputId.value].rowList.querySelector('select[name="file_type"]');
-      selectFileTypeList.value = e.currentTarget.value;
-      updateData(inputId.value, e.currentTarget.value)
     }
   }
   else {
@@ -83,14 +67,9 @@ function attachFile(parent, file, file_types, isList) {
       ...rowFiles[inputId.value],
       rowList: parent,
     }
-    selectFileType.onchange = (e) => {
-      const selectFileTypeTable = rowFiles[inputId.value].rowTable.querySelector('select[name="file_type"]');
-      selectFileTypeTable.value = e.currentTarget.value;
-      updateData(inputId.value, e.currentTarget.value)
-    }
   }
 }
-window.getFilesManuscript = ($dispatch, files, file_types, isDraft) => {
+window.setFiles = ($dispatch, files, isDraft) => {
   if (!files) return;
   if (!file_types) {
     file_types = []
@@ -109,51 +88,6 @@ window.getFilesManuscript = ($dispatch, files, file_types, isDraft) => {
   if (!isDraft)
     window.dataForm = window.form?.serialize();
   $dispatch('dropbox')
-}
-function updateData(fileId, file_type) {
-  const selectFileTypeTable = rowFiles[fileId].rowTable;
-  const selectFileTypeList = rowFiles[fileId].rowList;
-  setProgress(selectFileTypeTable, true);
-  setProgress(selectFileTypeList, true);
-  $.ajax({
-    url: `/files/${fileId}`,
-    type: "POST",
-    cache: false,
-    data: {
-      _token: $('meta[name="csrf-token"]').attr("content"),
-      _method: "PUT",
-      file_type_id: file_type,
-    },
-    success: function (response) {
-      if (!response.success) return;
-      selectFileTypeTable.querySelector('select[name="file_type"]').value = response.file.file_type_id;
-      selectFileTypeTable.querySelector('input[name="file_type_before"]').value = response.file.file_type_id;
-      selectFileTypeList.querySelector('input[name="file_type_before"]').value = response.file.file_type_id;
-      setProgress(selectFileTypeTable, false);
-      setProgress(selectFileTypeList, false);
-      showAlert('success', {
-        messages: 'File updated successfully',
-        closeable: true,
-        timeout: 5000,
-      });
-
-      if (document.getElementById('manuscript-id').value)
-        window.dataForm = window.form?.serialize();
-    },
-    error: function (error) {
-      setProgress(selectFileTypeTable, false);
-      setProgress(selectFileTypeList, false);
-      selectFileTypeTable.querySelector('select[name="file_type"]').value = selectFileTypeTable.querySelector('select[name="file_type_before"]').value;
-      selectFileTypeList.querySelector('select[name="file_type"]').value = selectFileTypeTable.querySelector('select[name="file_type_before"]').value;
-      showAlert('error', {
-        messages: 'File update failed',
-        closeable: true,
-        timeout: 5000,
-      });
-
-      $dispatch('dropbox')
-    }
-  })
 }
 
 const listTypes = {

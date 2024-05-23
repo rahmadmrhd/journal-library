@@ -8,7 +8,7 @@
     'required' => false,
     'autocomplete' => '',
     'status' => '',
-    'messages' => '',
+    'messages' => [],
     'label',
     'class' => '',
     'rows' => 3,
@@ -38,11 +38,11 @@
     </label>
   @endisset
   @if (isset($description))
-    <p class="mb-2 text-sm font-normal italic dark:font-thin">{{ $description }}</p>
+    <p class="description">{{ $description }}</p>
   @endif
   @if ($type == 'checkbox' || $type == 'radio')
     <ul
-      class="sm:flex-{{ $direction }} {{ $direction == 'row' ? 'sm:divide-y-0 sm:divide-x' : 'sm:divide-y' }} flex w-full flex-col items-center divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-900 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+      class="sm:flex-{{ $direction }} {{ $direction == 'row' ? 'sm:divide-y-0 sm:divide-x' : 'sm:divide-y' }} checkbox-input flex w-full flex-col items-center divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-900 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
       @foreach ($options as $option)
         <li class="w-full">
           <div class="flex items-center px-3">
@@ -54,7 +54,7 @@
               class="input {{ $type == 'checkbox' ? 'rounded' : 'rounded-full' }} {!! $disabled ? '' : 'cursor-pointer' !!} h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
 
             <label for="{{ $type }}-{{ $name }}-{{ $loop->iteration }}"
-              class="{!! $disabled ? '' : 'cursor-pointer' !!} ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+              class="{!! $disabled ? '' : 'cursor-pointer' !!} ms-2 w-full py-3 text-left text-sm font-medium text-gray-900 dark:text-gray-300">
               @if ($option['required'] ?? false)
                 <span class="ms-1 text-base font-bold text-red-700 dark:text-red-500">*</span>
               @endif{{ $option['label'] }}
@@ -108,12 +108,12 @@
       {{ $ext ?? '' }}
     </div>
   @endif
-  @if (isset($status))
-    <ul class="space-y-0 text-sm text-red-600 dark:text-red-400" role="alert">
+  @if (isset($status) && isset($messages) && count($messages) > 0)
+    <ul class="mt-1 space-y-0 text-sm text-red-600 dark:text-red-400" role="alert">
       @foreach ((array) $messages as $message)
         <li class="msg">{{ $message }}</li>
       @endforeach
     </ul>
   @endif
-  {{-- @vite(['resources/js/text-input.js']) --}}
+  @vite(['resources/js/components/text-input.js'])
 </div>

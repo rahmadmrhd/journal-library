@@ -89,10 +89,6 @@
       role="alert">
       <div class="flex w-full items-center justify-between gap-x-6">
         <span class="sr-only">{{ $currentStep->name }}</span>
-        <div class="flex w-full flex-1 justify-start gap-x-1 text-sm font-normal">
-          <h3 class="truncate">Step {{ $currentStepIndex }}: </h3>
-          <h3 class="text-wrap flex-1 text-left">{{ $currentStep->name }}</h3>
-        </div>
         @switch($currentStep->status??null)
           @case('success')
             <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
@@ -108,15 +104,18 @@
                 d="M6 18 17.94 6M18 18 6.06 6" />
             </svg>
           @break
-
-          @default
         @endswitch
 
-        {{-- <svg class="ms-3 h-2.5 w-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+        <div class="flex w-full flex-1 justify-start gap-x-1 text-sm font-normal">
+          <h3 class="truncate">Step {{ $currentStepIndex }}: </h3>
+          <h3 class="text-wrap flex-1 text-left">{{ $currentStep->name }}</h3>
+        </div>
+
+        <svg class="ms-3 h-2.5 w-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
           viewBox="0 0 10 6">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="m1 1 4 4 4-4" />
-        </svg> --}}
+        </svg>
       </div>
     </button>
     {{-- Dropdown menu --}}
@@ -222,11 +221,6 @@
             </svg>
           </button>
         @else
-          <form id="manuscript-submit-form" class="hidden"
-            action="{{ route('manuscripts.submit', $manuscript->id ?? '') }}" method="POST">
-            @csrf
-            @method('PUT')
-          </form>
           <button id="submit-modal-btn" class="button primary !gap-x-1" type="submit"
             form="manuscript-submit-form">
             Submit

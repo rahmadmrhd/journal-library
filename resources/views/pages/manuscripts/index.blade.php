@@ -1,13 +1,10 @@
-@php
-  $title = 'manuscripts';
-@endphp
-<x-app-layout>
+<x-app-layout title="Manuscripts">
   {{-- Alert --}}
   @if (session('alert'))
     @php
       $msg = session('alert');
     @endphp
-    <x-alert class="sm:mx-4" :type="$msg['type']" :messages="$msg['msg']" :id="'msg-box'" :timeout="3000" />
+    <x-alert class="sm:mx-4" :type="$msg['type']" :messages="$msg['messages']" :id="'msg-box'" :timeout="3000" />
   @endif
   <div class="border-b border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 sm:rounded-lg">
     <div class="flex w-full flex-col items-start justify-between p-4">
@@ -90,13 +87,13 @@
               'isSortable' => true,
           ],
           [
-              'label' => 'Created at',
-              'name' => 'created_at',
+              'label' => 'Status',
+              'name' => 'status',
               'isSortable' => true,
           ],
           [
-              'label' => 'Submited at',
-              'name' => 'submited_at',
+              'label' => 'Created at',
+              'name' => 'created_at',
               'isSortable' => true,
           ],
       ]">
@@ -106,7 +103,7 @@
 
         @foreach ($manuscripts as $manuscript)
           <tr class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-            <td class="w-[100px] space-x-1 whitespace-nowrap p-4">
+            <td class="w-[1%] space-x-1 whitespace-nowrap p-4">
               <button title="More" id="more-btn-{{ $manuscript->id }}"
                 data-dropdown-toggle="more-dropdown-{{ $manuscript->id }}" class="button secondary !p-2" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24">
@@ -121,31 +118,77 @@
                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                   aria-labelledby="more-btn-{{ $manuscript->id }}">
                   <li>
-                    <a href="{{ route('manuscripts.create', $manuscript->id) }}"
-                      class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                      Continue
-                    </a>
+                    @if ($manuscript->submitted_at)
+                      <a href="{{ route('manuscripts.show', $manuscript->id) }}"
+                        class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        Show
+                      </a>
+                    @else
+                      <a href="{{ route('manuscripts.create', $manuscript->id) }}"
+                        class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        Continue
+                      </a>
+                    @endif
                   </li>
                   <li class="border-t border-gray-100 dark:border-gray-600">
-                    <button type="button"
-                      class="flex w-full items-center gap-3 px-4 py-2 text-red-700 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-400">
-                      <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                      <span>Cancel Submission</span>
-                    </button>
+                    @if ($manuscript->submitted_at)
+                      <button type="button" x-data
+                        x-on:click.prevent.stop="console.log($event);$dispatch('open-modal', 'modal-cancel-submission')"
+                        class="flex w-full items-center gap-3 px-4 py-2 text-red-700 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+                          <path fill="currentColor" fill-rule="evenodd"
+                            d="M12.035 13.096a6.5 6.5 0 0 1-9.131-9.131zm1.061-1.06L3.965 2.903a6.5 6.5 0 0 1 9.131 9.131ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"
+                            clip-rule="evenodd" />
+                        </svg>
+                        <span>Cancel Submission</span>
+                      </button>
+                    @else
+                      <button type="button" x-data
+                        x-on:click.prevent.stop="$dispatch('open-modal', 'modal-delete-submission')"
+                        class="flex w-full items-center gap-3 px-4 py-2 text-red-700 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                          <path fill="currentColor"
+                            d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z" />
+                        </svg>
+                        <span>Delete</span>
+                      </button>
+                    @endif
                   </li>
                 </ul>
               </div>
             </td>
-            <td class="font-xs px-6 py-2">{{ $manuscript->id }}</td>
+            <td class="font-xs min-w-44 w-[1%] px-6 py-2">{{ $manuscript->code ?? '-' }}</td>
             <th role="row" class="font-sm {{ $manuscript->title ? 'font-bold' : 'italic font-normal' }} px-6 py-2">
               {{ $manuscript->title ?? '(No Title Entered)' }}
             </th>
-            <td class="px-6 py-2">{{ $manuscript->created_at }}</td>
-            <td class="px-6 py-2">{{ $manuscript->submited_at }}</td>
+            <td class="w-[1%] truncate px-6 py-2">
+              @if (!$manuscript->submitted_at)
+                <x-badge type="secondary" :useIcon="true" class="italic">Draf</x-badge>
+              @else
+                <x-badge type="warning" :useIcon="true">
+                  @slot('icon')
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <circle cx="18" cy="12" r="0" fill="currentColor">
+                        <animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s"
+                          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
+                          values="0;2;0;0" />
+                      </circle>
+                      <circle cx="12" cy="12" r="0" fill="currentColor">
+                        <animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s"
+                          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
+                          values="0;2;0;0" />
+                      </circle>
+                      <circle cx="6" cy="12" r="0" fill="currentColor">
+                        <animate attributeName="r" begin="0" calcMode="spline" dur="1.5s"
+                          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
+                          values="0;2;0;0" />
+                      </circle>
+                    </svg>
+                  @endslot
+                  Waiting for a decision </x-badge>
+              @endif
+            </td>
+            <td class="w-[1%] px-6 py-2">{{ Carbon\Carbon::parse($manuscript->created_at)->format('d M Y') }}</td>
           </tr>
         @endforeach
       </x-table>
@@ -159,11 +202,11 @@
                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
             <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              {{ __('You have already submitted. Do you want to continue?') }}
+              {{ __('You have already drafted a submission. Please continue the previous submission before starting a new one.') }}
             </h3>
             <a href="{{ route('manuscripts.create', session('already-submission')) }}" id="delete-modal-btn"
               class="button primary">
-              Yes, Continue last submission
+              Yes, I will continue
             </a>
             <button id="cancel-modal-btn" type="button" x-on:click="$dispatch('close')" class="button secondary">
               Cancel
@@ -171,6 +214,53 @@
           </div>
         </x-modal>
       @endif
+
+      <x-modal name="modal-delete-submission" focusable>
+        <form method="POST" x-data="{ id: '' }" x-bind:action="`manuscripts/${id}`"
+          x-on:set="id = $event.detail.id" class="max-w-2xl p-4 text-center md:p-5">
+          @csrf
+          @method('DELETE')
+          <svg class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+            {{ __('Are you sure you want to delete this submissions?') }}
+          </h3>
+          <button type="submit" id="delete-modal-btn" class="button error">
+            Yes, Delete Submissions
+          </button>
+          <button id="cancel-modal-btn" type="button" x-on:click="$dispatch('close')" class="button secondary">
+            Cancel
+          </button>
+        </form>
+      </x-modal>
+
+      <x-modal name="modal-cancel-submission" focusable>
+        <form method="POST" x-data="{ id: '', reason: '' }" x-bind:action="`manuscripts/${id}/cancel`"
+          x-on:set="id = $event.detail.id" class="max-w-2xl p-4 text-center md:p-5">
+          @csrf
+          @method('DELETE')
+          <x-text-input type="radio" direction="col" name="reason" x-model="reason"
+            label="Please select a reason for canceling the submission" required :options="[
+                ['label' => 'I have changed my mind', 'value' => 'I have changed my mind'],
+                ['label' => 'I have lost my work', 'value' => 'I have lost my work'],
+                ['label' => 'I have not finished my work', 'value' => 'I have not finished my work'],
+                ['label' => 'Other', 'value' => 'other'],
+            ]">
+          </x-text-input>
+
+          <div class="mt-6 flex flex-row-reverse gap-3">
+            <button type="submit" class="button error">
+              {{ __('Cancel Submission') }}
+            </button>
+            <button x-on:click.prevent="$dispatch('close')" type="button" class="button secondary">
+              {{ __('Close') }}
+            </button>
+          </div>
+        </form>
+      </x-modal>
     </div>
   </div>
   @vite(['resources/js/manuscript.js'])

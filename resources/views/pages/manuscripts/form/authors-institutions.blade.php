@@ -1,14 +1,13 @@
 <form id="manuscript-form" action="{{ route('manuscripts.storeAuthors', $manuscript->id) }}" method="POST"
-  class="{{ $manuscript->isReview ? '' : 'card' }} flex flex-col gap-y-3 pt-6" x-data="{
+  class="flex flex-col gap-y-3" x-data="{
       show: @js(old('isSoleAuthor', $manuscript->isSoleAuthor ?? true)) ? 1 : '',
       authors: Object.values(@js($manuscript->authors ?? [])),
       listAuthor: [],
       inputFocused: false,
       dropdownFocused: false,
       search: '',
-  }"
-  x-init="$watch('search', val => searchAuthors(val, (result) => listAuthor = result));
-  console.log(authors);" x-on:submit-sole-author.window="show = 1; authors = []">
+  }" x-init="$watch('search', val => searchAuthors(val, (result) => listAuthor = result));"
+  x-on:submit-sole-author.window="show = 1; authors = []">
   @csrf
   @method('PUT')
 
@@ -50,9 +49,9 @@
               d="M15.5 12c2.5 0 4.5 2 4.5 4.5c0 .88-.25 1.71-.69 2.4l3.08 3.1L21 23.39l-3.12-3.07c-.69.43-1.51.68-2.38.68c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5m0 2a2.5 2.5 0 0 0-2.5 2.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5a2.5 2.5 0 0 0-2.5-2.5M10 4a4 4 0 0 1 4 4c0 .91-.31 1.75-.82 2.43c-.86.32-1.63.83-2.27 1.47L10 12a4 4 0 0 1-4-4a4 4 0 0 1 4-4M2 20v-2c0-2.12 3.31-3.86 7.5-4c-.32.78-.5 1.62-.5 2.5c0 1.29.38 2.5 1 3.5z" />
           </svg>
         @endslot
-        {{-- @slot('ext')
-        <button type="button" class="button primary">Add Manually</button>
-      @endslot --}}
+        @slot('ext')
+          <button type="button" class="button primary">Create New Co-Author</button>
+        @endslot
       </x-text-input>
       {{-- dropdown --}}
       <div focusable x-show="(dropdownFocused||inputFocused) && listAuthor.length > 0"
@@ -263,11 +262,8 @@
               grants = [''];
               index = -1;
           }
-      });
-      $watch('index', value => {
-          console.log(value)
-      })"
-        x-on:edit-funding.window="name = $event.detail.name; grants = $event.detail.grants; index = $event.detail.index; console.log('edit', $event.detail)"
+      });"
+        x-on:edit-funding.window="name = $event.detail.name; grants = $event.detail.grants; index = $event.detail.index; "
         x-on:submit.prevent="
         index >= 0 ? $dispatch('update-funding', {name:name, grants:[...grants]}) :
         $dispatch('add-funding', {name:name, grants:[...grants], index:index});
@@ -281,7 +277,6 @@
 
         {{-- Modal body  --}}
         <div class="mt-0 space-y-6 p-6">
-
           <form action="{{ route('profile.update', absolute: false) }}" method="POST" class="space-y-6">
             <div class="card divide-y-2 divide-gray-200 dark:divide-gray-700">
               <header class="">

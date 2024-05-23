@@ -11,7 +11,8 @@ return new class extends Migration {
   public function up(): void {
     Schema::create('step_submission_manuscript', function (Blueprint $table) {
       $table->uuid('id')->primary();
-      $table->foreignId('step_submission_id')->references('id')->on('step_submissions')->cascadeOnDelete();
+      $table->unsignedTinyInteger('step_submission_id');
+      $table->foreign('step_submission_id')->references('id')->on('step_submissions')->cascadeOnDelete();
       $table->foreignUuid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
 
       $table->unique(['step_submission_id', 'manuscript_id'], 'step_submission_manuscript_unique');

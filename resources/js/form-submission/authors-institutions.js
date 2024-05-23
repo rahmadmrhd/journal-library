@@ -13,7 +13,7 @@ window.searchAuthors = (search, callback) => {
       callback(result);
     },
     error: (error) => {
-      console.log(error);
+      // console.log(error);
     }
   });
 }
