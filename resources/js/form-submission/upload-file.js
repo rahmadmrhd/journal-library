@@ -227,7 +227,6 @@ window.registerFileManuscript = (element, $dispatch, files, file_types, readOnly
               closeable: true,
               timeout: 5000,
             });
-            console.log(error);
           }
           finally {
             $dispatch('dropbox')
