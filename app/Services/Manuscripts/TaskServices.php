@@ -37,17 +37,20 @@ class TaskServices {
   }
 
   public function delegateToEditorAssistant(Manuscript $manuscript) {
-    $user = User::with(['roles', 'tasks'])->whereHas('roles', function (Builder $query) {
+    $users = User::with(['roles', 'tasks'])->whereHas('roles', function (Builder $query) {
       $query->where('slug', 'editor-assistant');
-    })->join('tasks', 'tasks.user_id', '=', 'users.id', 'left')
-      ->whereNot('users.id', Auth::user()->id)
-      ->where(function (Builder $query) use ($manuscript) {
-        $query->whereNot('tasks.status', 'in_progress')
-          ->orWhere('tasks.id', null);
-      })
-      ->selectRaw('count(*) as task_count, users.*')
-      ->groupBy('users.id')
-      ->orderBy('task_count', 'asc')->first();
+    })->whereNot('users.id', Auth::user()->id)->get();
+
+    $user = $users->map(function ($user) {
+      $u = (object) [];
+      $u->tasks = $user->tasks->groupBy('status')->map(function ($tasks) {
+        return $tasks->count();
+      });
+      $u->id = $user->id;
+      return $u;
+    })->sort(function ($a, $b) {
+      return $a->tasks['in_progress'] ?? 0 > $b->tasks['in_progress'] ??0;
+    })->first();
 
     Task::create([
       'manuscript_id' => $manuscript->id,
@@ -58,14 +61,21 @@ class TaskServices {
     ]);
   }
   private function delegateToEditorInChief(Task $task) {
-    $user = User::with(['roles', 'tasks'])->whereHas('roles', function (Builder $query) {
+    $users = User::with(['roles', 'tasks'])->whereHas('roles', function (Builder $query) {
       $query->where('slug', 'editor-in-chief');
-    })->join('tasks', 'tasks.user_id', '=', 'users.id', 'left')
-      ->whereNot('tasks.status', 'in_progress')
-      ->selectRaw('count(*) as task_count, users.*')
-      ->groupBy('users.id');
+    })->whereNot('users.id', Auth::user()->id)->get();
 
-    dd($user->get()->toArray());
+    $user = $users->map(function ($user) {
+      $u = (object) [];
+      $u->tasks = $user->tasks->groupBy('status')->map(function ($tasks) {
+        return $tasks->count();
+      });
+      $u->id = $user->id;
+      return $u;
+    })->sort(function ($a, $b) {
+      return $a->tasks['in_progress'] ?? 0 > $b->tasks['in_progress'] ??0;
+    })->first();
+
     Task::create([
       'manuscript_id' => $task->manuscript->id,
       'user_id' => $user->id,
