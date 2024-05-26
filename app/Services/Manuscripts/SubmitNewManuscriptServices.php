@@ -13,7 +13,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-class SubmitNewManuscriptService {
+class SubmitNewManuscriptServices {
+
+  private TaskServices $taskServices;
+  public function __construct(TaskServices $taskServices) {
+    $this->taskServices = $taskServices;
+  }
 
   private function validate($data, array $fieldRules = null): \Illuminate\Validation\Validator {
     return
@@ -145,7 +150,9 @@ class SubmitNewManuscriptService {
   private function moveFiles($filesId, Manuscript $manuscript) {
     collect($filesId)->each(function ($fileId) use ($manuscript) {
       $file = File::find($fileId);
-      $file->manuscript_id = $manuscript->id;
+
+      $file->fileable()->associate($manuscript);
+
       if (!$file->is_temporary)
         return;
       $newPath = "files/manuscripts/{$manuscript->id}/{$file->id}.{$file->extension}";
@@ -287,6 +294,8 @@ class SubmitNewManuscriptService {
       $manuscript->code = config('app.name_alias') . "-" .
         $datenow . "-" . sprintf('%04d', $manuscript->number);
     }
+
+    $this->taskServices->delegateToEditorAssistant($manuscript);
 
     $manuscript->save();
 

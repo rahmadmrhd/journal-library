@@ -22,5 +22,6 @@ class AppServiceProvider extends ServiceProvider {
     Paginator::defaultView('components.pagination');
     // Carbon::setLocale('id');
     Gate::policy(\App\Models\Manuscript\Manuscript::class, \App\Policies\ManuscriptPolicy::class);
+    Gate::policy(\App\Models\Manuscript\Task::class, \App\Policies\TaskPolicy::class);
   }
 }

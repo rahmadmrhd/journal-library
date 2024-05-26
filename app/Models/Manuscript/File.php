@@ -11,14 +11,17 @@ class File extends Model {
   use HasFactory, HasUuids;
 
   protected $guarded = ['id'];
+  protected $with = ['fileType'];
 
   public function user() {
     return $this->belongsTo(User::class);
   }
-  public function manuscript() {
-    return $this->belongsTo(Manuscript::class);
-  }
+
   public function fileType() {
     return $this->belongsTo(FileType::class);
+  }
+
+  public function fileable() {
+    return $this->morphTo();
   }
 }

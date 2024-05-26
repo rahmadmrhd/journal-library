@@ -7,17 +7,19 @@
   $manuscript->isReview = $manuscript->isReview ?? $manuscript->isShow;
 @endphp
 @vite('resources/css/file.css')
-<script>
-  window.isReview = @js($manuscript->isReview);
-</script>
 <form id="manuscript-form" class="" method="POST"
   action="{{ route('manuscripts.storeFile', $manuscript->id ?? '') }}">
   @csrf
   @method('PUT')
 
-  <div id="dropbox" x-data="{ show: true, hover: false }" x-on:drop="hover = false;dropboxOndrop($event, $dispatch);"
+  <div x-data="{ show: true, hover: false, dropbox: { changeDropboxView: () => {}, fileChange: () => {} } }" x-on:drop="hover = false;dropboxOndrop($event, $dispatch);"
     class="@if (!$manuscript->isShow) min-h-72 @endif group relative flex w-full items-center justify-center"
-    x-on:load.window="window.$dispatch= $dispatch;getFilesManuscript($dispatch, @js(session('files') ?? ($manuscript->files ?? null)), @js($file_types ?? null), @js(session()->has('files')))">
+    x-init="$nextTick(() => {
+        setTimeout(() => {
+            dropbox = window.registerFileManuscript($el, $dispatch, @js($manuscript->files ?? null), @js($file_types ?? null), @js($manuscript->isReview));
+            $dispatch('dropbox');
+        }, 100);
+    })">
 
     {{-- list file --}}
     <div id="table-file" class="top-0 h-full w-full self-start opacity-100 transition-all"
@@ -155,7 +157,7 @@
     {{-- dropzone --}}
     @if (!$manuscript->isReview)
       <div id="dropzone-file" class="dropzone-file absolute cursor-pointer transition-all" x-show="show||hover"
-        x-on:dropbox.window="show=changeDropboxView()" x-on:resize.window="show=changeDropboxView()"
+        x-on:dropbox.window="show=dropbox.changeDropboxView()" x-on:resize.window="show=dropbox.changeDropboxView()"
         x-on:dragover.prevent="hover = true" x-bind:class="(show ? 'show ' : '') + (hover ? 'hover ' : '')"
         x-on:dragleave="hover = false" x-transition:enter="ease-out duration-200"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100 hover"
@@ -174,7 +176,7 @@
           {{-- <p class="hidden text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p> --}}
         </div>
         <input id="dropzone-file" type="file" multiple class="hidden"
-          x-on:change="fileChange($event, $dispatch)" />
+          x-on:change="dropbox.fileChange($event, $dispatch); " />
       </div>
     @endif
   </div>

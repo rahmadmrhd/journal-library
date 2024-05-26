@@ -102,9 +102,11 @@
         @endslot
 
         @foreach ($manuscripts as $manuscript)
-          <tr class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+          <tr
+            href="{{ $manuscript->submitted_at ? route('manuscripts.show', $manuscript->id) : route('manuscripts.create', $manuscript->id) }}"
+            class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
             <td class="w-[1%] space-x-1 whitespace-nowrap p-4">
-              <button title="More" id="more-btn-{{ $manuscript->id }}"
+              <button title="More" id="more-btn-{{ $manuscript->id }}" x-data x-on:click.stop=""
                 data-dropdown-toggle="more-dropdown-{{ $manuscript->id }}" class="button secondary !p-2" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24">
                   <path fill="currentColor"
@@ -163,9 +165,9 @@
             </th>
             <td class="w-[1%] truncate px-6 py-2">
               @if (!$manuscript->submitted_at)
-                <x-badge type="secondary" :useIcon="true" class="italic">Draf</x-badge>
+                <x-badge type="secondary" :useIcon="false" class="italic">Draf</x-badge>
               @else
-                <x-badge type="warning" :useIcon="true">
+                <x-badge type="primary" :useIcon="true">
                   @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                       <circle cx="18" cy="12" r="0" fill="currentColor">

@@ -5,9 +5,11 @@
     'messages' => [],
     'disabled' => false,
     'variable' => 'editor',
+    'name',
     'initValue',
+    'required' => false,
 ])
-<div x-data="{ {!! $variable !!}: null }" {!! $attributes !!} x-init="$nextTick(async () => {
+<div {!! $attributes !!} x-init="$nextTick(async () => {
     {!! $variable !!} = await window.initEditor(@js($id), @js($disabled), @js($initValue ?? null));
 })">
   @push('head')
@@ -19,9 +21,9 @@
   @isset($label)
     <label {{ isset($id) ? 'for=' . $id : '' }}
       class="@if (!isset($description)) mb-2 @endif block text-base font-extrabold text-gray-900 dark:text-white lg:text-lg">{{ $label }}
-      {{-- @if ($required)
+      @if ($required)
         <span class="ms-1 text-red-700 dark:text-red-500">*</span>
-      @endif --}}
+      @endif
     </label>
   @endisset
   @if (isset($description))
@@ -31,10 +33,10 @@
     class="{!! isset($messages) && count($messages) > 0
         ? 'border-red-500 bg-red-50'
         : 'placeholder-red-700 focus:border-red-500 focus:ring-red-500' !!} rounded-md border border-gray-300 bg-gray-50 !p-0 dark:border-gray-600 dark:bg-gray-700">
-
-    <script>
-      window.idEditor = @js($id)
-    </script>
+    @if (isset($name))
+      <input id="{!! $id !!}-input" type="text" class="hidden" {!! $required ? 'required' : '' !!}
+        name="{!! $name !!}">
+    @endif
     <articel class="prose relative block max-w-none" id="{!! $id !!}"></articel>
   </div>
   @if (isset($messages) && count($messages) > 0)

@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Manuscript;
 use App\Http\Controllers\Controller;
 use App\Models\Manuscript\FileType;
 use App\Models\Manuscript\Manuscript;
-use App\Services\Manuscripts\SubmitNewManuscriptService;
+use App\Services\Manuscripts\SubmitNewManuscriptServices;
+use App\Services\Manuscripts\TaskServices;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 
 class ManuscriptController extends Controller {
   use AuthorizesRequests;
-  private SubmitNewManuscriptService $service;
-  public function __construct(SubmitNewManuscriptService $service) {
+  private SubmitNewManuscriptServices $service;
+  private TaskServices $taskServices;
+  public function __construct(SubmitNewManuscriptServices $service, TaskServices $taskServices) {
     $this->service = $service;
+    $this->taskServices = $taskServices;
   }
   /**
    * Display a listing of the resource.
@@ -96,7 +100,8 @@ class ManuscriptController extends Controller {
   }
 
   public function submit(Manuscript $manuscript) {
-    Gate::authorize('update', $manuscript);
+    // Gate::authorize('update', $manuscript);
+
     $manuscript = $this->service->submit($manuscript);
 
     if (!$manuscript->submitted_at) {
@@ -133,20 +138,6 @@ class ManuscriptController extends Controller {
       'manuscript' => $manuscript,
       'file_types' => FileType::orderBy('required', 'desc')->get(),
     ]);
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(Manuscript $manuscript) {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, Manuscript $manuscript) {
-    //
   }
 
   /**

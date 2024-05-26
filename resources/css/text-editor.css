@@ -128,10 +128,10 @@
 }
 
 .ce-block__content {
-  @apply !max-w-full px-4 sm:!ml-16;
+  @apply !max-w-full px-4 lg:!ml-16;
 }
 .ce-toolbar__content {
-  @apply !max-w-full sm:!ml-8;
+  @apply !max-w-full lg:!ml-8;
 }
 .ce-toolbar__plus {
   @apply bg-inherit;

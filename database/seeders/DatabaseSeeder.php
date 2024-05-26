@@ -13,11 +13,17 @@ use App\Services\CountryApiService;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Faker\Generator;
+use Illuminate\Container\Container;
 
 class DatabaseSeeder extends Seeder {
   private CountryApiService $countryApiService;
+  private Generator $faker;
+
+
   public function __construct(CountryApiService $countryApiService) {
     $this->countryApiService = $countryApiService;
+    $this->faker = Container::getInstance()->make(Generator::class);
   }
 
   /**
@@ -33,8 +39,16 @@ class DatabaseSeeder extends Seeder {
       'slug' => 'reviewer',
     ]);
     Role::createOrFirst([
-      'name' => 'Editor',
-      'slug' => 'editor',
+      'name' => 'Editor Assistant',
+      'slug' => 'editor-assistant',
+    ]);
+    Role::createOrFirst([
+      'name' => 'Editor In Chief',
+      'slug' => 'editor-in-chief',
+    ]);
+    Role::createOrFirst([
+      'name' => 'Academic Editor',
+      'slug' => 'academic-editor',
     ]);
     Role::createOrFirst([
       'name' => 'Administrator',
@@ -48,7 +62,13 @@ class DatabaseSeeder extends Seeder {
       'password' => Hash::make('admin'),
     ]);
 
-    $user->roles()->attach([1, 2, 3, 4]);
+    $user->roles()->attach([1, 2, 3, 4, 5, 6]);
+
+    $users = User::factory(10)->create();
+
+    foreach ($users as $user) {
+      $user->roles()->attach($this->faker->numberBetween(1, 5));
+    }
 
     FileType::createOrFirst([
       'name' => 'Cover Letter',

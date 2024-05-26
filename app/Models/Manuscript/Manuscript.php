@@ -2,7 +2,6 @@
 
 namespace App\Models\Manuscript;
 
-use App\Models\Funder;
 use App\Models\Log;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -20,7 +19,7 @@ class Manuscript extends Model {
     return $this->belongsToMany(User::class, 'manuscript_author')->using(ManuscriptAuthor::class)->withPivot('is_corresponding_author');
   }
   public function files() {
-    return $this->hasMany(File::class);
+    return $this->morphMany(File::class, 'fileable');
   }
   public function steps() {
     return $this->belongsToMany(StepSubmission::class, 'step_submission_manuscript')->using(StepSubmissionManuscript::class)->withPivot('status');
@@ -32,7 +31,7 @@ class Manuscript extends Model {
     return $this->belongsToMany(Keyword::class, 'manuscript_keyword');
   }
   public function funders() {
-    return $this->hasMany(Funder::class,);
+    return $this->hasMany(Funder::class);
   }
   public function logs() {
     return $this->morphMany(Log::class, 'loggable')->latest();
@@ -43,6 +42,10 @@ class Manuscript extends Model {
   }
   public function children() {
     return $this->hasMany(Manuscript::class, 'parent_id');
+  }
+
+  public function tasks() {
+    return $this->hasMany(Task::class);
   }
 
   /*
@@ -75,7 +78,7 @@ class Manuscript extends Model {
       'open_access' => ['required', 'boolean'],
       'using_paperpal' => ['required', 'boolean'],
       'cover_letter' => ['nullable', 'array', 'min:3'],
-      'cover_letter.blocks' => ['required', 'array', 'min:1'],
+      'cover_letter.blocks' => ['nullable', 'array', 'min:1'],
     ]);
 
     if ($only) {
@@ -126,6 +129,9 @@ class Manuscript extends Model {
       'paper_contain.required' => 'The paper contain is required.',
       'open_access.required' => 'The open access is required.',
       'using_paperpal.required' => 'The using paperpal is required.',
+      'cover_letter.required' => 'The cover letter is required.',
+      'cover_letter.min' => 'The cover letter must be at least 3 items.',
+      'cover_letter.*.min' => 'The cover letter must be at least 3 characters.',
     ];
   }
 }

@@ -1,5 +1,3 @@
-import { Modal } from "flowbite";
-import getLoader from "./loading-handler";
 import $ from "jquery";
 window.$ = $;
 

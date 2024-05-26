@@ -18,16 +18,25 @@ import Alert from 'editorjs-alert';
 import Embed from '@editorjs/embed';
 
 
-window.initEditor = async (idEditor, disabled, initValue) => {
+window.initEditor = async (idEditor, readOnly, initValue) => {
   const editor = new EditorJS({
     /**
      * Id of Element that should contain Editor instance
      */
     holder: idEditor,
+    readOnly: readOnly,
     onReady: () => {
       new Undo({ editor });
       new DragDrop(editor);
 
+    },
+    onChange: (editor, event) => {
+      if (readOnly) { return; }
+      editor.saver.save().then(data => {
+        const input = document.getElementById(idEditor + '-input');
+        if (!input) return;
+        input.value = JSON.stringify(data);
+      });
     },
     autofocus: true,
     tools: {
@@ -113,19 +122,10 @@ window.initEditor = async (idEditor, disabled, initValue) => {
   });
   editor.isReady.then(async () => {
     if (initValue) {
+      const input = document.getElementById(idEditor + '-input');
+      if (!input) return;
+      input.value = JSON.stringify(initValue);
       await editor.render(initValue);
-    }
-
-    if (disabled) {
-      const editorEl = document.getElementById(idEditor);
-      const editable_elements = editorEl.querySelectorAll('*[contenteditable="true"]');
-      editable_elements?.forEach(el => el.removeAttribute("contenteditable"))
-
-      const icon_settings = editorEl.querySelectorAll('.ce-toolbar');
-      icon_settings?.forEach(el => el.remove())
-
-      const redactor = editorEl.querySelector('.codex-editor__redactor');
-      redactor.classList.add('show')
     }
   });
 

@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Services\Manuscripts\SubmitNewManuscriptService;
+use App\Services\Manuscripts\SubmitNewManuscriptServices;
+use App\Services\Manuscripts\TaskServices;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,7 +15,8 @@ class ManuscriptServiceProvider extends ServiceProvider implements DeferrablePro
    */
   public function provides(): array {
     return [
-      SubmitNewManuscriptService::class,
+      SubmitNewManuscriptServices::class,
+      TaskServices::class,
     ];
   }
   /**
