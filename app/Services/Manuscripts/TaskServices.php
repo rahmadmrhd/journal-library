@@ -47,9 +47,8 @@ class TaskServices {
       })
       ->selectRaw('count(*) as task_count, users.*')
       ->groupBy('users.id')
-      ->orderBy('task_count', 'asc');
+      ->orderBy('task_count', 'asc')->first();
 
-    dd($user->get()->toArray());
     Task::create([
       'manuscript_id' => $manuscript->id,
       'user_id' => $user->id,
