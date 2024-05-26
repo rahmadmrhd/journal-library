@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
+use App\Models\Manuscript\Task;
 use App\Models\Manuscript\Manuscript;
 use App\Models\Manuscript\ManuscriptAuthor;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -72,5 +73,9 @@ class User extends Authenticatable {
 
   public function logs() {
     return $this->hasMany(Log::class,);
+  }
+
+  public function tasks() {
+    return $this->hasMany(Task::class);
   }
 }

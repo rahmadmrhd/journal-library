@@ -1,23 +1,18 @@
+@php
+  $manuscript = $manuscript ?? (object) [];
+  $manuscript->isShow = isset($manuscript->isShow) ? $manuscript->isShow : false;
+  $manuscript->isReview = $manuscript->isReview ?? $manuscript->isShow;
+@endphp
+
 <form id="manuscript-form" action="{{ route('manuscripts.storeDetails', $manuscript->id) }}" method="POST"
   class="grid grid-cols-12 gap-x-6 gap-y-3" x-data="{
       showCoverLetter: @js($manuscript->isConfirmed ? (isset($manuscript->cover_letter) ? 1 : '') : null),
       coverLetterEditor: null
-  }"
-  x-on:submit="
-  if(!showCoverLetter) return;
-  $event.preventDefault();
-  coverLetterEditor?.save().then((value)=>{
-    const input = document.createElement('input')
-    input.type = 'hidden';
-    input.name = 'cover_letter';
-    input.value = JSON.stringify(value)
-    $event.target.appendChild(input)
-    $event.target.submit();
-  })">
+  }">
   @csrf
   @method('PUT')
 
-  @if (!isset($manuscript->isShow))
+  @if (!$manuscript->isShow)
     {{-- COVER LETTER --}}
     <div class="col-span-12">
       <x-text-input :disabled="$manuscript->isReview" x-model="showCoverLetter" type="radio" :options="[
@@ -32,7 +27,8 @@
       ]" label="Use Cover Letter?"
         id="has-cover-letter" name="has-cover-letter" required></x-text-input>
       <template x-if="showCoverLetter">
-        <x-text-editor class="mt-2" variable="coverLetterEditor" :disabled="$manuscript->isReview" :initValue="$manuscript->cover_letter ?? null">
+        <x-text-editor class="mt-2" name="cover_letter" required variable="coverLetterEditor" :disabled="$manuscript->isReview"
+          :initValue="$manuscript->cover_letter ?? null">
 
         </x-text-editor>
       </template>

@@ -2,7 +2,7 @@
   @vite('resources/css/manuscript.css')
 @endpush
 <x-app-layout sizeHideSidebar="xl" title="Detail Manuscript">
-  <div class="alert-group">
+  <div id="alert-group">
 
   </div>
   <div class="card">
@@ -255,38 +255,43 @@
       </x-slot>
     </x-tabs-panel>
   </div>
-
-  <div class="card mt-6">
-    <div class="mb-2 border-b border-gray-300 pb-2 dark:border-gray-700">
-      <h3 class="text-left text-xl font-extrabold lg:text-3xl">
-        Your Decision
-      </h3>
-      <p class="mt-2 text-sm font-thin italic">
-        Please provide your decision on this manuscript.
-      </p>
-    </div>
-    <x-tabs-panel class="mt-3" :withFragment="true" :tabs="[
-        [
-            'label' => 'Notes',
-            'name' => 'notes',
-        ],
-        [
-            'label' => 'File Attachments',
-            'name' => 'attachments',
-        ],
-    ]">
-      <x-slot name="notes">
-        <x-text-editor id="detail-editor">
-
+  
+@can('view', $task ?? null)
+    <div class="card mt-6">
+      <div class="mb-2 border-b border-gray-300 pb-2 dark:border-gray-700">
+        <h3 class="text-left text-xl font-extrabold lg:text-3xl">
+          Your Decision
+        </h3>
+        <p class="mt-2 text-sm font-thin italic">
+          Please provide your decision on this manuscript.
+        </p>
+      </div>
+      @if (isset($alert))
+        <x-alert :messages="$alert['messages']" :type="$alert['type']" :title="$alert['title']" :closeable="false" />
+      @elseif (session('alert'))
+        <x-alert :messages="session('alert')['messages']" :type="session('alert')['type']" :title="session('alert')['title']" :closeable="false" />
+      @endif
+      <form class="mt-3 space-y-3" action="{{ route('tasks.update', $task) }}" method="POST">
+        @csrf
+        @method('PUT')
+        <x-text-input id="decision" type="select" label="Decision" name="decision" required :value="$task->decision"
+          :messages="$errors->get('decision')">
+          <option value="" disabled selected>-- Select Decision --</option>
+          <option value="accept" {{ $task->decision == 'accept' ? 'selected' : '' }}>Accept</option>
+          <option value="reject" {{ $task->decision == 'reject' ? 'selected' : '' }}>Reject</option>
+        </x-text-input>
+        <x-text-editor id="notes" label="Notes" name="notes" variable="notes" :initValue="$task->notes"
+          :messages="$errors->get('notes')">
         </x-text-editor>
-      </x-slot>
 
-      <x-slot name="attachments">
-        {{-- <x-files>
-
-        </x-files> --}}
-      </x-slot>
-    </x-tabs-panel>
-  </div>
+        <x-files label="File Attachments" :files="$task->files">
+        </x-files>
+        <div class="mt-4 flex items-center justify-end gap-2 border-t border-gray-300 py-2 dark:border-gray-700">
+          <input type="submit" name="submit" value="Save as Draft" class="button secondary">
+          <input type="submit" name="submit" value="Submit" class="button primary">
+        </div>
+      </form>
+    </div>
+  @endcan
 </x-app-layout>
 

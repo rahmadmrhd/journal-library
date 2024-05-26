@@ -20,7 +20,8 @@ return new class extends Migration {
       $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
       $table->unsignedTinyInteger('file_type_id')->nullable();
       $table->foreign('file_type_id')->references('id')->on('file_types')->onDelete('set null');
-      $table->foreignUuid('manuscript_id')->nullable()->references('id')->on('manuscripts')->cascadeOnDelete();
+
+      $table->nullableUuidMorphs('fileable');
       $table->timestamps();
     });
   }

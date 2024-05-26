@@ -14,8 +14,7 @@ return new class extends Migration {
       $table->string('activity');
       $table->text('description')->nullable();
 
-      $table->uuid('loggable_id');
-      $table->string('loggable_type');
+      $table->uuidMorphs('loggable');
       $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
       $table->timestamps();
     });

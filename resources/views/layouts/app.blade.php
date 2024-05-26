@@ -52,7 +52,7 @@
 
     <x-modal name="file-preview" focusable x-on:load.window="window.$dispatch= $dispatch">
       <div
-        class="card relative h-screen w-full !p-0 sm:w-[80vw] lg:h-[80vh] lg:w-[1024px] xl:h-[70vh] xl:w-[1280px] 2xl:w-[1536px]">
+        class="card relative h-screen w-full !p-0 sm:w-[80vw] lg:h-[85vh] lg:w-[1000px] xl:h-[75vh] xl:w-[1200px] 2xl:w-[1500px]">
         <div class="relative flex items-center justify-between p-2 !px-4">
           <h3 class="text-lg font-bold">File Preview</h3>
           <button class="button secondary !p-2" type="button" x-on:click="$dispatch('close')">
@@ -62,7 +62,7 @@
             </svg>
           </button>
         </div>
-        <div id="container-file" class="relative h-[95%] w-full">
+        <div id="container-file" class="relative h-[90%] w-full">
           {{-- <iframe
       src="https://view.officeapps.live.com/op/embed.aspx?src=https://13vtlvqnkb.sharedwithexpose.com/files/manuscripts/9c1306ca-e277-4810-acfd-18ced2d8ffae/9c130608-323b-43e6-b80c-3914c268179e.xlsx"
       class="min-h-screen w-full" frameborder="0"></iframe> --}}

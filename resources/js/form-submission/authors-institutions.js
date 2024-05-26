@@ -6,14 +6,15 @@ window.searchAuthors = (search, callback) => {
     return;
   }
   $.ajax({
-    url: `/users/search/${search}`,
+    url: `/users/search/author/${search}`,
     method: 'GET',
     cache: false,
     success: (result) => {
+      console.log(result);
       callback(result);
     },
     error: (error) => {
-      // console.log(error);
+      console.log(error);
     }
   });
 }

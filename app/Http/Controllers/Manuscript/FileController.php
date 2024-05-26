@@ -23,6 +23,7 @@ class FileController extends Controller {
       $validatedData['mime_type'] = $request->file('file')->getClientMimeType();
       $validatedData['path'] = $request->file('file')->store('files/temps');
       $validatedData['user_id'] = $request->user()->id;
+
       if ($request->has('Manuscript_id')) {
         $validatedData['manuscript_id'] = $request->Manuscript_id;
       }
@@ -48,9 +49,7 @@ class FileController extends Controller {
     $request->validate([
       'file_type_id' => ['required', 'exists:file_types,id'],
     ]);
-    if ($request->has('Manuscript_id')) {
-      $file->manuscript_id = $request->Manuscript_id;
-    }
+
     $file->file_type_id = $request->file_type_id;
     $file->save();
     return response()->json([

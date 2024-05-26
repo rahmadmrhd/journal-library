@@ -1,8 +1,8 @@
-@props(['columns', 'tableId'])
+@props(['columns', 'tableId', 'positionPage' => 'both'])
 
 <div {{ $attributes->merge(['class' => 'relative block overflow-x-auto w-full']) }}>
   @isset($pagination)
-    <div class="w-full p-4">
+    <div class="{{ $positionPage == 'top' || $positionPage == 'both' ? '' : 'hidden' }} w-full p-4">
       {{ $pagination }}
     </div>
   @endisset
@@ -11,7 +11,7 @@
       @isset($tableId)
     id="{{ $tableId }}"
   @endisset>
-      <thead class="bg-gray-50 text-xs uppercase text-gray-900 dark:bg-gray-700 dark:text-gray-100">
+      <thead class="bg-gray-100 text-xs uppercase text-gray-900 dark:bg-gray-700 dark:text-gray-100">
         <tr>
           @foreach ($columns as $column)
             @if ($column['isSortable'])
@@ -56,8 +56,9 @@
   </div>
 
   @isset($pagination)
-    <div class="mt-4 w-full p-4">
+    <div class="{{ $positionPage == 'top' || $positionPage == 'both' ? '' : 'hidden' }} mt-4 w-full p-4">
       {{ $pagination }}
     </div>
   @endisset
+  @vite(['resources/js/components/table.js'])
 </div>

@@ -25,6 +25,8 @@ class AuthenticatedSessionController extends Controller {
 
     $request->session()->regenerate();
 
+    $request->user()->update(['current_role_id' => Auth::user()->roles->first()->id,]);
+
     return redirect()->intended(route('dashboard', absolute: false));
   }
 

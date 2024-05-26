@@ -33,7 +33,7 @@ return new class extends Migration {
       $table->string('postal_code')->nullable();
       $table->foreignId('country_id')->nullable()->references('id')->on('countries')->onDelete('set null');
 
-      $table->boolean('status')->default(true);
+      $table->boolean('is_available')->default(true);
       $table->rememberToken();
       $table->timestamps();
       $table->softDeletes();

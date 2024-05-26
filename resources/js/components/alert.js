@@ -43,5 +43,9 @@ function alert(type, options = { title, messages, closeable, timeout }) {
 
 window.showAlert = (type, options = { title, messages, closeable, timeout }) => {
   const alertGroup = document.querySelector('#alert-group');
-  alertGroup.appendChild(alert(type, options));
+  if (!alertGroup) {
+    console.log('Element $alert-group not found');
+    return;
+  }
+  alertGroup?.appendChild(alert(type, options));
 }

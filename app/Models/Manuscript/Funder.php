@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Manuscript;
 
-use App\Models\Manuscript\Manuscript;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
