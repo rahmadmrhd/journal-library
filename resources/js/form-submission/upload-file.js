@@ -153,7 +153,7 @@ window.registerFileManuscript = (element, $dispatch, files, file_types, readOnly
           timeout: 5000,
         });
 
-        if (element.getElementById('manuscript-id').value)
+        if (document.getElementById('manuscript-id').value)
           window.dataForm = window.form?.serialize();
       },
       error: function (error) {
@@ -204,7 +204,6 @@ window.registerFileManuscript = (element, $dispatch, files, file_types, readOnly
         if (this.readyState == XMLHttpRequest.DONE) {
           try {
             const response = JSON.parse(this.response);
-            console.log(this.response);
             if (!response.success) {
               rowTable.remove();
               rowList.remove();
