@@ -1,7 +1,8 @@
 @push('head')
   <meta name="_token" content="{{ csrf_token() }}">
 @endpush
-<form id="manuscript-form" method="POST" action="{{ route('manuscripts.storeBasicInformation', $manuscript->id) }}"
+<form id="manuscript-form" method="POST"
+  action="{{ route('manuscripts.storeBasicInformation', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id]) }}"
   class="flex flex-col gap-y-3">
   @csrf
   @method('PUT')

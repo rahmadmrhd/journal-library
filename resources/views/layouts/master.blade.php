@@ -7,7 +7,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>
-    {{ isset($title) ? $title . ' | ' . config('app.name_alias', 'Laravel') : config('app.name', 'Laravel') }}
+    {{ isset($title) ? $title . ' | ' . strtoupper($subGate->slug ?? config('app.name_alias', 'Laravel')) : $subGate->name ?? config('app.name', 'Laravel') }}
   </title>
 
   <!-- Fonts -->

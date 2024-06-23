@@ -1,12 +1,15 @@
 <form x-data="{ step: null }" x-ref="formChangeStep"
   x-on:change-step.window="step = $event.detail; setTimeout(() => $refs.formChangeStep.submit(), 100); " class="hidden"
-  action={{ route('manuscripts.change_step', $manuscript->id ?? '') }} method="POST">
+  action={{ route('manuscripts.change_step', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id]) }}"
+  method="POST">
   @csrf
   @method('PATCH')
   <input type="hidden" name="step" x-bind:value="step">
 </form>
 
-<form id="manuscript-submit-form" action="{{ route('manuscripts.submit', $manuscript->id ?? '') }}" method="POST">
+<form id="manuscript-submit-form"
+  action="{{ route('manuscripts.submit', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id]) }}"
+  method="POST">
   @csrf
   @method('PUT')
   <div class="space-y-4">

@@ -16,6 +16,8 @@ return new class extends Migration {
       $table->string('extensions')->nullable();
       $table->boolean('required')->default(false);
       $table->integer('max_files')->nullable();
+
+      $table->foreignUlid('sub_gate_id')->references('id')->on('sub_gates')->cascadeOnDelete();
       $table->softDeletes();
       $table->timestamps();
     });

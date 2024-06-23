@@ -10,8 +10,8 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('manuscript_keyword', function (Blueprint $table) {
-      $table->foreignUuid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
-      $table->foreignUuid('keyword_id')->references('id')->on('keywords')->cascadeOnDelete();
+      $table->foreignUlid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
+      $table->foreignUlid('keyword_id')->references('id')->on('keywords')->cascadeOnDelete();
       $table->primary(['manuscript_id', 'keyword_id']);
     });
   }

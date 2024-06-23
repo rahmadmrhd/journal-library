@@ -16,7 +16,7 @@
       @endif
 
       <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send', absolute: false) }}">
+        <form method="POST" action="{{ route('verification.send', $subGate->slug, absolute: false) }}">
           @csrf
 
           <div class="flex flex-col gap-2 sm:flex-row">
@@ -25,14 +25,14 @@
               Resend Verification Email
             </button>
 
-            <a href="{{ route('settings', absolute: false) . '#account' }}"
+            <a href="{{ route('settings', $subGate->slug, absolute: false) . '#account' }}"
               class="inline-flex items-center rounded-md border border-gray-400 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-900 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
               Continue to Profile
             </a>
           </div>
         </form>
 
-        <form method="POST" action="{{ route('logout', absolute: false) }}">
+        <form method="POST" action="{{ route('logout', $subGate->slug, absolute: false) }}">
           @csrf
 
           <button type="submit"

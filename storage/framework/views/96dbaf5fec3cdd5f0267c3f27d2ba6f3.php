@@ -1,7 +1,8 @@
 <?php $__env->startPush('head'); ?>
   <meta name="_token" content="<?php echo e(csrf_token()); ?>">
 <?php $__env->stopPush(); ?>
-<form id="manuscript-form" method="POST" action="<?php echo e(route('manuscripts.storeBasicInformation', $manuscript->id)); ?>"
+<form id="manuscript-form" method="POST"
+  action="<?php echo e(route('manuscripts.storeBasicInformation', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id])); ?>"
   class="flex flex-col gap-y-3">
   <?php echo csrf_field(); ?>
   <?php echo method_field('PUT'); ?>

@@ -7,7 +7,7 @@
   <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
   <title>
-    <?php echo e(isset($title) ? $title . ' | ' . config('app.name_alias', 'Laravel') : config('app.name', 'Laravel')); ?>
+    <?php echo e(isset($title) ? $title . ' | ' . strtoupper($subGate->slug ?? config('app.name_alias', 'Laravel')) : $subGate->name ?? config('app.name', 'Laravel')); ?>
 
   </title>
 

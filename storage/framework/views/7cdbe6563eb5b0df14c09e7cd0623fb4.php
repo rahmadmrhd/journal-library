@@ -1,9 +1,9 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
-<?php foreach($attributes->onlyProps(['sizeHideSidebar' => 'lg']) as $__key => $__value) {
+<?php foreach($attributes->onlyProps(['sizeHideSidebar' => 'lg', 'subGate']) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
-<?php $attributes = $attributes->exceptProps(['sizeHideSidebar' => 'lg']); ?>
-<?php foreach (array_filter((['sizeHideSidebar' => 'lg']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+<?php $attributes = $attributes->exceptProps(['sizeHideSidebar' => 'lg', 'subGate']); ?>
+<?php foreach (array_filter((['sizeHideSidebar' => 'lg', 'subGate']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
 <?php $__defined_vars = get_defined_vars(); ?>
@@ -62,7 +62,7 @@
         
         <div class="flex flex-col items-center self-center">
           <span
-            class="whitespace-nowrap text-lg font-extrabold uppercase dark:text-white"><?php echo e(config('app.name')); ?></span>
+            class="whitespace-nowrap text-lg font-extrabold uppercase dark:text-white"><?php echo e($subGate->name ?? config('app.name')); ?></span>
           
         </div>
       </div>
@@ -158,23 +158,33 @@
               </p>
             </div>
             <div class="divide-y divide-gray-100 px-4 py-3">
-              <form action="<?php echo e(route('role.update', absolute: false)); ?>" method="POST">
+              <form action="<?php echo e(route('role.update', $subGate->slug, absolute: false)); ?>" method="POST">
                 <?php echo csrf_field(); ?>
                 <?php echo method_field('PUT'); ?>
+                <?php
+                  $roles = Auth::user()
+                      ->roles()
+                      ->wherePivot('sub_gate_id', $subGate->id)
+                      ->get();
+                  $currentRoleId = Auth::user()->current_role_id;
+                  $isNotFound = $roles->where('id', $currentRoleId)->isEmpty();
+                ?>
                 <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['label' => 'Role','name' => 'roleId','value' => ''.e(Auth::user()->current_role_id).'','onchange' => 'this.form.submit()','type' => 'select']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['label' => 'Role','name' => 'roleId','value' => ''.e($currentRoleId).'','onchange' => 'this.form.submit()','status' => $isNotFound ? 'error' : '','messages' => $isNotFound ? ['Role not found'] : [''],'type' => 'select']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('text-input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['label' => 'Role','name' => 'roleId','value' => ''.e(Auth::user()->current_role_id).'','onchange' => 'this.form.submit()','type' => 'select']); ?>
-                  <?php $__currentLoopData = Auth::user()->roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option <?php echo e(Auth::user()->current_role_id == $role->id ? 'selected' : ''); ?>
-
-                      value="<?php echo e($role->id); ?>"><?php echo e($role->name); ?></option>
+<?php $component->withAttributes(['label' => 'Role','name' => 'roleId','value' => ''.e($currentRoleId).'','onchange' => 'this.form.submit()','status' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isNotFound ? 'error' : ''),'messages' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isNotFound ? ['Role not found'] : ['']),'type' => 'select']); ?>
+                  <?php if($isNotFound): ?>
+                    <option value="" disabled selected>--Select Role--</option>
+                  <?php endif; ?>
+                  <?php $__currentLoopData = $roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option <?php echo e($currentRoleId == $role->id ? 'selected' : ''); ?> value="<?php echo e($role->id); ?>">
+                      <?php echo e($role->name); ?></option>
                   <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
@@ -186,14 +196,13 @@
 <?php $component = $__componentOriginal18c21970322f9e5c938bc954620c12bb; ?>
 <?php unset($__componentOriginal18c21970322f9e5c938bc954620c12bb); ?>
 <?php endif; ?>
-                
               </form>
             </div>
             <ul class="py-1" role="none">
 
-              
               <li>
-                <a href="<?php echo e(route('settings', absolute: false)); ?>" class="dropdown-item" role="menuitem">
+                <a href="<?php echo e(route('settings', $subGate->slug, absolute: false)); ?>" class="dropdown-item"
+                  role="menuitem">
                   <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd"
@@ -204,7 +213,7 @@
                 </a>
               </li>
               <li>
-                <form action="<?php echo e(route('logout', absolute: false)); ?>" method="POST" role="menuitem">
+                <form action="<?php echo e(route('logout', $subGate->slug, absolute: false)); ?>" method="POST" role="menuitem">
                   <?php echo csrf_field(); ?>
                   <button class="dropdown-item w-full" role="menuitem" type="submit">
                     <?php if (isset($component)) { $__componentOriginal643fe1b47aec0b76658e1a0200b34b2c = $component; } ?>

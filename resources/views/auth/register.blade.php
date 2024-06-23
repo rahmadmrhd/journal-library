@@ -1,5 +1,5 @@
 <x-auth-layout>
-  <div class="sm:min-w-80">
+  <div class="sm:min-w-80 w-full">
     <div class="mb-6 mt-4">
       <div class="mb-6 flex items-center justify-between">
         <h1 class="text-3xl font-bold">Sign Up</h1>
@@ -7,7 +7,7 @@
       </div>
       <x-alert type="error" :messages="session('status')" />
 
-      <form method="POST" action="{{ route('register', absolute: false) }}">
+      <form method="POST" action="{{ route('register', $subGate->slug, absolute: false) }}">
         @csrf
         {{-- <input type="hidden" name="accessToken" value="{{ $accessToken ?? '' }}">
         <input type="hidden" name="orcid" value="{{ $orcid ?? '' }}"> --}}
@@ -20,8 +20,8 @@
             </svg>
           </x-slot>
         </x-text-input>
-        <x-text-input :label="__('Last Name')" id="last_name" name="last_name" type="text" :value="old('last_name')" required
-          autofocus autocomplete="last_name" :messages="$errors->get('last_name')" :status="$errors->has('last_name') ? 'error' : ''" placeholder="John Doe">
+        <x-text-input class="mt-3" :label="__('Last Name')" id="last_name" name="last_name" type="text" :value="old('last_name')"
+          required autofocus autocomplete="last_name" :messages="$errors->get('last_name')" :status="$errors->has('last_name') ? 'error' : ''" placeholder="John Doe">
           <x-slot name="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path fill="currentColor"
@@ -29,8 +29,8 @@
             </svg>
           </x-slot>
         </x-text-input>
-        <x-text-input :label="__('Username')" id="username" name="username" type="text" :value="old('username')" required
-          autofocus autocomplete="username" :messages="$errors->get('username')" :status="$errors->has('username') ? 'error' : ''" placeholder="jhon_doe">
+        <x-text-input class="mt-3" :label="__('Username')" id="username" name="username" type="text" :value="old('username')"
+          required autofocus autocomplete="username" :messages="$errors->get('username')" :status="$errors->has('username') ? 'error' : ''" placeholder="jhon_doe">
           <x-slot name="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path fill="currentColor"
@@ -38,8 +38,9 @@
             </svg>
           </x-slot>
         </x-text-input>
-        <x-text-input :label="__('Email')" id="email" name="email" type="email" :value="old('email')" required
-          autofocus autocomplete="email" :messages="$errors->get('email')" :status="$errors->has('email') ? 'error' : ''" placeholder="yourname@example.com">
+        <x-text-input class="mt-3" :label="__('Email')" id="email" name="email" type="email" :value="old('email')"
+          required autofocus autocomplete="email" :messages="$errors->get('email')" :status="$errors->has('email') ? 'error' : ''"
+          placeholder="yourname@example.com">
           <x-slot name="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path fill="currentColor"
@@ -47,8 +48,9 @@
             </svg>
           </x-slot>
         </x-text-input>
-        <x-text-input :label="__('Password')" id="password" name="password" type="password" :value="old('password')" required
-          autofocus autocomplete="new-password" :messages="$errors->get('password')" :status="$errors->has('password') ? 'error' : ''" placeholder="********">
+        <x-text-input class="mt-3" :label="__('Password')" id="password" name="password" type="password"
+          :value="old('password')" required autofocus autocomplete="new-password" :messages="$errors->get('password')" :status="$errors->has('password') ? 'error' : ''"
+          placeholder="********">
           <x-slot name="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path fill="currentColor"
@@ -56,9 +58,9 @@
             </svg>
           </x-slot>
         </x-text-input>
-        <x-text-input :label="__('Confirm Password')" id="password_confirmation" name="password_confirmation" type="password"
-          :value="old('password_confirmation')" required autofocus autocomplete="new-password" :messages="$errors->get('password_confirmation')" :status="$errors->has('password_confirmation') ? 'error' : ''"
-          placeholder="********">
+        <x-text-input class="mt-3" :label="__('Confirm Password')" id="password_confirmation" name="password_confirmation"
+          type="password" :value="old('password_confirmation')" required autofocus autocomplete="new-password" :messages="$errors->get('password_confirmation')"
+          :status="$errors->has('password_confirmation') ? 'error' : ''" placeholder="********">
           <x-slot name="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path fill="currentColor"
@@ -86,7 +88,7 @@
         <div class="mt-6 gap-4 text-sm text-gray-600 dark:text-gray-400">
           Already a Member?
           <a class="text-blue-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-blue-500 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-            href="{{ route('login', absolute: false) }}">
+            href="{{ route('login', $subGate->slug, absolute: false) }}">
             Log In
           </a>
         </div>

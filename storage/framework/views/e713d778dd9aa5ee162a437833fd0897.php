@@ -8,7 +8,7 @@
 ?>
 <?php echo app('Illuminate\Foundation\Vite')('resources/css/file.css'); ?>
 <form id="manuscript-form" class="" method="POST"
-  action="<?php echo e(route('manuscripts.storeFile', $manuscript->id ?? '')); ?>">
+  action="<?php echo e(route('manuscripts.storeFile', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id ?? ''])); ?>">
   <?php echo csrf_field(); ?>
   <?php echo method_field('PUT'); ?>
 
@@ -203,14 +203,14 @@
           <input type="hidden" name="file_type_before">
           <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['class' => '!mb-0 !mt-2 !p-1 !text-xs !font-light','label' => 'File Type','type' => 'select','required' => true,'name' => 'file_type','autofocus' => true,'disabled' => $manuscript->isReview]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['class' => '!mb-0 !mt-2 !p-1 !text-xs !font-light','label' => 'File Type','type' => 'select','name' => 'file_type','autofocus' => true,'disabled' => $manuscript->isReview]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('text-input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => '!mb-0 !mt-2 !p-1 !text-xs !font-light','label' => 'File Type','type' => 'select','required' => true,'name' => 'file_type','autofocus' => true,'disabled' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($manuscript->isReview)]); ?>
+<?php $component->withAttributes(['class' => '!mb-0 !mt-2 !p-1 !text-xs !font-light','label' => 'File Type','type' => 'select','name' => 'file_type','autofocus' => true,'disabled' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($manuscript->isReview)]); ?>
             <option value="" disabled selected>-- Select File Type --</option>
            <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

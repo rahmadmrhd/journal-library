@@ -2,14 +2,19 @@
 
 namespace App\Services\Manuscripts;
 
+use App\Models\Form\Form;
+use App\Models\Form\FormAnswer;
 use App\Models\Manuscript\Category;
 use App\Models\Manuscript\File;
 use App\Models\Manuscript\FileType;
 use App\Models\Manuscript\Keyword;
 use App\Models\Manuscript\Manuscript;
 use App\Models\Manuscript\StepSubmission;
+use App\Models\SubGate;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -28,12 +33,21 @@ class SubmitNewManuscriptServices {
         Manuscript::messages()
       );
   }
-  private function updateCurrentStep(Manuscript &$manuscript, $validator, $step) {
-    $manuscript->steps()->syncWithoutDetaching([$manuscript->current_step => ['status' => $validator->fails() ? 'error' : 'success']]);
+  private function updateCurrentStep(Manuscript &$manuscript, \Illuminate\Validation\Validator|bool $validator, $step) {
+    if ($validator instanceof \Illuminate\Validation\Validator) {
+      $manuscript->steps()->syncWithoutDetaching([$manuscript->current_step => ['status' => $validator->fails() ? 'error' : 'success']]);
 
-    if ($manuscript->current_step < 5) {
-      $manuscript->current_step = $validator->fails() ?
-        $manuscript->current_step : ($step ?? $manuscript->current_step + 1);
+      if ($manuscript->current_step < 5) {
+        $manuscript->current_step = $validator->fails() ?
+          $manuscript->current_step : ($step ?? $manuscript->current_step + 1);
+      }
+    } else {
+      $manuscript->steps()->syncWithoutDetaching([$manuscript->current_step => ['status' => !$validator ? 'error' : 'success']]);
+
+      if ($manuscript->current_step < 5) {
+        $manuscript->current_step = !$validator ?
+          $manuscript->current_step : ($step ?? $manuscript->current_step + 1);
+      }
     }
   }
 
@@ -46,7 +60,6 @@ class SubmitNewManuscriptServices {
       'file_types' => FileType::orderBy('required', 'desc')->get(),
     ];
     if (!$manuscript) {
-      $data['file_types'] = FileType::orderBy('required', 'desc')->get();
       return $data;
     }
 
@@ -161,15 +174,18 @@ class SubmitNewManuscriptServices {
     });
   }
 
-  public function isAlreadySubmitted(Request $request) {
-    return $request->user()->manuscripts()->whereNull('submitted_at')->wherePivot('is_corresponding_author', true)->latest()->first();
+  public function isAlreadySubmitted(Request $request, SubGate $subGate) {
+    return $request->user()->manuscripts()->whereNull('submitted_at')->where('sub_gate_id', $subGate->id)->wherePivot('is_corresponding_author', true)->latest()->first();
   }
 
-  public function create(Request $request) {
+  public function create(Request $request, SubGate $subGate) {
+    DB::beginTransaction();
     $validator = $this->validate($request->all(), ['filesId', 'filesId.*']);
     $validator->validate();
 
-    $manuscript = Manuscript::create([]);
+    $manuscript = Manuscript::create([
+      'sub_gate_id' => $subGate->id,
+    ]);
 
     $this->moveFiles($request->filesId, $manuscript);
 
@@ -179,17 +195,31 @@ class SubmitNewManuscriptServices {
 
     $manuscript->current_step = 2;
 
+    $questions = Form::with('questions')->where('formable_type', Manuscript::class)
+      ->where(function (Builder $query) use ($subGate) {
+        $query->where('sub_gate_id', $subGate->id);
+        $query->orWhereNull('sub_gate_id');
+      })->orderByDesc('sub_gate_id')->first()->questions->map(function ($question) use ($request) {
+        unset($question->id);
+        $question->user_id = $request->user()->id;
+        return $question->toArray();
+      });
+
+    $manuscript->responses()->createMany(Form::getQuestions(Manuscript::class, $subGate, $request->user()));
+
     $manuscript->logs()->create([
       'user_id' => Auth::user()->id,
-      'activity' => 'Manuscript was created',
+      'activity' => 'This manuscript was created',
     ]);
 
     $manuscript->save();
+    DB::commit();
 
     return $manuscript;
   }
 
-  public function updateFile(Request $request, Manuscript $manuscript) {
+  public function updateFile(Request $request, SubGate $subGate, Manuscript $manuscript) {
+    DB::beginTransaction();
     $validator = $this->validate($request->all(), ['filesId', 'filesId.*']);
 
     $this->moveFiles($request->filesId, $manuscript);
@@ -197,15 +227,16 @@ class SubmitNewManuscriptServices {
     $this->updateCurrentStep($manuscript, $validator, $request->step);
 
     $manuscript->save();
+    DB::commit();
 
     return $manuscript;
   }
 
-  public function updateBasicInformation(Request $request, Manuscript $manuscript) {
+  public function updateBasicInformation(Request $request, SubGate $subGate, Manuscript $manuscript) {
+    DB::beginTransaction();
     $validator = $this->validate($request->all(), ['title', 'category_id', 'abstract', 'keywords', 'keywords.*']);
 
     $manuscript->fill($request->only(['title', 'category_id', 'abstract']));
-
 
     $keywords = [];
     foreach ($request->keywords ?? [] as $keyword) {
@@ -216,11 +247,14 @@ class SubmitNewManuscriptServices {
     $this->updateCurrentStep($manuscript, $validator, $request->step);
 
     $manuscript->save();
+    DB::commit();
     return $manuscript;
   }
 
-  public function updateAuthors(Request $request, Manuscript $manuscript) {
-    $validator = $this->validate($request->all(), ['authorsId', 'authorsId.*']);
+  public function updateAuthors(Request $request, SubGate $subGate, Manuscript $manuscript) {
+    DB::beginTransaction();
+    $validator
+      = $this->validate($request->all(), ['authorsId', 'authorsId.*']);
 
     $manuscript->authors()->sync([
       $request->user()->id => ['is_corresponding_author' => true],
@@ -230,21 +264,40 @@ class SubmitNewManuscriptServices {
     $this->updateCurrentStep($manuscript, $validator, $request->step);
 
     $manuscript->save();
+    DB::commit();
     return $manuscript;
   }
 
-  public function updateDetails(Request $request, Manuscript $manuscript) {
-    $request->merge([
-      'potential_conflict' => $request->has('potential_conflict') ? ($request->potential_conflict ?? false) : null,
-      'paper_contain' => $request->has('paper_contain') ? ($request->paper_contain ?? false) : null,
-      'open_access' => $request->has('open_access') ? ($request->open_access ?? false) : null,
-      'using_paperpal' => $request->has('using_paperpal') ? ($request->using_paperpal ?? false) : null,
-      'cover_letter' => json_decode($request->cover_letter, true),
-    ]);
+  public function updateDetails(Request $request, SubGate $subGate, Manuscript $manuscript) {
+    DB::beginTransaction();
+    // dd($request->all());
+    $isValid = true;
+    $responses = [];
+    foreach ($request->all() as $key => $value) {
+      $keys = explode('_', $key);
+      if ($keys[0] == 'field') {
+        $response = FormAnswer::find($keys[1]);
+        if ($response) {
 
-    $validator = $this->validate($request->all(), ['parent_id', 'funders',  'funders.*.id',  'funders.*.name',  'funders.*.grants',  'funders.*.grants.*',   'potential_conflict',  'paper_contain',  'open_access',  'using_paperpal']);
+          $response->answer = $value;
+          $response->save();
 
-    $manuscript->fill($request->only(['cover_letter', 'parent_id', 'potential_conflict', 'paper_contain', 'open_access', 'using_paperpal']));
+          $validator = $response->getValidator();
+
+          if ($validator->fails()) {
+            $isValid = false;
+          }
+
+          $responses[] = $response;
+        }
+      }
+    }
+
+    if ($isValid) {
+      $validator = $this->validate($request->all(), ['parent_id', 'funders',  'funders.*.id',  'funders.*.name',  'funders.*.grants',  'funders.*.grants.*']);
+    }
+
+    $manuscript->fill($request->only(['cover_letter', 'parent_id']));
 
     $funders = $manuscript->funders()->get();
     if ($request->has('funders')) {
@@ -264,13 +317,15 @@ class SubmitNewManuscriptServices {
       $manuscript->funders()->delete();
     }
 
-    $this->updateCurrentStep($manuscript, $validator, $request->step);
+    $this->updateCurrentStep($manuscript, $validator ?? $isValid, $request->step);
 
     $manuscript->save();
+    DB::commit();
     return $manuscript;
   }
 
-  public function submit(Manuscript $manuscript) {
+  public function submit(SubGate $subGate, Manuscript $manuscript) {
+    DB::beginTransaction();
     $data = $manuscript->toArray();
     $data['filesId'] = $manuscript->files->pluck('id')->toArray();
     $data['keywords'] = $manuscript->keywords->pluck('name')->toArray();
@@ -281,11 +336,6 @@ class SubmitNewManuscriptServices {
     if (!$validator->fails()) {
       $manuscript->submitted_at = now();
 
-      $manuscript->logs()->create([
-        'user_id' => Auth::user()->id,
-        'activity' => 'Manuscript was submitted',
-      ]);
-
       //generate code
       $latestManuscript = Manuscript::orderBy('submitted_at', 'desc')->first();
       $datenow = \Carbon\Carbon::now()->format('mY');
@@ -295,23 +345,33 @@ class SubmitNewManuscriptServices {
         $datenow . "-" . sprintf('%04d', $manuscript->number);
     }
 
-    $this->taskServices->delegateToEditorAssistant($manuscript);
+    $result = $this->taskServices->delegateToEditorAssistant($manuscript);
+    if ($result) {
+      $manuscript->logs()->create([
+        'user_id' => Auth::user()->id,
+        'activity' => 'This manuscript has been submitted',
+        'created_at' => now()->addSeconds(-1),
+      ]);
+    }
 
     $manuscript->save();
+    DB::commit();
 
     return $manuscript;
   }
 
   public function cancel(Manuscript $manuscript) {
+    DB::beginTransaction();
     $manuscript->canceled_at = now();
 
     $manuscript->steps()->detach();
 
     $manuscript->logs()->create([
       'user_id' => Auth::user()->id,
-      'activity' => 'Manuscript was cancelled',
+      'activity' => 'This manuscript was cancelled',
     ]);
 
     $manuscript->save();
+    DB::commit();
   }
 }

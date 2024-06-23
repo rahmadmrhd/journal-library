@@ -120,9 +120,6 @@
 .ce-toolbar {
   @apply ml-8;
 }
-.codex-editor__redactor {
-  @apply !pb-24;
-}
 .codex-editor__redactor.show {
   @apply !pb-2;
 }

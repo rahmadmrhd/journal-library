@@ -3,12 +3,12 @@
 namespace App\Models\Manuscript;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class File extends Model {
-  use HasFactory, HasUuids;
+  use HasFactory, HasUlids;
 
   protected $guarded = ['id'];
   protected $with = ['fileType'];

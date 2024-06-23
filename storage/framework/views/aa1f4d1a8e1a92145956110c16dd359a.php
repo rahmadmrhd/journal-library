@@ -1,9 +1,9 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
-<?php foreach($attributes->onlyProps(['name', 'show' => false, 'maxWidth' => '2xl']) as $__key => $__value) {
+<?php foreach($attributes->onlyProps(['name', 'show' => false, 'maxWidth']) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
-<?php $attributes = $attributes->exceptProps(['name', 'show' => false, 'maxWidth' => '2xl']); ?>
-<?php foreach (array_filter((['name', 'show' => false, 'maxWidth' => '2xl']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+<?php $attributes = $attributes->exceptProps(['name', 'show' => false, 'maxWidth']); ?>
+<?php foreach (array_filter((['name', 'show' => false, 'maxWidth']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
 <?php $__defined_vars = get_defined_vars(); ?>
@@ -13,13 +13,16 @@
 <?php unset($__defined_vars); ?>
 
 <?php
-  $maxWidth = [
-      'sm' => 'sm:max-w-sm',
-      'md' => 'sm:max-w-md',
-      'lg' => 'sm:max-w-lg',
-      'xl' => 'sm:max-w-xl',
-      '2xl' => 'sm:max-w-2xl',
-  ][$maxWidth];
+  if (isset($maxWidth)) {
+      $maxWidth = [
+          'sm' => 'sm:max-w-sm',
+          'md' => 'sm:max-w-md',
+          'lg' => 'sm:max-w-lg',
+          'xl' => 'sm:max-w-xl',
+          '2xl' => 'sm:max-w-2xl',
+          'full' => 'sm:max-w-full',
+      ][$maxWidth];
+  }
 ?>
 
 <div x-data="{
@@ -50,7 +53,7 @@
   x-on:close-modal.window="$event.detail == '<?php echo e($name); ?>' ? show = false : null" x-on:close.stop="show = false"
   x-on:keydown.escape.window="show = false" x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
   x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show"
-  class="fixed inset-0 z-50 flex h-full max-h-full items-center overflow-y-auto px-0 py-0 sm:justify-center sm:px-4"
+  class="fixed inset-0 bottom-0 left-0 right-0 top-0 z-50 flex h-full max-h-full items-center overflow-y-auto px-0 py-0 sm:justify-center sm:px-4"
   style="display: <?php echo e($show ? 'block' : 'none'); ?>;">
   <div x-show="show" class="fixed inset-0 transform transition-all" x-on:click="show = false"
     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -59,7 +62,7 @@
   </div>
 
   <div x-show="show"
-    <?php echo e($attributes->merge(['class' => 'relative max-h-full w-full max-w-full overflow-y-auto bg-white shadow dark:bg-gray-800 sm:w-auto sm:max-w-[90%] sm:rounded-lg lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl'])); ?>
+    <?php echo e($attributes->merge(['class' => 'relative max-h-full w-full max-w-full overflow-y-auto bg-white shadow dark:bg-gray-800 sm:w-auto sm:rounded-lg ' . (isset($maxWidth) ? $maxWidth : ' sm:max-w-[90%] lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl')])); ?>
 
     x-transition:enter="ease-out duration-300"
     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"

@@ -1,4 +1,4 @@
-<x-app-layout title="Manuscripts">
+<x-app-layout title="Manuscripts" :subGate="$subGate">
   {{-- Alert --}}
   @if (session('alert'))
     @php
@@ -6,8 +6,9 @@
     @endphp
     <x-alert class="sm:mx-4" :type="$msg['type']" :messages="$msg['messages']" :id="'msg-box'" :timeout="3000" />
   @endif
-  <div class="border-b border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 sm:rounded-lg">
-    <div class="flex w-full flex-col items-start justify-between p-4">
+
+  <div class="absolute h-full w-full border-b border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+    <div class="relative flex h-full w-full flex-col items-start justify-between p-4 px-8">
       <div class="mb-3">
         <h1 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Manuscripts Management</h1>
       </div>
@@ -46,7 +47,7 @@
           </div>
         </div>
         <div class="flex w-full items-end gap-2 sm:w-auto">
-          <a href="{{ route('manuscripts.create') }}" id="add-manuscript-btn" class="button primary">
+          <a href="{{ route('manuscripts.create', $subGate->slug) }}" id="add-manuscript-btn" class="button primary">
             <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
                 d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
@@ -70,7 +71,7 @@
 
       {{-- @include('pages.manuscripts.delete') --}}
 
-      <x-table class="mt-6" :columns="[
+      <x-table class="mt-6 h-full" :columns="[
           [
               'label' => 'Action',
               'name' => 'action',
@@ -97,13 +98,18 @@
               'isSortable' => true,
           ],
       ]">
-        @slot('pagination')
-          {{ $manuscripts->links() }}
-        @endslot
+        @if ($manuscripts->total() > 10)
+          @slot('pagination')
+            {{ $manuscripts->links() }}
+          @endslot
+        @endif
 
         @foreach ($manuscripts as $manuscript)
+          @php
+            $manuscriptSubGateSlug = $manuscript->subGate->slug ?? $subGate->slug;
+          @endphp
           <tr
-            href="{{ $manuscript->submitted_at ? route('manuscripts.show', $manuscript->id) : route('manuscripts.create', $manuscript->id) }}"
+            href="{{ $manuscript->submitted_at ? route('manuscripts.show', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id]) : route('manuscripts.create', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id]) }}"
             class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
             <td class="w-[1%] space-x-1 whitespace-nowrap p-4">
               <button title="More" id="more-btn-{{ $manuscript->id }}" x-data x-on:click.stop=""
@@ -121,12 +127,12 @@
                   aria-labelledby="more-btn-{{ $manuscript->id }}">
                   <li>
                     @if ($manuscript->submitted_at)
-                      <a href="{{ route('manuscripts.show', $manuscript->id) }}"
+                      <a href="{{ route('manuscripts.show', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id]) }}"
                         class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                         Show
                       </a>
                     @else
-                      <a href="{{ route('manuscripts.create', $manuscript->id) }}"
+                      <a href="{{ route('manuscripts.create', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id]) }}"
                         class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                         Continue
                       </a>
@@ -206,8 +212,8 @@
             <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
               {{ __('You have already drafted a submission. Please continue the previous submission before starting a new one.') }}
             </h3>
-            <a href="{{ route('manuscripts.create', session('already-submission')) }}" id="delete-modal-btn"
-              class="button primary">
+            <a href="{{ route('manuscripts.create', ['subGate' => $subGate, 'manuscript' => session('already-submission')]) }}"
+              id="delete-modal-btn" class="button primary">
               Yes, I will continue
             </a>
             <button id="cancel-modal-btn" type="button" x-on:click="$dispatch('close')" class="button secondary">

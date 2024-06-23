@@ -10,12 +10,12 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('logs', function (Blueprint $table) {
-      $table->uuid('id')->primary();
+      $table->ulid('id')->primary();
       $table->string('activity');
       $table->text('description')->nullable();
 
-      $table->uuidMorphs('loggable');
-      $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
+      $table->nullableUlidMorphs('loggable');
+      $table->foreignUlid('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
       $table->timestamps();
     });
   }

@@ -4,8 +4,9 @@
   $manuscript->isReview = $manuscript->isReview ?? $manuscript->isShow;
 @endphp
 
-<form id="manuscript-form" action="{{ route('manuscripts.storeDetails', $manuscript->id) }}" method="POST"
-  class="grid grid-cols-12 gap-x-6 gap-y-3" x-data="{
+<form id="manuscript-form"
+  action="{{ route('manuscripts.storeDetails', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id]) }}"
+  method="POST" class="grid grid-cols-12 gap-x-6 gap-y-3" x-data="{
       showCoverLetter: @js($manuscript->isConfirmed ? (isset($manuscript->cover_letter) ? 1 : '') : null),
       coverLetterEditor: null
   }">
@@ -141,135 +142,10 @@
           required></x-text-input>
       </template>
     </div>
-
-    {{-- CONFIRM FOLLOWING --}}
-
-    <div class="col-span-12">
-      <x-text-input :disabled="$manuscript->isReview" direction="col" type="checkbox" :options="[
-          [
-              'label' =>
-                  'Confirm that the manuscript has been submitted solely to this journal and is not published, in press, or submitted elsewhere.',
-              'value' => true,
-              'required' => true,
-              'checked' => $manuscript->isConfirmed,
-          ],
-          [
-              'label' =>
-                  'Confirm that all of the research meets the ethical guidelines of your institution or company, as well as adherence to the legal requirements of the study country.',
-              'value' => true,
-              'required' => true,
-              'checked' => $manuscript->isConfirmed,
-          ],
-          [
-              'label' =>
-                  'Confirm that you have prepared a complete text within the anonymous article file. Any identifying information has been included separately in a title page, acknowledgements or supplementary file not for review, to allow anonymous review.',
-              'value' => true,
-              'required' => true,
-              'checked' => $manuscript->isConfirmed,
-          ],
-      ]" label="Confirm the following:"
-        id="confirm_following" name="confirm_following" required></x-text-input>
-    </div>
-
-    {{-- CONFIRM AI TOOL --}}
-
-    <div class="col-span-12">
-      <x-text-input :disabled="$manuscript->isReview" type="checkbox" required :options="[
-          [
-              'label' =>
-                  'Confirm that the manuscript has been created by the author(s) and not an AI tool/Large Language Model (LLM). If an AI tool/LLM has been used to develop or generate any portion of the manuscript then this must be clearly flagged in the Methods and Acknowledgements.',
-              'value' => true,
-              'required' => true,
-              'checked' => $manuscript->isConfirmed,
-          ],
-      ]" id="AI_tool" name="AI_tool"
-        required></x-text-input>
-    </div>
   @endif
-  {{-- DECLARED POTENTIAL --}}
+  <x-custom-forms class="col-span-12" :readonly="$manuscript->isReview" :fields="$manuscript->responses">
 
-  <div class="col-span-12" x-data="{ value: @js($manuscript->potential_conflict ?? null) }">
-    <x-text-input :disabled="$manuscript->isReview" type="radio" :options="[
-        [
-            'label' => 'Yes',
-            'value' => true,
-        ],
-        [
-            'label' => 'No',
-            'value' => false,
-        ],
-    ]" x-model="value"
-      label="I/We have declared any potential conflict of interest in the research. Any support from a third party has been noted in the Acknowledgements."
-      id="potential_conflict" name="potential_conflict" required :status="$errors->has('potential_conflict') ? 'error' : ''" :messages="$errors->get('potential_conflict')"></x-text-input>
-  </div>
-
-  {{-- PAPER CONTAIN --}}
-
-  <div class="col-span-12" x-data="{ value: @js($manuscript->paper_contain ?? null) }">
-    <x-text-input :disabled="$manuscript->isReview" type="radio" :options="[
-        [
-            'label' => 'Yes',
-            'value' => true,
-        ],
-        [
-            'label' => 'No',
-            'value' => false,
-        ],
-    ]" x-model="value"
-      label="Does this paper contain a case study, or research conducted within an identifiable organization?"
-      id="paper_contain" name="paper_contain" required :status="$errors->has('paper_contain') ? 'error' : ''" :messages="$errors->get('paper_contain')"
-      description="If yes, please upload a completed Case Study Consent Form (download from the link at the top of this page) at the file upload step."></x-text-input>
-  </div>
-
-  {{-- OPEN ACCESS --}}
-
-  <div class="col-span-12" x-data="{ value: @js($manuscript->open_access ?? null) }">
-    <x-text-input :disabled="$manuscript->isReview" type="radio" :options="[
-        [
-            'label' => 'Yes, I want to publish my article as Open Access',
-            'value' => true,
-        ],
-        [
-            'label' => 'No, I don’t want to publish Open Access',
-            'value' => false,
-        ],
-    ]" x-model="value" :status="$errors->has('open_access') ? 'error' : ''"
-      :messages="$errors->get('open_access')"
-      label="Open Access: Indicate here your intention to publish your article as open access under a Creative Commons Attribution 4.0 Licence (CC BY) if it is accepted?"
-      id="open_access" name="open_access" required></x-text-input>
-  </div>
-
-  {{-- PAPERPAL --}}
-
-  <div class="col-span-12" x-data="{ value: @js($manuscript->using_paperpal ?? null) }">
-    <x-text-input :disabled="$manuscript->isReview" type="radio" :options="[
-        [
-            'label' => 'Yes',
-            'value' => true,
-        ],
-        [
-            'label' => 'No',
-            'value' => false,
-        ],
-    ]" x-model="value" :status="$errors->has('using_paperpal') ? 'error' : ''"
-      :messages="$errors->get('using_paperpal')"
-      label=" Have you downloaded and used the PaperPal pre flight report to help edit your submission?"
-      id="using_paperpal" name="using_paperpal" required></x-text-input>
-  </div>
-
-  {{-- ISSUE --}}
-
-  {{-- <div class="col-span-12 " x-data="{ value: @js( $manuscript->select_issue ?? null) }">
-    <x-text-input  :disabled="$manuscript->isReview" type="select" label=" Please select the issue you are submitting to?" id="select_issue"
-    x-model="value"
-      name="select_issue" required >
-      <option disabled selected>Please select an option</option>
-      <option value="Regular Issue">Regular Issue</option>
-      <option value="The Great Reset. Oportunity or Threat">The Great Reset. Oportunity or Threat?</option>
-      <option value="Closed to New Submission Covid-19 and Control of Humans and Society">Closed to New Submission
-        Covid-19 and Control of Humans and Society</option>
-    </x-text-input>
-  </div> --}}
+  </x-custom-forms>
 
 </form>
 

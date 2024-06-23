@@ -10,17 +10,20 @@ class TaskPolicy {
   use HandlesAuthorization;
 
   public function viewAny(User $user): bool {
-    return $user->getCurrentRole() != 'author';
+    return $user->currentRole->slug != 'author';
   }
   public function view(User $user, Task $task): bool {
-    return $user->getCurrentRole() != 'author' && $task->user_id == $user->id;
+    $subGate = request()->subGate;
+    return $task->subGate->id == $subGate->id && $user->currentRole->slug != 'author' && $task->user_id == $user->id;
   }
 
   public function makeDecision(User $user, Task $task): bool {
-    return !($user->getCurrentRole() == 'author' || $user->getCurrentRole() == 'reviewer' || $user->getCurrentRole() == 'academic-editor') && $task->user_id == $user->id;
+    $subGate = request()->subGate;
+    return $task->subGate->id == $subGate->id && !($user->currentRole->slug == 'author' || $user->currentRole->slug == 'reviewer' || $user->currentRole->slug == 'academic-editor') && $task->user_id == $user->id;
   }
 
   public function update(User $user, Task $task): bool {
-    return $user->getCurrentRole() != 'author' && $task->user_id == $user->id && $task->role_id == $user->current_role_id;
+    $subGate = request()->subGate;
+    return $task->subGate->id == $subGate->id && $user->currentRole->slug != 'author' && $task->user_id == $user->id && $task->role_id == $user->current_role_id;
   }
 }

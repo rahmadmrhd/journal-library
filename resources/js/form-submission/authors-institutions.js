@@ -1,13 +1,17 @@
 import { Dropdown } from 'flowbite';
 import $ from 'jquery';
-window.searchAuthors = (search, callback) => {
+window.searchAuthors = (subGate, without, search, callback) => {
   if (!search || search.length < 3) {
     callback([]);
     return;
   }
   $.ajax({
-    url: `/users/search/author/${search}`,
-    method: 'GET',
+    url: `/${subGate.slug}/users/search/author/${search}`,
+    method: 'POST',
+    data: {
+      _token: $('meta[name="csrf-token"]').attr("content"),
+      without: without ?? []
+    },
     cache: false,
     success: (result) => {
       console.log(result);

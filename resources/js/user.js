@@ -8,7 +8,7 @@ window.deleteUser = (id, e, $dispatch) => {
   idInput.value = id;
   form.action = `/users/${id}`;
 }
-window.showUpdateUser = (id, e, $dispatch) => {
+window.showUpdateUser = (subGate, id, e, $dispatch) => {
   showLoading();
   const _baseUrl = document.head.querySelector(
     'meta[name="base-url"]',
@@ -16,9 +16,9 @@ window.showUpdateUser = (id, e, $dispatch) => {
   const form = document.querySelector('#user-form');
   const idInput = form.querySelector('input[name="id"]');
   idInput.value = id;
-  form.action = `/users/${id}`;
+  form.action = `/${subGate.slug}/users/${id}`;
   $.ajax({
-    url: `/users/${id}/edit`,
+    url: `/${subGate.slug}/users/${id}/edit`,
     type: "GET",
     cache: false,
     success: function (response) {

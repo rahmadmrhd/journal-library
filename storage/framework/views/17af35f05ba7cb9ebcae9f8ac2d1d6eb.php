@@ -1,9 +1,9 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
-<?php foreach($attributes->onlyProps(['sizeHideSidebar' => 'lg']) as $__key => $__value) {
+<?php foreach($attributes->onlyProps(['sizeHideSidebar' => 'lg', 'subGate']) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
-<?php $attributes = $attributes->exceptProps(['sizeHideSidebar' => 'lg']); ?>
-<?php foreach (array_filter((['sizeHideSidebar' => 'lg']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+<?php $attributes = $attributes->exceptProps(['sizeHideSidebar' => 'lg', 'subGate']); ?>
+<?php foreach (array_filter((['sizeHideSidebar' => 'lg', 'subGate']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
 <?php $__defined_vars = get_defined_vars(); ?>
@@ -38,22 +38,39 @@
                   'route' => '/tasks/invitation',
                   'route_pattern' => '/tasks/invitation/*',
                   'role' => ['academic-editor', 'reviewer'],
-                  'indicator' => \App\Models\Manuscript\Task::where('status', 'pending')->where(
-                      'user_id',
-                      auth()->user()->id,
-                  ),
+                  'indicator' => Auth::user()
+                      ->invitations()
+                      ->where(function ($query) {
+                          $query->where('task_invitations.status', 'invited');
+                          $query->orWhereRaw(
+                              'DATEDIFF(`task_invitations`.`invited_at`, NOW()) > `task_invitations`.`deadline`',
+                          );
+                      })
+                      ->where('task_invitations.role_id', auth()->user()->currentRole->id)
+                      ->count(),
               ],
               'Assignment' => [
                   'route' => '/tasks/assignment',
                   'route_pattern' => '/tasks/assignment/*',
-                  'indicator' => \App\Models\Manuscript\Task::where('status', 'in_progress')
+                  'indicator' => \App\Models\Manuscript\Task::where(function ($query) {
+                      $query->where('status', 'in_progress');
+                      $query->orWhere('status', 'pending');
+                  })
                       ->where('user_id', auth()->user()->id)
-                      ->where('processed_at', null),
+                      ->where('processed_at', null)
+                      ->where('sub_gate_id', $subGate->id)
+                      ->where('role_id', auth()->user()->currentRole->id)
+                      ->count(),
               ],
               'In Progress' => [
                   'route' => '/tasks/in-progress',
                   'route_pattern' => '/tasks/in-progress/*',
                   'role' => ['academic-editor', 'editor-in-chief'],
+              ],
+              'Finalization' => [
+                  'route' => '/tasks/finalization',
+                  'route_pattern' => '/tasks/finalization/*',
+                  'role' => ['editor-in-chief'],
               ],
               'History' => [
                   'route' => '/tasks/history',
@@ -61,6 +78,14 @@
               ],
           ],
           'role' => ['editor-assistant', 'editor-in-chief', 'academic-editor', 'reviewer'],
+      ],
+      'Forms' => [
+          'route' => '/forms',
+          'route_pattern' => '/forms/*',
+          'role' => 'admin',
+          'icon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M7 7h2v2H7zm0 4h2v2H7zm0 4h2v2H7zm10 2h-6v-2h6zm0-4h-6v-2h6zm0-4h-6V7h6z" />
+                    </svg>',
       ],
       'Users' => [
           'route' => '/users',
@@ -72,7 +97,7 @@
       ],
   ];
 
-  $currentRole = Auth::user()->getCurrentRole()->slug;
+  $currentRole = Auth::user()->currentRole->slug;
   $sizeList = [
       'sm' => 'sm:translate-x-0',
       'md' => 'md:translate-x-0',
@@ -92,15 +117,16 @@
             !isset($item['role']) ||
                 (is_array($item['role']) ? in_array($currentRole, $item['role']) : $currentRole == $item['role'])): ?>
           <li x-data="{
-              open: checkUrlPath('<?php echo $item['route_pattern']; ?>')
+              open: checkUrlPath('<?php echo '/' . $subGate->slug . $item['route_pattern']; ?>')
           }">
             <?php if(isset($item['items'])): ?>
-              <button type="button" x-data="{ active: false }" x-init="active = checkUrlPath('<?php echo $item['route_pattern']; ?>')" x-bind:class="active && 'active'"
-                class="sidebar-item-dropdown group relative" x-on:click="open = !open">
+              <button type="button" x-data="{ active: false }" x-init="active = checkUrlPath('<?php echo '/' . $subGate->slug . $item['route_pattern']; ?>')" x-bind:class="active && 'active'"
+                class="sidebar-item-dropdown group relative" x-on:click="open = !open"
+                x-bind:class="open && 'shadow-md'">
                 <?php echo $item['icon']; ?>
 
                 <span class="ms-3 flex-1 whitespace-nowrap text-left"><?php echo e($key); ?></span>
-                <svg class="svg-dropdown" x-bind:class="open && 'rotate-90'" aria-hidden="true"
+                <svg class="svg-dropdown" x-bind:class="!open && 'rotate-90'" aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m1 1 4 4 4-4" />
@@ -126,7 +152,7 @@
                 x-transition:leave="transition ease-in duration-75"
                 x-transition:leave-start="transform opacity-100 scale-100"
                 x-transition:leave-end="transform opacity-0 scale-95"
-                class="mb-2 divide-y divide-gray-200 bg-gray-100 dark:divide-gray-700 dark:bg-gray-950">
+                class="mb-2 divide-y divide-gray-200 border-b border-t-2 border-gray-200 bg-gray-50 dark:divide-gray-700 dark:border-gray-700 dark:bg-slate-900">
                 <?php $__currentLoopData = $item['items']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dropdownItem => $dropdownItemDetails): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                   <?php if(
                       !isset($dropdownItemDetails['role']) ||
@@ -134,8 +160,9 @@
                               ? in_array($currentRole, $dropdownItemDetails['role'])
                               : $currentRole == $dropdownItemDetails['role'])): ?>
                     <li>
-                      <a href="<?php echo e($dropdownItemDetails['route']); ?>" class="group relative" x-data="{ active: false }"
-                        x-init="active = checkUrlPath('<?php echo $dropdownItemDetails['route_pattern']; ?>')" x-bind:class="active && 'active'"><?php echo e($dropdownItem); ?>
+                      <a href="<?php echo e('/' . $subGate->slug . $dropdownItemDetails['route']); ?>" class="group relative"
+                        x-data="{ active: false }" x-init="active = checkUrlPath('<?php echo '/' . $subGate->slug . $dropdownItemDetails['route_pattern']; ?>')"
+                        x-bind:class="active && 'active'"><?php echo e($dropdownItem); ?>
 
                         <?php
                           $indicator = 0;
@@ -144,7 +171,7 @@
                           } elseif (
                               $dropdownItemDetails['indicator'] instanceof \Illuminate\Database\Eloquent\Builder
                           ) {
-                              $indicator = $dropdownItemDetails['indicator']?->count() ?? 0;
+                              // $indicator = $dropdownItemDetails['indicator']?->count() ?? 0;
                           } else {
                               $indicator = $dropdownItemDetails['indicator'];
                           }
@@ -164,8 +191,8 @@
               </ul>
             <?php else: ?>
               <div class="relative" x-data="{ active: false }">
-                <a href="<?php echo e($item['route']); ?>" x-init="active = checkUrlPath('<?php echo $item['route_pattern']; ?>')" class="sidebar-item group relative"
-                  x-bind:class="active && 'active'">
+                <a href="<?php echo e('/' . $subGate->slug . $item['route']); ?>" x-init="active = checkUrlPath('<?php echo '/' . $subGate->slug . $item['route_pattern']; ?>')"
+                  class="sidebar-item group relative" x-bind:class="active && 'active'">
                   <?php echo $item['icon']; ?>
 
                   <span class="ms-3 flex-1 whitespace-nowrap"><?php echo e($key); ?></span>
@@ -175,7 +202,7 @@
                   if (!isset($item['indicator'])) {
                       $indicator = 0;
                   } elseif ($item['indicator'] instanceof \Illuminate\Database\Eloquent\Builder) {
-                      $indicator = $item['indicator']?->count() ?? 0;
+                      // $indicator = $item['indicator']?->count() ?? 0;
                   } else {
                       $indicator = $item['indicator'];
                   }

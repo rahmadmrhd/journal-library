@@ -2,24 +2,33 @@
 
 namespace App\Models\Manuscript;
 
+use App\Models\Form\FormAnswer;
 use App\Models\Log;
+use App\Models\SubGate;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Manuscript extends Model {
-  use HasFactory, HasUuids;
+  use HasFactory, HasUlids;
   protected $guarded = ['id'];
   protected $casts = [
     'cover_letter' => 'array',
   ];
+  protected $with = [];
 
+  public function subGate() {
+    return $this->belongsTo(SubGate::class);
+  }
   public function authors() {
     return $this->belongsToMany(User::class, 'manuscript_author')->using(ManuscriptAuthor::class)->withPivot('is_corresponding_author');
   }
   public function files() {
     return $this->morphMany(File::class, 'fileable');
+  }
+  public function responses() {
+    return $this->morphMany(FormAnswer::class, 'answerable');
   }
   public function steps() {
     return $this->belongsToMany(StepSubmission::class, 'step_submission_manuscript')->using(StepSubmissionManuscript::class)->withPivot('status');
@@ -54,7 +63,7 @@ class Manuscript extends Model {
   public static function rules(array $only = null): array {
     $rules = collect([
       'filesId' => ['required', 'array', 'min:1'],
-      'filesId.*' => ['required', 'uuid', 'exists:files,id'],
+      'filesId.*' => ['required', 'ulid', 'exists:files,id'],
 
       'title' => ['required', 'string', 'min:3', 'max:255'],
       'category_id' => ['required', 'integer', 'exists:categories,id'],
@@ -63,20 +72,16 @@ class Manuscript extends Model {
       'keywords.*' => ['required', 'min:3', 'max:25'],
 
       'authorsId' => ['nullable', 'array'],
-      'authorsId.*' => ['required', 'uuid', 'exists:users,id'],
+      'authorsId.*' => ['required', 'ulid', 'exists:users,id'],
 
-      'parent_id' => ['nullable', 'uuid', 'exists:manuscripts,id'],
+      'parent_id' => ['nullable', 'ulid', 'exists:manuscripts,id'],
 
       'funders' => ['nullable', 'array'],
-      'funders.*.id' => ['nullable', 'uuid', 'exists:funders,id'],
+      'funders.*.id' => ['nullable', 'ulid', 'exists:funders,id'],
       'funders.*.name' => ['required', 'string', 'min:3', 'max:255'],
       'funders.*.grants' => ['nullable', 'array'],
       'funders.*.grants.*' => ['required', 'string', 'min:3', 'max:255'],
 
-      'potential_conflict' => ['required', 'boolean'],
-      'paper_contain' => ['required', 'boolean'],
-      'open_access' => ['required', 'boolean'],
-      'using_paperpal' => ['required', 'boolean'],
       'cover_letter' => ['nullable', 'array', 'min:3'],
       'cover_letter.blocks' => ['nullable', 'array', 'min:1'],
     ]);
@@ -91,7 +96,7 @@ class Manuscript extends Model {
       'filesId.required' => 'Please upload at least one file.',
       'filesId.min' => 'Please upload at least one file.',
       'filesId.*.exists' => 'The file is invalid.',
-      'filesId.*.uuid' => 'The file is invalid.',
+      'filesId.*.ulid' => 'The file is invalid.',
       'filesId.*.required' => 'The file is invalid.',
 
       'title.required' => 'The title is required.',
@@ -110,9 +115,9 @@ class Manuscript extends Model {
       'authorsId.required' => 'The authors are required.',
       'authorsId.*.exists' => 'The author is invalid.',
       'authorsId.*.required' => 'The author is invalid.',
-      'authorsId.*.uuid' => 'The author is invalid.',
+      'authorsId.*.ulid' => 'The author is invalid.',
 
-      'parent_id.uuid' => 'The reference manuscript is invalid.',
+      'parent_id.ulid' => 'The reference manuscript is invalid.',
       'parent_id.exists' => 'The reference manuscript is invalid.',
 
       'funders.required' => 'The funders are required.',

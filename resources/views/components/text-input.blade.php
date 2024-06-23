@@ -12,12 +12,7 @@
     'label',
     'class' => '',
     'rows' => 3,
-    'options' => [
-        [
-            'label' => 'Admin',
-            'value' => 'admin',
-        ],
-    ],
+    'options',
     'direction' => 'row', //row or col,
     'description',
     'disabled' => false,
@@ -47,10 +42,11 @@
         <li class="w-full">
           <div class="flex items-center px-3">
             <input {!! $option['attributes'] ?? $attributes !!} {!! $disabled ? 'disabled' : '' !!} {{ $option['checked'] ?? false ? 'checked' : '' }}
-              {{ $option['required'] ?? $required ? 'required' : '' }} {!! $option['name'] ?? null ? 'name="' . $option['name'] . '"' : '' !!}
+              {{ $option['required'] ?? $required ? 'required' : '' }}
               id="{{ $type }}-{{ $name }}-{{ $loop->iteration }}" type="{{ $type }}"
-              {{ is_array($value) ? (collect($value)->contains($option['value']) ? 'checked' : '') : ($value == $option['value'] ? 'checked' : '') }}
-              name="{{ $name }}" value="{{ $option['value'] }}"
+              {{ is_array($value) ? (collect($value)->contains($option['value']) ? 'checked' : '') : ($value === $option['value'] ? 'checked' : '') }}
+              name="{{ $option['name'] ?? $name }}{{ $type == 'checkbox' ? '[]' : '' }}"
+              value="{{ $option['value'] }}"
               class="input {{ $type == 'checkbox' ? 'rounded' : 'rounded-full' }} {!! $disabled ? '' : 'cursor-pointer' !!} h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
 
             <label for="{{ $type }}-{{ $name }}-{{ $loop->iteration }}"
@@ -73,8 +69,17 @@
         @endif
         @if ($type == 'select')
           <select class="input" {!! $attributes !!} {!! $disabled ? 'disabled' : '' !!} {{ isset($id) ? 'id=' . $id : '' }}
-            name="{{ $name ?? '' }}" {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }}>
-            {{ $slot }}
+            name="{{ $name ?? '' }}" {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }}
+            value="{{ $value }}">
+            @isset($options)
+              <option value="" disabled selected>-- {{ $placeholder ?? 'Please Select' }} --</option>
+              @foreach ($options as $option)
+                <option value="{{ $option['value'] }}" {{ $value === $option['value'] ? 'selected' : '' }}>
+                  {{ $option['label'] }}</option>
+              @endforeach
+            @else
+              {{ $slot }}
+            @endisset
           </select>
         @elseif ($type == 'textarea')
           <textarea class="input" {!! $attributes !!} {!! $disabled ? 'disabled' : '' !!} {{ isset($id) ? 'id=' . $id : '' }}

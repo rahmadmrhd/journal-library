@@ -1,10 +1,12 @@
 import './bootstrap';
 import "flowbite";
 import Alpine from 'alpinejs';
+import sort from '@alpinejs/sort'
 import $ from 'jquery';
 window.jQuery = $;
 window.$ = $;
 
+Alpine.plugin(sort)
 window.Alpine = Alpine;
 window.checkUrlPath = (pathPatern) => {
   const currentPath = window.location.pathname;
@@ -23,7 +25,13 @@ window.checkUrlPath = (pathPatern) => {
   return currentPath.search(rgx) >= 0;
 }
 
+window.upperFirstLetterWords = (str) => {
+  const finalSentence = str.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+  return finalSentence;
+}
+
 Alpine.start();
+
 window.generateRandom = (length) => {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

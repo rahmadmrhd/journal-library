@@ -1,4 +1,4 @@
-<x-submission-layout :manuscript="$manuscript ?? null" :steps="$steps" :alert="$alert ?? null">
+<x-submission-layout :manuscript="$manuscript ?? null" :steps="$steps" :alert="$alert ?? null" :subGate="$subGate">
   @if (($manuscript->current_step ?? 1) == 5)
     @include('pages.manuscripts.form.review-submit')
   @else

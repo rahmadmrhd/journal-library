@@ -1,9 +1,9 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
-<?php foreach($attributes->onlyProps(['steps', 'manuscript', 'alert']) as $__key => $__value) {
+<?php foreach($attributes->onlyProps(['steps', 'manuscript', 'alert', 'subGate']) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
-<?php $attributes = $attributes->exceptProps(['steps', 'manuscript', 'alert']); ?>
-<?php foreach (array_filter((['steps', 'manuscript', 'alert']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+<?php $attributes = $attributes->exceptProps(['steps', 'manuscript', 'alert', 'subGate']); ?>
+<?php foreach (array_filter((['steps', 'manuscript', 'alert', 'subGate']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
 <?php $__defined_vars = get_defined_vars(); ?>
@@ -25,7 +25,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(App\View\Components\AppLayout::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['sizeHideSidebar' => '2xl','title' => 'Submit Manuscript']); ?>
+<?php $component->withAttributes(['sizeHideSidebar' => '2xl','title' => 'Submit Manuscript','subGate' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($subGate),'class' => 'px-4 pt-4']); ?>
   <input id="manuscript-id" type="hidden" name="id" value="<?php echo e($manuscript->id ?? ''); ?>" form="manuscript-form">
   <div class="fixed bottom-4 top-20 hidden border-r border-gray-300 !pr-4 dark:border-gray-800 md:block">
     <div class="card flex max-h-full w-72 flex-col !p-4">
@@ -36,7 +36,7 @@
               ? 'x-on:submit.prevent'
               : 'x-on:submit.prevent="changeStep(event, $dispatch)"'; ?>
 
-            action=<?php echo e(route('manuscripts.change_step', $manuscript->id ?? '')); ?>>
+            action=<?php echo e(route('manuscripts.change_step', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id ?? ''])); ?>>
             <?php echo csrf_field(); ?>
             <?php echo method_field('PATCH'); ?>
             <input type="hidden" name="step" value="<?php echo e($loop->iteration); ?>">
@@ -95,7 +95,7 @@
     </div>
   </div>
   <div
-    class="sticky top-16 z-20 mb-2 block w-full border-b border-gray-300 bg-gray-100 pb-2 pt-4 dark:border-gray-800 dark:bg-gray-900 md:hidden">
+    class="sticky top-0 z-20 mb-2 block w-full border-b border-gray-300 bg-gray-100 pb-2 pt-4 dark:border-gray-800 dark:bg-gray-900 md:hidden">
     <button id="dropdownStepSubmissionButton" data-dropdown-toggle="dropdownStepSubmission"
       data-dropdown-placement="bottom" data-dropdown-trigger="click" type="button"
       <?php switch($currentStep->status??null):
@@ -148,7 +148,7 @@
               ? 'x-on:submit.prevent'
               : 'x-on:submit.prevent="changeStep(event, $dispatch)"'; ?>
 
-            action=<?php echo e(route('manuscripts.change_step', $manuscript->id ?? '')); ?>>
+            action=<?php echo e(route('manuscripts.change_step', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id ?? ''])); ?>>
             <?php echo csrf_field(); ?>
             <?php echo method_field('PATCH'); ?>
             <input type="hidden" name="step" value="<?php echo e($loop->iteration); ?>">
@@ -257,7 +257,7 @@
 
     </div>
     <form id="previous-step" method="POST" x-on:submit.prevent="changeStep(event, $dispatch)"
-      action=<?php echo e(route('manuscripts.change_step', $manuscript->id ?? '')); ?>>
+      action=<?php echo e(route('manuscripts.change_step', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id ?? ''])); ?>>
       <?php echo csrf_field(); ?>
       <?php echo method_field('PATCH'); ?>
       <input type="hidden" name="step" value="<?php echo e($currentStepIndex - 1); ?>">

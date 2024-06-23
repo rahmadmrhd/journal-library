@@ -8,18 +8,18 @@
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-  <div class="relative w-full flex-row items-center dark:divide-gray-700 sm:flex">
-    <div class="">
+  <div class="relative flex w-full flex-col items-center justify-end p-4 dark:divide-gray-700 sm:flex-row">
+    <div class="w-full">
       <?php if (isset($component)) { $__componentOriginal658ef33603e1ca2f78ce9edf336217b6 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal658ef33603e1ca2f78ce9edf336217b6 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.auth-image','data' => ['class' => 'mx-auto h-60 w-60 fill-current text-blue-700 dark:text-sky-900 sm:h-96 sm:w-96']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.auth-image','data' => ['class' => 'max-w-96 mx-auto h-full w-full fill-current text-blue-700 dark:text-sky-900 sm:h-96 sm:w-96']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('auth-image'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'mx-auto h-60 w-60 fill-current text-blue-700 dark:text-sky-900 sm:h-96 sm:w-96']); ?>
+<?php $component->withAttributes(['class' => 'max-w-96 mx-auto h-full w-full fill-current text-blue-700 dark:text-sky-900 sm:h-96 sm:w-96']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal658ef33603e1ca2f78ce9edf336217b6)): ?>
@@ -32,7 +32,7 @@
 <?php endif; ?>
     </div>
 
-    <div class="sm:min-w-80 pl-6">
+    <div class="sm:min-w-80 my-6 w-full sm:my-0 sm:pl-6">
       <div class="mb-6 mt-4">
         <div class="mb-6">
           <div class="flex items-center justify-between">
@@ -81,7 +81,7 @@
 <?php $component = $__componentOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
 <?php unset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
 <?php endif; ?>
-        <form method="POST" action="<?php echo e(route('login', absolute: false)); ?>">
+        <form method="POST" action="<?php echo e(route('login', $subGate->slug, absolute: false)); ?>">
           <?php echo csrf_field(); ?>
           <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
@@ -111,14 +111,14 @@
 <?php endif; ?>
           <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['label' => __('Password'),'id' => 'password','name' => 'password','type' => 'password','value' => old('password'),'required' => true,'autofocus' => true,'autocomplete' => 'current_password','messages' => $errors->get('password'),'status' => $errors->has('password') ? 'error' : '']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['class' => 'mt-3','label' => __('Password'),'id' => 'password','name' => 'password','type' => 'password','value' => old('password'),'required' => true,'autofocus' => true,'autocomplete' => 'current_password','messages' => $errors->get('password'),'status' => $errors->has('password') ? 'error' : '']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('text-input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['label' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(__('Password')),'id' => 'password','name' => 'password','type' => 'password','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(old('password')),'required' => true,'autofocus' => true,'autocomplete' => 'current_password','messages' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($errors->get('password')),'status' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($errors->has('password') ? 'error' : '')]); ?>
+<?php $component->withAttributes(['class' => 'mt-3','label' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(__('Password')),'id' => 'password','name' => 'password','type' => 'password','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(old('password')),'required' => true,'autofocus' => true,'autocomplete' => 'current_password','messages' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($errors->get('password')),'status' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($errors->has('password') ? 'error' : '')]); ?>
              <?php $__env->slot('icon', null, []); ?> 
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -146,7 +146,7 @@
             </label>
             <?php if(Route::has('password.request')): ?>
               <a class="rounded-md text-sm text-gray-600 hover:text-gray-900 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                href="<?php echo e(route('password.request', absolute: false)); ?>">
+                href="<?php echo e(route('password.request', $subGate->slug, absolute: false)); ?>">
                 <?php echo e(__('Forgot your password?')); ?>
 
               </a>
@@ -171,7 +171,7 @@
           <div class="mt-6 gap-4 text-sm text-gray-600 dark:text-gray-400">
             Not a Member?
             <a class="text-blue-600 hover:text-gray-900 focus:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-blue-500 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-              href="<?php echo e(route('register', absolute: false)); ?>">
+              href="<?php echo e(route('register', $subGate->slug, absolute: false)); ?>">
               Sign Up
             </a>
           </div>

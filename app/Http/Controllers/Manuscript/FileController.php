@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller {
+
   /**
    * Store a newly created resource in storage.
    */

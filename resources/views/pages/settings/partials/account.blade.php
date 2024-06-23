@@ -10,16 +10,18 @@
       </p>
     </header>
 
-    <form id="send-verification" class="hidden" method="post" action="{{ route('verification.send', absolute: false) }}">
+    <form id="send-verification" class="hidden" method="post"
+      action="{{ route('verification.send', $subGate->slug, absolute: false) }}">
       @csrf
     </form>
 
-    <form id="remove-orcid" class="hidden" method="post" action="{{ route('orcid.destroy', absolute: false) }}">
+    <form id="remove-orcid" class="hidden" method="post"
+      action="{{ route('orcid.destroy', $subGate->slug, absolute: false) }}">
       @csrf
       @method('delete')
     </form>
 
-    <form x-data="{ formChanged: false }" method="post" action="{{ route('account.update', absolute: false) }}"
+    <form x-data="{ formChanged: false }" method="post" action="{{ route('account.update', $subGate->slug, absolute: false) }}"
       class="space-y-6">
       @csrf
       @method('PUT')
@@ -132,7 +134,7 @@
     </header>
 
     <form method="post" x-data="{ formChanged: false }"
-      action="{{ route(isset($user->password) ? 'password.update' : 'password.store', absolute: false) }}"
+      action="{{ route(isset($user->password) ? 'password.update' : 'password.store', $subGate->slug, absolute: false) }}"
       class="space-y-6">
       @csrf
       @isset($user->password)
@@ -201,7 +203,7 @@
     </button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-      <form method="post" action="{{ route('account.destroy', absolute: false) }}" class="p-6">
+      <form method="post" action="{{ route('account.destroy', $subGate->slug, absolute: false) }}" class="p-6">
         @csrf
         @method('delete')
 

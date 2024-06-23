@@ -1,12 +1,12 @@
-@props(['columns', 'tableId', 'positionPage' => 'both'])
+@props(['columns', 'tableId', 'positionPage' => 'both', 'sortable' => false])
 
-<div {{ $attributes->merge(['class' => 'relative block overflow-x-auto w-full']) }}>
+<div {{ $attributes->merge(['class' => 'relative block overflow-x-auto w-full h-full']) }}>
   @isset($pagination)
     <div class="{{ $positionPage == 'top' || $positionPage == 'both' ? '' : 'hidden' }} w-full p-4">
       {{ $pagination }}
     </div>
   @endisset
-  <div class="w-full">
+  <div class="relative w-full">
     <table class="w-full text-left text-sm text-gray-900 rtl:text-right dark:text-gray-100"
       @isset($tableId)
     id="{{ $tableId }}"
@@ -16,7 +16,7 @@
           @foreach ($columns as $column)
             @if ($column['isSortable'])
               <th scope="col" class="{{ $column['class'] ?? '' }} truncate px-6 py-3">
-                <a class="@if (request('sortBy') == $column['name']) text-blue-400 @endif flex items-center font-bold"
+                <a class="@if (request('sortBy') == $column['name']) text-blue-600 dark:text-blue-400 @endif flex items-center font-bold"
                   href="{{ request()->fullUrlWithQuery(['sortBy' => $column['name'], 'sort' => request('sort') == 'asc' ? 'desc' : 'asc']) }}
             ">
                   {{ $column['label'] }}
@@ -49,9 +49,15 @@
           @endforeach
         </tr>
       </thead>
-      <tbody>
-        {{ $slot }}
-      </tbody>
+      @if (isset($tbody))
+        <tbody {{ $tbody->attributes }}>
+          {{ $tbody }}
+        </tbody>
+      @else
+        <tbody {!! $sortable ? 'x-sort' : '' !!}>
+          {{ $slot }}
+        </tbody>
+      @endif
     </table>
   </div>
 

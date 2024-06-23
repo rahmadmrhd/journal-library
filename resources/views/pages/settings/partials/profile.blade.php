@@ -1,4 +1,4 @@
-<form action="{{ route('profile.update', absolute: false) }}" method="POST" class="space-y-6">
+<form action="{{ route('profile.update', $subGate->slug, absolute: false) }}" method="POST" class="space-y-6">
   {{-- @dd($user, $countries) --}}
   <div class="card divide-y-2 divide-gray-200 dark:divide-gray-700">
     <header class="">
