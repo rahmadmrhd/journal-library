@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -18,23 +19,26 @@ class AuthServiceProvider extends ServiceProvider {
    */
   public function boot(): void {
     $this->registerPolicies();
-    Gate::define('isAdmin', function ($user) {
-      return $user->role == 'admin';
+    Gate::define('isSuperAdmin', function (User $user) {
+      return $user->currentRole->slug == 'super-admin';
     });
-    Gate::define('isReviewer', function ($user) {
-      return $user->role == 'reviewer';
+    Gate::define('isAdmin', function (User $user) {
+      return $user->currentRole->slug == 'admin';
     });
-    Gate::define('isEditorAssistant', function ($user) {
-      return $user->role == 'editor-assistant';
+    Gate::define('isReviewer', function (User $user) {
+      return $user->currentRole->slug == 'reviewer';
     });
-    Gate::define('isEditorInChief', function ($user) {
-      return $user->role == 'editor-in-chief';
+    Gate::define('isEditorAssistant', function (User $user) {
+      return $user->currentRole->slug == 'editor-assistant';
     });
-    Gate::define('isAcademicEditor', function ($user) {
-      return $user->role == 'academic-editor';
+    Gate::define('isEditorInChief', function (User $user) {
+      return $user->currentRole->slug == 'editor-in-chief';
     });
-    Gate::define('isAuthor', function ($user) {
-      return $user->role == 'author';
+    Gate::define('isAcademicEditor', function (User $user) {
+      return $user->currentRole->slug == 'academic-editor';
+    });
+    Gate::define('isAuthor', function (User $user) {
+      return $user->currentRole->slug == 'author';
     });
   }
 }

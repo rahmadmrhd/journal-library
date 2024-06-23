@@ -7,7 +7,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(App\View\Components\SubmissionLayout::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['manuscript' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($manuscript ?? null),'steps' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($steps),'alert' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($alert ?? null)]); ?>
+<?php $component->withAttributes(['manuscript' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($manuscript ?? null),'steps' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($steps),'alert' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($alert ?? null),'subGate' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($subGate)]); ?>
   <?php if(($manuscript->current_step ?? 1) == 5): ?>
     <?php echo $__env->make('pages.manuscripts.form.review-submit', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
   <?php else: ?>

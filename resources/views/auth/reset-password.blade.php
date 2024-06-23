@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold">Reset Password</h1>
         <x-toggle-theme />
       </div>
-      <form method="POST" action="{{ route('password.store', absolute: false) }}">
+      <form method="POST" action="{{ route('password.store', $subGate->slug, absolute: false) }}">
         @csrf
 
         <!-- Password Reset Token -->

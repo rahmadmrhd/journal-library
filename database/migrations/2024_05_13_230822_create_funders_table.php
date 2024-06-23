@@ -10,10 +10,10 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('funders', function (Blueprint $table) {
-      $table->uuid('id')->primary();
+      $table->ulid('id')->primary();
       $table->string('name');
       $table->text('grants')->nullable();
-      $table->foreignUuid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
+      $table->foreignUlid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
       $table->timestamps();
     });
   }

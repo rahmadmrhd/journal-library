@@ -18,10 +18,10 @@ class CreateManuscriptRequest extends FormRequest {
   public function authorize(): bool {
     $this->manuscript = Manuscript::find($this->route('manuscript'))?->first();
     if (!$this->manuscript) {
-      return $this->user()->getCurrentRole()->slug === 'author';
+      return $this->user()->currentRole->slug === 'author';
     }
     // Gate::authorize('update', $this->manuscript);
-    return $this->user()->getCurrentRole()->slug === 'author';
+    return $this->user()->currentRole->slug === 'author';
   }
 
   protected function failedValidation(Validator $validator) {

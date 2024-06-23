@@ -1,12 +1,12 @@
-@props(['sizeHideSidebar' => 'lg', 'title', 'class' => ''])
+@props(['sizeHideSidebar' => 'lg', 'title', 'subGate'])
 
 @php
   $sizeList = [
-      'sm' => 'sm:ml-60',
-      'md' => 'md:ml-60',
-      'lg' => 'lg:ml-60',
-      'xl' => 'xl:ml-60',
-      '2xl' => '2xl:ml-60',
+      'sm' => 'sm:!left-60',
+      'md' => 'md:!left-60',
+      'lg' => 'lg:!left-60',
+      'xl' => 'xl:!left-60',
+      '2xl' => '2xl:!left-60',
   ][$sizeHideSidebar];
 @endphp
 
@@ -16,15 +16,19 @@
 
   <body class="bg-gray-100 font-sans antialiased dark:bg-gray-900 dark:text-white">
     <!-- Page Heading -->
-    <x-navbar :sizeHideSidebar="$sizeHideSidebar" />
-    <x-sidebar :sizeHideSidebar="$sizeHideSidebar" />
+    <x-navbar :sizeHideSidebar="$sizeHideSidebar" :subGate="$subGate" />
+    <x-sidebar :sizeHideSidebar="$sizeHideSidebar" :subGate="$subGate" />
 
     <!-- Page Content -->
-    <main class="{{ $sizeList }} {{ $class }} mt-16 p-4">
+    <main class="{{ $sizeList }} absolute bottom-0 left-0 right-0 top-16 overflow-auto bg-inherit text-inherit">
       @if (request()->request->has('role_error'))
-        @include('auth.role-error')
+        <div class="bg-inherit p-4 text-inherit">
+          @include('auth.role-error')
+        </div>
       @else
-        {{ $slot }}
+        <div {{ $attributes->merge(['class' => ' bg-inherit text-inherit']) }}>
+          {{ $slot }}
+        </div>
       @endif
     </main>
     <div id="loading-box"
@@ -50,19 +54,19 @@
     </div>
     @stack('body')
 
-    <x-modal name="file-preview" focusable x-on:load.window="window.$dispatch= $dispatch">
-      <div
-        class="card relative h-screen w-full !p-0 sm:w-[80vw] lg:h-[85vh] lg:w-[1000px] xl:h-[75vh] xl:w-[1200px] 2xl:w-[1500px]">
-        <div class="relative flex items-center justify-between p-2 !px-4">
-          <h3 class="text-lg font-bold">File Preview</h3>
-          <button class="button secondary !p-2" type="button" x-on:click="$dispatch('close')">
+    <x-modal name="file-preview" focusable x-on:load.window="window.$dispatch= $dispatch" maxWidth="full"
+      class="!fixed bottom-0 left-0 right-0 top-0">
+      <div class="card relative flex h-full max-h-screen w-full flex-col !rounded-none !p-0">
+        <div class="relative flex items-center justify-between px-4 py-2">
+          <h3 class="text-xl font-bold">File Preview</h3>
+          <button class="button error !p-2" type="button" x-on:click="$dispatch('close')">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24">
               <path fill="currentColor"
                 d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z" />
             </svg>
           </button>
         </div>
-        <div id="container-file" class="relative h-[90%] w-full">
+        <div id="container-file" class="h-full w-full flex-1 overflow-auto">
           {{-- <iframe
       src="https://view.officeapps.live.com/op/embed.aspx?src=https://13vtlvqnkb.sharedwithexpose.com/files/manuscripts/9c1306ca-e277-4810-acfd-18ced2d8ffae/9c130608-323b-43e6-b80c-3914c268179e.xlsx"
       class="min-h-screen w-full" frameborder="0"></iframe> --}}

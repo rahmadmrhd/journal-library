@@ -1,7 +1,7 @@
 @php
   $title = 'Users';
 @endphp
-<x-app-layout>
+<x-app-layout :subGate="$subGate" class="px-4 pt-4">
   {{-- Alert --}}
   @if (session('alert'))
     @php
@@ -58,7 +58,7 @@
             </svg>
             Add New User
           </button>
-          {{-- <a href="{{ route('admin.mahasiswa.print') }}"
+          {{-- <a href="{{ route('admin.mahasiswa.print', $subGate->slug) }}"
             class="inline-flex h-9 w-1/2 items-center justify-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
             <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
@@ -158,7 +158,7 @@
                     aria-labelledby="more-btn-{{ $user->id }}">
                     <li>
                       <button type="button" x-data
-                        x-on:click="showUpdateUser('{{ $user->id }}', event, $dispatch)"
+                        x-on:click="showUpdateUser(@js($subGate->toArray()), '{{ $user->id }}', event, $dispatch)"
                         class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                         Edit
                       </button>

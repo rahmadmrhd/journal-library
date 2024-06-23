@@ -1,9 +1,9 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
-<?php foreach($attributes->onlyProps(['sizeHideSidebar' => 'lg', 'title', 'class' => '']) as $__key => $__value) {
+<?php foreach($attributes->onlyProps(['sizeHideSidebar' => 'lg', 'title', 'subGate']) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
-<?php $attributes = $attributes->exceptProps(['sizeHideSidebar' => 'lg', 'title', 'class' => '']); ?>
-<?php foreach (array_filter((['sizeHideSidebar' => 'lg', 'title', 'class' => '']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+<?php $attributes = $attributes->exceptProps(['sizeHideSidebar' => 'lg', 'title', 'subGate']); ?>
+<?php foreach (array_filter((['sizeHideSidebar' => 'lg', 'title', 'subGate']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
 <?php $__defined_vars = get_defined_vars(); ?>
@@ -14,11 +14,11 @@
 
 <?php
   $sizeList = [
-      'sm' => 'sm:ml-60',
-      'md' => 'md:ml-60',
-      'lg' => 'lg:ml-60',
-      'xl' => 'xl:ml-60',
-      '2xl' => '2xl:ml-60',
+      'sm' => 'sm:!left-60',
+      'md' => 'md:!left-60',
+      'lg' => 'lg:!left-60',
+      'xl' => 'xl:!left-60',
+      '2xl' => '2xl:!left-60',
   ][$sizeHideSidebar];
 ?>
 
@@ -30,14 +30,14 @@
     <!-- Page Heading -->
     <?php if (isset($component)) { $__componentOriginala591787d01fe92c5706972626cdf7231 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala591787d01fe92c5706972626cdf7231 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.navbar','data' => ['sizeHideSidebar' => $sizeHideSidebar]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.navbar','data' => ['sizeHideSidebar' => $sizeHideSidebar,'subGate' => $subGate]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('navbar'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['sizeHideSidebar' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($sizeHideSidebar)]); ?>
+<?php $component->withAttributes(['sizeHideSidebar' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($sizeHideSidebar),'subGate' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($subGate)]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginala591787d01fe92c5706972626cdf7231)): ?>
@@ -50,14 +50,14 @@
 <?php endif; ?>
     <?php if (isset($component)) { $__componentOriginal2880b66d47486b4bfeaf519598a469d6 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2880b66d47486b4bfeaf519598a469d6 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.sidebar','data' => ['sizeHideSidebar' => $sizeHideSidebar]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.sidebar','data' => ['sizeHideSidebar' => $sizeHideSidebar,'subGate' => $subGate]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('sidebar'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['sizeHideSidebar' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($sizeHideSidebar)]); ?>
+<?php $component->withAttributes(['sizeHideSidebar' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($sizeHideSidebar),'subGate' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($subGate)]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal2880b66d47486b4bfeaf519598a469d6)): ?>
@@ -70,12 +70,16 @@
 <?php endif; ?>
 
     <!-- Page Content -->
-    <main class="<?php echo e($sizeList); ?> <?php echo e($class); ?> mt-16 p-4">
+    <main class="<?php echo e($sizeList); ?> absolute bottom-0 left-0 right-0 top-16 overflow-auto bg-inherit text-inherit">
       <?php if(request()->request->has('role_error')): ?>
-        <?php echo $__env->make('auth.role-error', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <div class="bg-inherit p-4 text-inherit">
+          <?php echo $__env->make('auth.role-error', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        </div>
       <?php else: ?>
-        <?php echo e($slot); ?>
+        <div <?php echo e($attributes->merge(['class' => ' bg-inherit text-inherit'])); ?>>
+          <?php echo e($slot); ?>
 
+        </div>
       <?php endif; ?>
     </main>
     <div id="loading-box"
@@ -103,26 +107,25 @@
 
     <?php if (isset($component)) { $__componentOriginal9f64f32e90b9102968f2bc548315018c = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal9f64f32e90b9102968f2bc548315018c = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.modal','data' => ['name' => 'file-preview','focusable' => true,'xOn:load.window' => 'window.$dispatch= $dispatch']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.modal','data' => ['name' => 'file-preview','focusable' => true,'xOn:load.window' => 'window.$dispatch= $dispatch','maxWidth' => 'full','class' => '!fixed bottom-0 left-0 right-0 top-0']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('modal'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['name' => 'file-preview','focusable' => true,'x-on:load.window' => 'window.$dispatch= $dispatch']); ?>
-      <div
-        class="card relative h-screen w-full !p-0 sm:w-[80vw] lg:h-[85vh] lg:w-[1000px] xl:h-[75vh] xl:w-[1200px] 2xl:w-[1500px]">
-        <div class="relative flex items-center justify-between p-2 !px-4">
-          <h3 class="text-lg font-bold">File Preview</h3>
-          <button class="button secondary !p-2" type="button" x-on:click="$dispatch('close')">
+<?php $component->withAttributes(['name' => 'file-preview','focusable' => true,'x-on:load.window' => 'window.$dispatch= $dispatch','maxWidth' => 'full','class' => '!fixed bottom-0 left-0 right-0 top-0']); ?>
+      <div class="card relative flex h-full max-h-screen w-full flex-col !rounded-none !p-0">
+        <div class="relative flex items-center justify-between px-4 py-2">
+          <h3 class="text-xl font-bold">File Preview</h3>
+          <button class="button error !p-2" type="button" x-on:click="$dispatch('close')">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24">
               <path fill="currentColor"
                 d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z" />
             </svg>
           </button>
         </div>
-        <div id="container-file" class="relative h-[90%] w-full">
+        <div id="container-file" class="h-full w-full flex-1 overflow-auto">
           
           
         </div>

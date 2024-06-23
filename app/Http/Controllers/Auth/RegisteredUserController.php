@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SubGate;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -16,8 +17,10 @@ class RegisteredUserController extends Controller {
   /**
    * Display the registration view.
    */
-  public function create(): View {
-    return view('auth.register');
+  public function create(SubGate $subGate): View {
+    return view('auth.register', [
+      'subGate' => $subGate
+    ]);
   }
 
   /**
@@ -25,7 +28,7 @@ class RegisteredUserController extends Controller {
    *
    * @throws \Illuminate\Validation\ValidationException
    */
-  public function store(Request $request): RedirectResponse {
+  public function store(Request $request, SubGate $subGate): RedirectResponse {
     $validatedData = $request->validate([
       'first_name' => ['required', 'string', 'max:255'],
       'last_name' => ['required', 'string', 'max:255'],
@@ -37,12 +40,12 @@ class RegisteredUserController extends Controller {
 
     $user = User::create($validatedData);
 
-    $user->roles()->attach([1, 2]);
+    $user->roles()->syncWithPivotValues([1, 2], ['sub_gate_id' => $subGate->id]);
 
     event(new Registered($user));
 
     Auth::login($user);
 
-    return redirect(route('verification.notice', absolute: false));
+    return redirect(route('verification.notice', $subGate->slug, absolute: false));
   }
 }

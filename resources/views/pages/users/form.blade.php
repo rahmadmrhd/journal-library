@@ -5,7 +5,7 @@
 <x-modal name="add-user-modal" :show="$errors->form->isNotEmpty()" focusable>
   <div class="lg:min-w-96 relative w-full self-start sm:max-h-full sm:self-center">
     <div class="relative h-full bg-white shadow dark:bg-gray-800 sm:max-h-full sm:rounded-lg">
-      <form id="user-form" action="{{ route('users.store') }}" method="POST"
+      <form id="user-form" action="{{ route('users.store', $subGate->slug) }}" method="POST"
         is-update="{{ old('_method', '') == 'PUT' ? 'true' : 'false' }}" enctype="multipart/form-data">
         {{-- Modal header  --}}
         <div

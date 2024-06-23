@@ -1,12 +1,13 @@
-<form id="manuscript-form" action="{{ route('manuscripts.storeAuthors', $manuscript->id) }}" method="POST"
-  class="flex flex-col gap-y-3" x-data="{
+<form id="manuscript-form"
+  action="{{ route('manuscripts.storeAuthors', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id]) }}"
+  method="POST" class="flex flex-col gap-y-3" x-data="{
       show: @js(old('isSoleAuthor', $manuscript->isSoleAuthor ?? true)) ? 1 : '',
       authors: Object.values(@js($manuscript->authors ?? [])),
       listAuthor: [],
       inputFocused: false,
       dropdownFocused: false,
       search: '',
-  }" x-init="$watch('search', val => searchAuthors(val, (result) => listAuthor = result));"
+  }" x-init="$watch('search', val => searchAuthors(@js($subGate->toArray()), authors.map(x => x.id), val, (result) => listAuthor = result));"
   x-on:submit-sole-author.window="show = 1; authors = []">
   @csrf
   @method('PUT')
@@ -249,7 +250,6 @@
 
 {{-- MODAL ADD Co-Author MANUALLY --}}
 <x-modal name="add-coauthor-manually" focusable>
-
   <div class="md:min-w-96 relative w-full self-start sm:max-h-full sm:self-center lg:w-[760px]">
     <div class="relative h-full bg-white shadow dark:bg-gray-800 sm:max-h-full sm:rounded-lg">
       <form id="funder-form" action="" method="POST" x-data="{
@@ -277,7 +277,8 @@
 
         {{-- Modal body  --}}
         <div class="mt-0 space-y-6 p-6">
-          <form action="{{ route('profile.update', absolute: false) }}" method="POST" class="space-y-6">
+          <form action="{{ route('profile.update', $subGate->slug, absolute: false) }}" method="POST"
+            class="space-y-6">
             <div class="card divide-y-2 divide-gray-200 dark:divide-gray-700">
               <header class="">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">

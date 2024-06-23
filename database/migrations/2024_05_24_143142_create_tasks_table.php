@@ -10,18 +10,19 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('tasks', function (Blueprint $table) {
-      $table->uuid('id')->primary();
-      $table->foreignUuid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
-      $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
+      $table->ulid('id')->primary();
+      $table->foreignUlid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
+      $table->foreignUlid('user_id')->references('id')->on('users')->cascadeOnDelete();
       $table->unsignedTinyInteger('role_id');
       $table->foreign('role_id')->references('id')->on('roles');
       $table->unique(['manuscript_id', 'user_id', 'role_id']);
 
-      $table->enum('status', ['pending', 'alternative', 'in_progress', 'delegated', 'done', 'rejected'])->default('pending');
-      $table->enum('decision', ['accept', 'reject'])->nullable();
-      $table->longText('notes')->nullable();
+      $table->enum('status', ['pending', 'in_progress', 'delegated', 'finalization', 'done', 'rejected'])->default('pending');
 
-      $table->dateTime('deadline')->nullable();
+      $table->foreignUlid('parent_id')->nullable()->references('id')->on('tasks')->cascadeOnDelete();
+      $table->foreignUlid('sub_gate_id')->references('id')->on('sub_gates')->cascadeOnDelete();
+
+      $table->unsignedTinyInteger('deadline')->nullable();
       $table->timestamp('processed_at')->nullable();
       $table->timestamp('completed_at')->nullable();
       $table->timestamps();

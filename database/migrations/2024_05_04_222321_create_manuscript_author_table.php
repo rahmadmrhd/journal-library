@@ -10,9 +10,9 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('manuscript_author', function (Blueprint $table) {
-      $table->uuid('id')->primary();
-      $table->foreignUuid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
-      $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
+      $table->ulid('id')->primary();
+      $table->foreignUlid('manuscript_id')->references('id')->on('manuscripts')->cascadeOnDelete();
+      $table->foreignUlid('user_id')->references('id')->on('users')->cascadeOnDelete();
       $table->boolean('is_corresponding_author')->default(false);
       $table->timestamps();
     });

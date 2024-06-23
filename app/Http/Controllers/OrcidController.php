@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SubGate;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ class OrcidController extends Controller {
     $result = json_decode($result);
     return $result;
   }
-  public function auth(Request $request) {
+  public function auth(Request $request, SubGate $subGate) {
     $result = $this->getToken($request, 'auth');
     if (isset($result->error)) {
       return response()->json($result);
@@ -61,35 +62,35 @@ class OrcidController extends Controller {
       $user->roles()->attach([1, 2]);
 
       event(new Registered($user));
-      return redirect('/settings')->withFragment('account')->with('message', [
+      return redirect()->route('setting', $subGate->slug)->withFragment('account')->with('message', [
         'status' => 'success',
         'msg' => 'Successfully registered with an orcid account'
       ]);
     }
     Auth::login($user);
-    return redirect()->intended(route('dashboard', absolute: false));
+    return redirect()->intended(route('dashboard', $subGate->slug, absolute: false));
   }
-  public function connect(Request $request) {
+  public function connect(Request $request, SubGate $subGate) {
     $result = $this->getToken($request, 'connect');
     if (isset($result->error)) {
       return response()->json($result);
     }
     $findOrcid = User::where('orcid_id', $result->orcid)->first();
     if ($findOrcid) {
-      return redirect('/settings')->withFragment('account')->with('message', [
+      return redirect()->route('setting', $subGate->slug)->withFragment('account')->with('message', [
         'status' => 'error',
         'msg' => 'Orcid has been connected to other accounts'
       ]);
     }
     $request->user()->orcid_id = $result->orcid;
     $request->user()->save();
-    return redirect('/settings')->withFragment('account')->with('message', [
+    return redirect()->route('setting', $subGate->slug)->withFragment('account')->with('message', [
       'status' => 'success',
       'msg' => 'Successfully connected to your orcid account'
     ]);
   }
 
-  public function destroy(Request $request) {
+  public function destroy(Request $request, SubGate $subGate) {
     $request->user()->orcid_id = null;
     $request->user()->save();
     return back()->withFragment('account')->with('message', [

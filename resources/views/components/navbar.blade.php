@@ -1,4 +1,4 @@
-@props(['sizeHideSidebar' => 'lg'])
+@props(['sizeHideSidebar' => 'lg', 'subGate'])
 @php
   $sizeList = [
       'sm' => 'sm:hidden',
@@ -31,7 +31,7 @@
         {{-- <img src="{{ url('storage/logo_untag.png') }}" class="me-3 h-10 self-center" alt="Untag Logo" /> --}}
         <div class="flex flex-col items-center self-center">
           <span
-            class="whitespace-nowrap text-lg font-extrabold uppercase dark:text-white">{{ config('app.name') }}</span>
+            class="whitespace-nowrap text-lg font-extrabold uppercase dark:text-white">{{ $subGate->name ?? config('app.name') }}</span>
           {{-- <span class="whitespace-nowrap text-sm font-normal uppercase dark:text-white">Universitas 17 Agustus
             1945</span> --}}
         </div>
@@ -125,33 +125,34 @@
               </p>
             </div>
             <div class="divide-y divide-gray-100 px-4 py-3">
-              <form action="{{ route('role.update', absolute: false) }}" method="POST">
+              <form action="{{ route('role.update', $subGate->slug, absolute: false) }}" method="POST">
                 @csrf
                 @method('PUT')
-                <x-text-input label="Role" name="roleId" value="{{ Auth::user()->current_role_id }}"
-                  onchange="this.form.submit()" type="select">
-                  @foreach (Auth::user()->roles as $role)
-                    <option {{ Auth::user()->current_role_id == $role->id ? 'selected' : '' }}
-                      value="{{ $role->id }}">{{ $role->name }}</option>
+                @php
+                  $roles = Auth::user()
+                      ->roles()
+                      ->wherePivot('sub_gate_id', $subGate->id)
+                      ->get();
+                  $currentRoleId = Auth::user()->current_role_id;
+                  $isNotFound = $roles->where('id', $currentRoleId)->isEmpty();
+                @endphp
+                <x-text-input label="Role" name="roleId" value="{{ $currentRoleId }}" onchange="this.form.submit()"
+                  :status="$isNotFound ? 'error' : ''" :messages="$isNotFound ? ['Role not found'] : ['']" type="select">
+                  @if ($isNotFound)
+                    <option value="" disabled selected>--Select Role--</option>
+                  @endif
+                  @foreach ($roles as $role)
+                    <option {{ $currentRoleId == $role->id ? 'selected' : '' }} value="{{ $role->id }}">
+                      {{ $role->name }}</option>
                   @endforeach
                 </x-text-input>
-                {{-- <label for="role" class="block text-sm font-medium text-gray-900 dark:text-white">
-                  Role
-                </label>
-                <select id="role" name="roleId" onchange="this.form.submit()"
-                  class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-                  @foreach (Auth::user()->roles as $role)
-                    <option {{ Auth::user()->current_role_id == $role->id ? 'selected' : '' }}
-                      value="{{ $role->id }}">{{ $role->name }}</option>
-                  @endforeach
-                </select> --}}
               </form>
             </div>
             <ul class="py-1" role="none">
 
-              {{-- @dd(Auth::user()->current_role_id) --}}
               <li>
-                <a href="{{ route('settings', absolute: false) }}" class="dropdown-item" role="menuitem">
+                <a href="{{ route('settings', $subGate->slug, absolute: false) }}" class="dropdown-item"
+                  role="menuitem">
                   <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd"
@@ -162,7 +163,7 @@
                 </a>
               </li>
               <li>
-                <form action="{{ route('logout', absolute: false) }}" method="POST" role="menuitem">
+                <form action="{{ route('logout', $subGate->slug, absolute: false) }}" method="POST" role="menuitem">
                   @csrf
                   <button class="dropdown-item w-full" role="menuitem" type="submit">
                     <x-gmdi-logout class="!text-red-500" />

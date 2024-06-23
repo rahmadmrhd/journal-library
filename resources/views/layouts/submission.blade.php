@@ -1,10 +1,10 @@
-@props(['steps', 'manuscript', 'alert'])
+@props(['steps', 'manuscript', 'alert', 'subGate'])
 @php
   $currentStepIndex = $manuscript->current_step ?? 1;
   $currentStep = $steps[$currentStepIndex - 1];
 @endphp
 
-<x-app-layout sizeHideSidebar="2xl" title="Submit Manuscript">
+<x-app-layout sizeHideSidebar="2xl" title="Submit Manuscript" :subGate="$subGate" class="px-4 pt-4">
   <input id="manuscript-id" type="hidden" name="id" value="{{ $manuscript->id ?? '' }}" form="manuscript-form">
   <div class="fixed bottom-4 top-20 hidden border-r border-gray-300 !pr-4 dark:border-gray-800 md:block">
     <div class="card flex max-h-full w-72 flex-col !p-4">
@@ -14,7 +14,7 @@
           <form x-data method="POST" {!! $currentStepIndex == $loop->iteration
               ? 'x-on:submit.prevent'
               : 'x-on:submit.prevent="changeStep(event, $dispatch)"' !!}
-            action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
+            action={{ route('manuscripts.change_step', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id ?? '']) }}>
             @csrf
             @method('PATCH')
             <input type="hidden" name="step" value="{{ $loop->iteration }}">
@@ -73,7 +73,7 @@
     </div>
   </div>
   <div
-    class="sticky top-16 z-20 mb-2 block w-full border-b border-gray-300 bg-gray-100 pb-2 pt-4 dark:border-gray-800 dark:bg-gray-900 md:hidden">
+    class="sticky top-0 z-20 mb-2 block w-full border-b border-gray-300 bg-gray-100 pb-2 pt-4 dark:border-gray-800 dark:bg-gray-900 md:hidden">
     <button id="dropdownStepSubmissionButton" data-dropdown-toggle="dropdownStepSubmission"
       data-dropdown-placement="bottom" data-dropdown-trigger="click" type="button"
       @switch($currentStep->status??null)
@@ -125,7 +125,7 @@
           <form x-data method="POST" {!! $currentStepIndex == $loop->iteration
               ? 'x-on:submit.prevent'
               : 'x-on:submit.prevent="changeStep(event, $dispatch)"' !!}
-            action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
+            action={{ route('manuscripts.change_step', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id ?? '']) }}>
             @csrf
             @method('PATCH')
             <input type="hidden" name="step" value="{{ $loop->iteration }}">
@@ -195,7 +195,7 @@
       {{ $slot }}
     </div>
     <form id="previous-step" method="POST" x-on:submit.prevent="changeStep(event, $dispatch)"
-      action={{ route('manuscripts.change_step', $manuscript->id ?? '') }}>
+      action={{ route('manuscripts.change_step', ['subGate' => $manuscript->subGate->slug ?? $subGate->slug, 'manuscript' => $manuscript->id ?? '']) }}>
       @csrf
       @method('PATCH')
       <input type="hidden" name="step" value="{{ $currentStepIndex - 1 }}">

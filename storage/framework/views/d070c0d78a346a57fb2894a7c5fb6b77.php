@@ -13,12 +13,7 @@
     'label',
     'class' => '',
     'rows' => 3,
-    'options' => [
-        [
-            'label' => 'Admin',
-            'value' => 'admin',
-        ],
-    ],
+    'options',
     'direction' => 'row', //row or col,
     'description',
     'disabled' => false,
@@ -39,12 +34,7 @@
     'label',
     'class' => '',
     'rows' => 3,
-    'options' => [
-        [
-            'label' => 'Admin',
-            'value' => 'admin',
-        ],
-    ],
+    'options',
     'direction' => 'row', //row or col,
     'description',
     'disabled' => false,
@@ -63,12 +53,7 @@
     'label',
     'class' => '',
     'rows' => 3,
-    'options' => [
-        [
-            'label' => 'Admin',
-            'value' => 'admin',
-        ],
-    ],
+    'options',
     'direction' => 'row', //row or col,
     'description',
     'disabled' => false,
@@ -109,12 +94,13 @@
           <div class="flex items-center px-3">
             <input <?php echo $option['attributes'] ?? $attributes; ?> <?php echo $disabled ? 'disabled' : ''; ?> <?php echo e($option['checked'] ?? false ? 'checked' : ''); ?>
 
-              <?php echo e($option['required'] ?? $required ? 'required' : ''); ?> <?php echo $option['name'] ?? null ? 'name="' . $option['name'] . '"' : ''; ?>
+              <?php echo e($option['required'] ?? $required ? 'required' : ''); ?>
 
               id="<?php echo e($type); ?>-<?php echo e($name); ?>-<?php echo e($loop->iteration); ?>" type="<?php echo e($type); ?>"
-              <?php echo e(is_array($value) ? (collect($value)->contains($option['value']) ? 'checked' : '') : ($value == $option['value'] ? 'checked' : '')); ?>
+              <?php echo e(is_array($value) ? (collect($value)->contains($option['value']) ? 'checked' : '') : ($value === $option['value'] ? 'checked' : '')); ?>
 
-              name="<?php echo e($name); ?>" value="<?php echo e($option['value']); ?>"
+              name="<?php echo e($option['name'] ?? $name); ?><?php echo e($type == 'checkbox' ? '[]' : ''); ?>"
+              value="<?php echo e($option['value']); ?>"
               class="input <?php echo e($type == 'checkbox' ? 'rounded' : 'rounded-full'); ?> <?php echo $disabled ? '' : 'cursor-pointer'; ?> h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
 
             <label for="<?php echo e($type); ?>-<?php echo e($name); ?>-<?php echo e($loop->iteration); ?>"
@@ -140,9 +126,19 @@
         <?php if($type == 'select'): ?>
           <select class="input" <?php echo $attributes; ?> <?php echo $disabled ? 'disabled' : ''; ?> <?php echo e(isset($id) ? 'id=' . $id : ''); ?>
 
-            name="<?php echo e($name ?? ''); ?>" <?php echo e($autofocus ? 'autofocus' : ''); ?> <?php echo e($required ? 'required' : ''); ?>>
-            <?php echo e($slot); ?>
+            name="<?php echo e($name ?? ''); ?>" <?php echo e($autofocus ? 'autofocus' : ''); ?> <?php echo e($required ? 'required' : ''); ?>
 
+            value="<?php echo e($value); ?>">
+            <?php if(isset($options)): ?>
+              <option value="" disabled selected>-- <?php echo e($placeholder ?? 'Please Select'); ?> --</option>
+              <?php $__currentLoopData = $options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($option['value']); ?>" <?php echo e($value === $option['value'] ? 'selected' : ''); ?>>
+                  <?php echo e($option['label']); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php else: ?>
+              <?php echo e($slot); ?>
+
+            <?php endif; ?>
           </select>
         <?php elseif($type == 'textarea'): ?>
           <textarea class="input" <?php echo $attributes; ?> <?php echo $disabled ? 'disabled' : ''; ?> <?php echo e(isset($id) ? 'id=' . $id : ''); ?>

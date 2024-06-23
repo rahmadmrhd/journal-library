@@ -9,6 +9,13 @@ export default {
     './resources/views/**/*.blade.php',
     "./node_modules/flowbite/**/*.js",
   ],
+  safelist: [
+    'object-cover',
+    'object-fill',
+    'object-contain',
+    'object-none',
+    'object-scale-down'
+  ],
 
   theme: {
     extend: {

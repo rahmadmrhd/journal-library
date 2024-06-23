@@ -12,6 +12,8 @@ return new class extends Migration {
     Schema::create('categories', function (Blueprint $table) {
       $table->id();
       $table->string('name');
+
+      $table->foreignUlid('sub_gate_id')->references('id')->on('sub_gates')->cascadeOnDelete();
       $table->timestamps();
     });
   }

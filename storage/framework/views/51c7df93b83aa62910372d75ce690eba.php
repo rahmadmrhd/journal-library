@@ -1,9 +1,9 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
-<?php foreach($attributes->onlyProps(['columns', 'tableId', 'positionPage' => 'both']) as $__key => $__value) {
+<?php foreach($attributes->onlyProps(['columns', 'tableId', 'positionPage' => 'both', 'sortable' => false]) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
-<?php $attributes = $attributes->exceptProps(['columns', 'tableId', 'positionPage' => 'both']); ?>
-<?php foreach (array_filter((['columns', 'tableId', 'positionPage' => 'both']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+<?php $attributes = $attributes->exceptProps(['columns', 'tableId', 'positionPage' => 'both', 'sortable' => false]); ?>
+<?php foreach (array_filter((['columns', 'tableId', 'positionPage' => 'both', 'sortable' => false]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
 <?php $__defined_vars = get_defined_vars(); ?>
@@ -12,14 +12,14 @@
 } ?>
 <?php unset($__defined_vars); ?>
 
-<div <?php echo e($attributes->merge(['class' => 'relative block overflow-x-auto w-full'])); ?>>
+<div <?php echo e($attributes->merge(['class' => 'relative block overflow-x-auto w-full h-full'])); ?>>
   <?php if(isset($pagination)): ?>
     <div class="<?php echo e($positionPage == 'top' || $positionPage == 'both' ? '' : 'hidden'); ?> w-full p-4">
       <?php echo e($pagination); ?>
 
     </div>
   <?php endif; ?>
-  <div class="w-full">
+  <div class="relative w-full">
     <table class="w-full text-left text-sm text-gray-900 rtl:text-right dark:text-gray-100"
       <?php if(isset($tableId)): ?>
     id="<?php echo e($tableId); ?>"
@@ -29,7 +29,7 @@
           <?php $__currentLoopData = $columns; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $column): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <?php if($column['isSortable']): ?>
               <th scope="col" class="<?php echo e($column['class'] ?? ''); ?> truncate px-6 py-3">
-                <a class="<?php if(request('sortBy') == $column['name']): ?> text-blue-400 <?php endif; ?> flex items-center font-bold"
+                <a class="<?php if(request('sortBy') == $column['name']): ?> text-blue-600 dark:text-blue-400 <?php endif; ?> flex items-center font-bold"
                   href="<?php echo e(request()->fullUrlWithQuery(['sortBy' => $column['name'], 'sort' => request('sort') == 'asc' ? 'desc' : 'asc'])); ?>
 
             ">
@@ -64,10 +64,17 @@
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tr>
       </thead>
-      <tbody>
-        <?php echo e($slot); ?>
+      <?php if(isset($tbody)): ?>
+        <tbody <?php echo e($tbody->attributes); ?>>
+          <?php echo e($tbody); ?>
 
-      </tbody>
+        </tbody>
+      <?php else: ?>
+        <tbody <?php echo $sortable ? 'x-sort' : ''; ?>>
+          <?php echo e($slot); ?>
+
+        </tbody>
+      <?php endif; ?>
     </table>
   </div>
 

@@ -10,10 +10,11 @@ return new class extends Migration {
    */
   public function up(): void {
     Schema::create('role_user', function (Blueprint $table) {
-      $table->primary(['role_id', 'user_id']);
+      $table->primary(['role_id', 'user_id', 'sub_gate_id']);
       $table->unsignedTinyInteger('role_id');
       $table->foreign('role_id')->references('id')->on('roles')->cascadeOnDelete();
-      $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
+      $table->foreignUlid('user_id')->references('id')->on('users')->cascadeOnDelete();
+      $table->foreignUlid('sub_gate_id')->references('id')->on('sub_gates')->cascadeOnDelete();
     });
   }
 

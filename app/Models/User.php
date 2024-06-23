@@ -8,14 +8,16 @@ use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Models\Manuscript\Task;
 use App\Models\Manuscript\Manuscript;
 use App\Models\Manuscript\ManuscriptAuthor;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Models\Manuscript\TaskDetail;
+use App\Models\Manuscript\TaskInvitation;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable {
-  use HasFactory, Notifiable, SoftDeletes, HasUuids, EagerLoadPivotTrait;
+  use HasFactory, Notifiable, SoftDeletes, HasUlids, EagerLoadPivotTrait;
 
   /**
    * The attributes that are mass assignable.
@@ -51,16 +53,20 @@ class User extends Authenticatable {
     ];
   }
 
+  // protected $with = [
+  //   'currentRole',
+  // ];
+
   public function roles() {
-    return $this->belongsToMany(Role::class, 'role_user');
+    return $this->belongsToMany(Role::class, 'role_user')->using(RoleUser::class)->withPivot(['sub_gate_id']);
+  }
+
+  public function currentRole() {
+    return $this->belongsTo(Role::class, 'current_role_id');
   }
 
   public function getFullName(): string {
     return $this->title . ' ' . $this->first_name . ' ' . $this->last_name . ' ' . $this->degree;
-  }
-
-  public function getCurrentRole(): Role {
-    return Role::find($this->current_role_id);
   }
 
   public function manuscripts() {
@@ -77,5 +83,12 @@ class User extends Authenticatable {
 
   public function tasks() {
     return $this->hasMany(Task::class);
+  }
+
+  public function invitations() {
+    return $this->belongsToMany(Task::class, 'task_invitations', 'user_id', 'task_id')->using(TaskInvitation::class)->withPivot([
+      'invited_at',
+      'status'
+    ]);
   }
 }

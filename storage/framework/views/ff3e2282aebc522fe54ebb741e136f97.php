@@ -7,7 +7,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(App\View\Components\AppLayout::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['title' => 'Manuscripts']); ?>
+<?php $component->withAttributes(['title' => 'Manuscripts','subGate' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($subGate)]); ?>
   
   <?php if(session('alert')): ?>
     <?php
@@ -34,8 +34,9 @@
 <?php unset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
 <?php endif; ?>
   <?php endif; ?>
-  <div class="border-b border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 sm:rounded-lg">
-    <div class="flex w-full flex-col items-start justify-between p-4">
+
+  <div class="absolute h-full w-full border-b border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+    <div class="relative flex h-full w-full flex-col items-start justify-between p-4 px-8">
       <div class="mb-3">
         <h1 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Manuscripts Management</h1>
       </div>
@@ -74,7 +75,7 @@
           </div>
         </div>
         <div class="flex w-full items-end gap-2 sm:w-auto">
-          <a href="<?php echo e(route('manuscripts.create')); ?>" id="add-manuscript-btn" class="button primary">
+          <a href="<?php echo e(route('manuscripts.create', $subGate->slug)); ?>" id="add-manuscript-btn" class="button primary">
             <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
                 d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
@@ -92,7 +93,7 @@
 
       <?php if (isset($component)) { $__componentOriginal163c8ba6efb795223894d5ffef5034f5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal163c8ba6efb795223894d5ffef5034f5 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.table','data' => ['class' => 'mt-6','columns' => [
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.table','data' => ['class' => 'mt-6 h-full','columns' => [
           [
               'label' => 'Action',
               'name' => 'action',
@@ -125,7 +126,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'mt-6','columns' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
+<?php $component->withAttributes(['class' => 'mt-6 h-full','columns' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
           [
               'label' => 'Action',
               'name' => 'action',
@@ -152,14 +153,19 @@
               'isSortable' => true,
           ],
       ])]); ?>
-        <?php $__env->slot('pagination'); ?>
-          <?php echo e($manuscripts->links()); ?>
+        <?php if($manuscripts->total() > 10): ?>
+          <?php $__env->slot('pagination'); ?>
+            <?php echo e($manuscripts->links()); ?>
 
-        <?php $__env->endSlot(); ?>
+          <?php $__env->endSlot(); ?>
+        <?php endif; ?>
 
         <?php $__currentLoopData = $manuscripts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $manuscript): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+          <?php
+            $manuscriptSubGateSlug = $manuscript->subGate->slug ?? $subGate->slug;
+          ?>
           <tr
-            href="<?php echo e($manuscript->submitted_at ? route('manuscripts.show', $manuscript->id) : route('manuscripts.create', $manuscript->id)); ?>"
+            href="<?php echo e($manuscript->submitted_at ? route('manuscripts.show', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id]) : route('manuscripts.create', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id])); ?>"
             class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
             <td class="w-[1%] space-x-1 whitespace-nowrap p-4">
               <button title="More" id="more-btn-<?php echo e($manuscript->id); ?>" x-data x-on:click.stop=""
@@ -177,12 +183,12 @@
                   aria-labelledby="more-btn-<?php echo e($manuscript->id); ?>">
                   <li>
                     <?php if($manuscript->submitted_at): ?>
-                      <a href="<?php echo e(route('manuscripts.show', $manuscript->id)); ?>"
+                      <a href="<?php echo e(route('manuscripts.show', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id])); ?>"
                         class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                         Show
                       </a>
                     <?php else: ?>
-                      <a href="<?php echo e(route('manuscripts.create', $manuscript->id)); ?>"
+                      <a href="<?php echo e(route('manuscripts.create', ['subGate' => $manuscriptSubGateSlug, 'manuscript' => $manuscript->id])); ?>"
                         class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                         Continue
                       </a>
@@ -318,8 +324,8 @@
               <?php echo e(__('You have already drafted a submission. Please continue the previous submission before starting a new one.')); ?>
 
             </h3>
-            <a href="<?php echo e(route('manuscripts.create', session('already-submission'))); ?>" id="delete-modal-btn"
-              class="button primary">
+            <a href="<?php echo e(route('manuscripts.create', ['subGate' => $subGate, 'manuscript' => session('already-submission')])); ?>"
+              id="delete-modal-btn" class="button primary">
               Yes, I will continue
             </a>
             <button id="cancel-modal-btn" type="button" x-on:click="$dispatch('close')" class="button secondary">

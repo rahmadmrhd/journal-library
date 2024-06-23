@@ -14,4 +14,8 @@ class Role extends Model {
   public function users() {
     return $this->belongsToMany(User::class, 'role_user');
   }
+
+  public static function findWithSlug(string $slug) {
+    return self::where('slug', $slug)->first();
+  }
 }

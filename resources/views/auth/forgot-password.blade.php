@@ -11,7 +11,7 @@
     <!-- Session Status -->
     <x-alert type="error" :messages="session('status')" />
 
-    <form method="POST" action="{{ route('password.email', absolute: false) }}">
+    <form method="POST" action="{{ route('password.email', $subGate->slug, absolute: false) }}">
       @csrf
 
       <!-- Email Address -->

@@ -18,14 +18,14 @@ window.showFile = (url, type) => {
     const object = document.createElement('object');
     object.data = url;
     object.type = type;
-    object.classList.add('relative', 'h-full', 'w-full', 'object-cover');
+    object.classList.add('relative', 'h-full', 'w-full', 'object-contain');
     container.innerHTML = '';
     container.appendChild(object);
   }
   else {
     const office = document.createElement('iframe');
     office.src = `https://view.officeapps.live.com/op/embed.aspx?src=${url}`;
-    office.classList.add('relative', 'h-full', 'w-full', 'object-cover');
+    office.classList.add('relative', 'h-full', 'w-full', 'object-fill');
     office.setAttribute('frameborder', 0);
     container.innerHTML = '';
     container.appendChild(office);

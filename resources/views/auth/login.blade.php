@@ -1,10 +1,11 @@
 <x-auth-layout>
-  <div class="relative w-full flex-row items-center dark:divide-gray-700 sm:flex">
-    <div class="">
-      <x-auth-image class="mx-auto h-60 w-60 fill-current text-blue-700 dark:text-sky-900 sm:h-96 sm:w-96" />
+  <div class="relative flex w-full flex-col items-center justify-end p-4 dark:divide-gray-700 sm:flex-row">
+    <div class="w-full">
+      <x-auth-image
+        class="max-w-96 mx-auto h-full w-full fill-current text-blue-700 dark:text-sky-900 sm:h-96 sm:w-96" />
     </div>
 
-    <div class="sm:min-w-80 pl-6">
+    <div class="sm:min-w-80 my-6 w-full sm:my-0 sm:pl-6">
       <div class="mb-6 mt-4">
         <div class="mb-6">
           <div class="flex items-center justify-between">
@@ -15,7 +16,7 @@
         </div>
 
         <x-alert type="error" :timeout="5000" :messages="count($errors->get('status')) > 0 ? $errors->get('status') : session('status')" />
-        <form method="POST" action="{{ route('login', absolute: false) }}">
+        <form method="POST" action="{{ route('login', $subGate->slug, absolute: false) }}">
           @csrf
           <x-text-input :label="__('Email or Username')" id="emailOrUsername" name="emailOrUsername" type="text" :value="old('emailOrUsername')"
             required autofocus autocomplete="username" :messages="$errors->get('emailOrUsername')" :status="$errors->has('emailOrUsername') ? 'error' : ''">
@@ -26,8 +27,8 @@
               </svg>
             </x-slot>
           </x-text-input>
-          <x-text-input :label="__('Password')" id="password" name="password" type="password" :value="old('password')" required
-            autofocus autocomplete="current_password" :messages="$errors->get('password')" :status="$errors->has('password') ? 'error' : ''">
+          <x-text-input class="mt-3" :label="__('Password')" id="password" name="password" type="password"
+            :value="old('password')" required autofocus autocomplete="current_password" :messages="$errors->get('password')" :status="$errors->has('password') ? 'error' : ''">
             <x-slot name="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -46,7 +47,7 @@
             </label>
             @if (Route::has('password.request'))
               <a class="rounded-md text-sm text-gray-600 hover:text-gray-900 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                href="{{ route('password.request', absolute: false) }}">
+                href="{{ route('password.request', $subGate->slug, absolute: false) }}">
                 {{ __('Forgot your password?') }}
               </a>
             @endif
@@ -70,7 +71,7 @@
           <div class="mt-6 gap-4 text-sm text-gray-600 dark:text-gray-400">
             Not a Member?
             <a class="text-blue-600 hover:text-gray-900 focus:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-blue-500 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-              href="{{ route('register', absolute: false) }}">
+              href="{{ route('register', $subGate->slug, absolute: false) }}">
               Sign Up
             </a>
           </div>

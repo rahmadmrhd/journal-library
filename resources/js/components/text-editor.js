@@ -29,6 +29,9 @@ window.initEditor = async (idEditor, readOnly, initValue) => {
       new Undo({ editor });
       new DragDrop(editor);
 
+      const editorEl = document.querySelector(`#${idEditor} .codex-editor__redactor`);
+      console.log(editorEl);
+      editorEl.style.paddingBottom = readOnly ? '16px' : '96px';
     },
     onChange: (editor, event) => {
       if (readOnly) { return; }
@@ -117,17 +120,18 @@ window.initEditor = async (idEditor, readOnly, initValue) => {
       embed: Embed,
     },
 
-    placeholder: 'Type here...',
+    placeholder: readOnly ? '' : 'Type here...',
     defaultBlock: 'paragraph'
   });
   editor.isReady.then(async () => {
     if (initValue) {
+      await editor.render(initValue);
       const input = document.getElementById(idEditor + '-input');
       if (!input) return;
       input.value = JSON.stringify(initValue);
-      await editor.render(initValue);
     }
   });
+
 
   return editor;
 }

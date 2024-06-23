@@ -11,14 +11,14 @@
     @apply bg-gray-100 dark:bg-gray-600 dark:text-white;
   }
   .dropdown-item svg {
-    @apply h-4 w-4 text-gray-800 dark:text-white;
+    @apply h-4 w-4;
   }
 
   .sidebar-badge {
     @apply ms-3 inline-flex items-center justify-center rounded-full;
   }
   .sidebar-item {
-    @apply flex items-center px-4 py-2 text-gray-900 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-700;
+    @apply flex items-center px-4 py-2 text-gray-900 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700;
   }
   .sidebar-item-dropdown {
     @apply sidebar-item flex w-full text-base transition duration-75;
@@ -32,7 +32,7 @@
   }
 
   .sidebar-item-dropdown + ul > li > a.active {
-    @apply text-blue-700 dark:!bg-gray-800 dark:text-white  dark:hover:bg-gray-700;
+    @apply text-blue-700 dark:!bg-slate-700 dark:text-white  dark:hover:bg-gray-700;
   }
   .sidebar-item.active svg:nth-child(1) {
     @apply !text-blue-700 dark:!text-white;

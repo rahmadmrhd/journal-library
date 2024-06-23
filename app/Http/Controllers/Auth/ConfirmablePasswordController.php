@@ -3,38 +3,38 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SubGate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
-class ConfirmablePasswordController extends Controller
-{
-    /**
-     * Show the confirm password view.
-     */
-    public function show(): View
-    {
-        return view('auth.confirm-password');
+class ConfirmablePasswordController extends Controller {
+  /**
+   * Show the confirm password view.
+   */
+  public function show(SubGate $subGate): View {
+    return view('auth.confirm-password', [
+      'subGate' => $subGate
+    ]);
+  }
+
+  /**
+   * Confirm the user's password.
+   */
+  public function store(Request $request, SubGate $subGate): RedirectResponse {
+    if (!Auth::guard('web')->validate([
+      'email' => $request->user()->email,
+      'password' => $request->password,
+    ])) {
+      throw ValidationException::withMessages([
+        'password' => __('auth.password'),
+      ]);
     }
 
-    /**
-     * Confirm the user's password.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        if (! Auth::guard('web')->validate([
-            'email' => $request->user()->email,
-            'password' => $request->password,
-        ])) {
-            throw ValidationException::withMessages([
-                'password' => __('auth.password'),
-            ]);
-        }
+    $request->session()->put('auth.password_confirmed_at', time());
 
-        $request->session()->put('auth.password_confirmed_at', time());
-
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
+    return redirect()->intended(route('dashboard', $subGate->slug, absolute: false));
+  }
 }
