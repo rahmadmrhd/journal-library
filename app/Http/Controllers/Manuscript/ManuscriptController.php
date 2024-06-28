@@ -134,7 +134,7 @@ class ManuscriptController extends Controller {
     }
     Gate::authorize('view', $manuscript);
 
-    return view('pages.manuscripts.show', [
+    return view('pages.manuscripts.showan', [
       'manuscript' => $manuscript,
       'file_types' => FileType::orderBy('required', 'desc')->get(),
     ]);
